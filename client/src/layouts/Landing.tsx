@@ -10,17 +10,24 @@ import {
 
 export default function Landing() {
   return (
-    <>
-      <Navbar />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-      <Footer />
-    </>
-  )
+    <section
+      aria-label="Landing Page Containor"
+      className={`w-screen h-screen bg-def selection:text-secondary selection:bg-primary `}
+    >
+      <section className="w-full h-full flex-col justify-between items-center p-5 border-2 border-red-600">
+        <BrowserRouter>
+          <Navbar />
+          <main className="border">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
+        </BrowserRouter>
+      </section>
+    </section>
+  );
 }
