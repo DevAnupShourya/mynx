@@ -1,10 +1,10 @@
 import {Link} from "react-router-dom";
-import { Link as LinkBtn } from "@nextui-org/link";
+import { Link as LinkBtn , Divider } from "@nextui-org/react";
 import { FooterItems } from "~/utils/data/data.barrel";
 
 export default function Footer() {
   return (
-    <footer className="rounded-md shadow-2xl bg-main-text-default border">
+    <footer className="rounded-md shadow-2xl bg-main-text-default">
       <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
         <div className="text-center">
           <h2 className="mb-6 text-sm font-semibold uppercase text-light-main dark:text-dark-main">
@@ -95,7 +95,8 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <div className="py-6 border-t-1 text-center">
+      <Divider/>
+      <div className="py-6 text-center">
         <span className="text-sm">
           &copy; 2023{" "}
           <LinkBtn as={Link} href="/">

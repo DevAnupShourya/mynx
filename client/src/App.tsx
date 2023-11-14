@@ -5,7 +5,7 @@ import Landing from "~/layouts/Landing";
 import Dashboard from "~/layouts/Dashboard";
 
 function App() {
-  const userStatus = "unauthenticated" as
+  const userStatus = "authenticated" as
     | "unauthenticated"
     | "loading"
     | "authenticated";

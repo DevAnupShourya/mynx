@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   Navbar as Nav,
@@ -9,22 +9,20 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
+  Button,
+} from "@nextui-org/react";
 
-import { Button } from "@nextui-org/button";
-
-// ? Local Components
 import Logo from "~/components/Logo/Logo";
 import NavLink from "~/components/Links/NavLink";
 // import ThemeSwitch from "@src/components/buttons/ThemeSwitch";
 import { MenuLinks } from "~/utils/data/data.barrel";
 
 export default function Navbar() {
-  const path = useLocation().pathname;
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
-    <Nav className="rounded-md shadow-2xl bg-main-text-default border "
+    <Nav
+      className="rounded-md shadow-2xl bg-main-text-default"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
@@ -48,12 +46,7 @@ export default function Navbar() {
         {MenuLinks.map((item) => {
           return (
             <NavbarItem key={item.name}>
-              <NavLink
-                icon={item.icon}
-                name={item.name}
-                url={item.href}
-                active={path === item.href ? true : false}
-              />
+              <NavLink icon={item.icon} name={item.name} url={item.href} />
             </NavbarItem>
           );
         })}
@@ -64,7 +57,7 @@ export default function Navbar() {
           {/* <ThemeSwitch /> */}
           <h1>ThemeSwitch</h1>
         </div>
-        <Button as={Link} href="/login" variant="shadow" color="secondary">
+        <Button as={Link} to="/login" variant="shadow" color="secondary">
           Login
         </Button>
       </NavbarContent>
@@ -78,12 +71,7 @@ export default function Navbar() {
         {MenuLinks.map((item) => {
           return (
             <NavbarMenuItem key={item.name}>
-              <NavLink
-                icon={item.icon}
-                name={item.name}
-                url={item.href}
-                active={path === item.href ? true : false}
-              />
+              <NavLink icon={item.icon} name={item.name} url={item.href} />
             </NavbarMenuItem>
           );
         })}
