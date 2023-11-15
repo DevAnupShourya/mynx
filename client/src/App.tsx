@@ -4,14 +4,18 @@ import { Spinner } from "@nextui-org/react";
 import Landing from "~/layouts/Landing";
 import Dashboard from "~/layouts/Dashboard";
 
+import { useAppSelector } from "~/utils/hooks/redux.hooks";
+
 function App() {
   const userStatus = "authenticated" as
     | "unauthenticated"
     | "loading"
     | "authenticated";
 
+  const theme = useAppSelector((state) => state.theme.mode);
+
   return (
-    <section className="dark">
+    <section className={theme}>
       {userStatus === "loading" ? (
         <Spinner
           label="Loading Plese Wait"

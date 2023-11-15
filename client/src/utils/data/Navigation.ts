@@ -32,7 +32,7 @@ export const MenuLinks = [
 export const AuthMenuLinks = [
     {
         name: "Circle",
-        href: "/feed",
+        href: "/",
         icon: ImFeed,
     },
     {

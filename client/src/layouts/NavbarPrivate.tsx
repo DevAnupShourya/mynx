@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 import { AuthMenuLinks } from "~/utils/data/data.barrel";
 // import ThemeSwitch from "@src/components/buttons/ThemeSwitch";
-import { ProfileDropDown, NavLink, Logo } from "~/components/components.barrel";
+import { ProfileDropDown, NavLink, Logo , ThemeSwitcher} from "~/components/components.barrel";
 
 export default function NavbarPrivate() {
   return (
@@ -28,8 +28,7 @@ export default function NavbarPrivate() {
         })}
       </div>
       <div id="menu" className="f-row gap-4 h-full">
-        {/* <ThemeSwitcher /> */}
-        ThemeSwitcher
+        <ThemeSwitcher />
         <div className="f-row gap-2">
           <Button
             isIconOnly

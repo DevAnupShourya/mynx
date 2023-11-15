@@ -5,5 +5,6 @@ import PageError from '~/components/Loding&Errors/PageError';
 import Logo from '~/components/Logo/Logo';
 import BlogCard from '~/components/Cards/BlogCard';
 import ProfileDropDown from '~/components/Profile/ProfileDropDown';
+import ThemeSwitcher from '~/components/Switcher/ThemeSwitcher';
 
-export { NavLink, Loading, NotFound, PageError, Logo, BlogCard, ProfileDropDown, }
+export { NavLink, Loading, NotFound, PageError, Logo, BlogCard, ProfileDropDown, ThemeSwitcher, }
