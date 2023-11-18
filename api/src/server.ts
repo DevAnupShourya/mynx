@@ -1,6 +1,5 @@
 // ? Packages
-import express, { Request, Response } from "express";
-import morgan from 'morgan';
+import express, { Response } from "express";
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -16,18 +15,28 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // ? Middleware function
-app.use(morgan('combined'));
 app.use(helmet.xssFilter());
 
 // ? Routes
-app.get('/api', (req: Request, res: Response) => {
+app.get('/', (_, res: Response) => {
     res.status(200).send({
         status: 200,
         message: 'Welcome to Vixel API',
         documentation: 'https://api.vixel.com/docs'
     });
 });
-app.get('*', (req: Request, res: Response) => {
+app.get('/api', (_, res: Response) => {
+    res.status(200).send({
+        status: 200,
+        message: 'Welcome to Vixel API',
+        documentation: 'https://api.vixel.com/docs'
+    });
+});
+
+import userRoute from '~/microservices/user-service/routes/Users';
+app.use('/api/users', userRoute);
+
+app.get('*', (_, res: Response) => {
     res.status(200).send({
         status: 404,
         message: 'Resource Not Found',
@@ -35,10 +44,7 @@ app.get('*', (req: Request, res: Response) => {
     });
 });
 
-import userRoute from '~/microservices/auth-service/routes/Users';
-app.use('/api', userRoute);
-
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 app.listen(port, () => {
-    console.log(`API Listening on : http://127.0.0.1:${port} `);
+    console.log(`⚡️ API Listening on : http://127.0.0.1:${port} ⚡️`);
 });

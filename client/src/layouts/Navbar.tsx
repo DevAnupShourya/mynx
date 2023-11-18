@@ -22,7 +22,7 @@ export default function Navbar() {
 
   return (
     <Nav
-      className="rounded-md shadow-2xl bg-main-text-default"
+      className="rounded-md shadow-2xl bg-main-text-default w-11/12 mx-auto"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
@@ -53,10 +53,6 @@ export default function Navbar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <div className="max-md:hidden">
-          {/* <ThemeSwitch /> */}
-          <h1>ThemeSwitch</h1>
-        </div>
         <Button as={Link} to="/login" variant="shadow" color="secondary">
           Login
         </Button>

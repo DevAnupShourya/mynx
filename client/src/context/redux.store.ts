@@ -4,15 +4,19 @@ import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import themeReducer from '~/context/theme/ThemeSlice';
+import userReducer from '~/context/user/userSlice';
+import alertReducer from '~/context/alert/alertSlice';
 
 const reducers = combineReducers({
-    theme: themeReducer
+    theme: themeReducer,
+    user: userReducer,
+    alert: alertReducer,
 });
 
 const persistConfig = {
-    key: 'vixel-store',
+    key: 'vixel',
     storage,
-    whitelist : ['theme']
+    whitelist: ['theme']
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);

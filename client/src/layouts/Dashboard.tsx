@@ -12,7 +12,7 @@ import {
   TrendingPage,
 } from "~/pages/private/private.pages.barrel";
 
-import { ScrollShadow } from "@nextui-org/scroll-shadow";
+import { ScrollShadow } from "@nextui-org/react";
 
 import { motion } from "framer-motion";
 

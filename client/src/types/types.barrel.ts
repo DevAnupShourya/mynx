@@ -19,3 +19,23 @@ export interface NavLinksInterface {
     href: string,
     icon: IconType,
 }
+
+export interface userDataInterface {
+    name: string,
+    mail: string,
+    username: string,
+    dateJoined: string,
+    userImg: string,
+}
+
+export interface FormDataInterface {
+    username: string,
+    bio: string,
+    avatarURL: string,
+    coverURL: string,
+    name: string,
+    country: string,
+    gender: string,
+    password: string,
+    email: string,
+}

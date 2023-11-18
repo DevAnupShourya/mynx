@@ -19,78 +19,31 @@ import {
 
 import { Link } from "react-router-dom";
 
+import auth from "~/firebase";
+
 // ? Redux
-// import { useDispatch } from "react-redux";
-// import { showAlert } from "@src/store/alert/alertSlice";
+import { useAppSelector } from "~/utils/hooks/redux.hooks";
+import { useState } from "react";
 
 export default function ProfileDropdown() {
-  // ? Redux States
-  //   const dispatch = useDispatch();
-  //   const route = useRouter();
-
-  //   const [userData, setUserData] = React.useState({
-  //     profileImgUrl: "",
-  //     profileUsername: "",
-  //     profileName: "",
-  //   });
-
-  //   React.useEffect(() => {
-  //     const fetchUserData = async () => {
-  //       try {
-  //         const response = await fetch(`/api/users`, {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             email: userMail as string,
-  //           },
-  //         });
-
-  //         if (response.ok) {
-  //           const userData = await response.json();
-  //           setUserData({
-  //             profileImgUrl: userData.avatarUrl,
-  //             profileUsername: userData.username,
-  //             profileName: userData.name,
-  //           });
-  //         } else {
-  //           console.error("Unable to get user data!!", response.text);
-  //         }
-  //       } catch (error: any) {
-  //         console.error("Error while getting user data!!", error.message);
-  //       }
-  //     };
-
-  //     fetchUserData();
-  //   }, [userMail]);
+  // ? Redux State
+  const user = useAppSelector((state) => state.user);
+  const [logoutBtnStatus, setLogoutBtnStatus] = useState(false);
 
   const handleLogout = async () => {
-    console.log("Logging Out The user......");
-    //     const singout = await signOut({ redirect: true });
-
-    //     if (singout) {
-    //       dispatch(
-    //         showAlert({
-    //           show: true,
-    //           type: "danger",
-    //           msg: "Logout failed! Try After Some Time.",
-    //         })
-    //       );
-    //     } else {
-    //       dispatch(
-    //         showAlert({
-    //           show: true,
-    //           type: "success",
-    //           msg: "Logout Successfuly! Come Back Soon.",
-    //         })
-    //       );
-    //       route.push("/login");
-    //     }
+    setLogoutBtnStatus(true);
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+    setLogoutBtnStatus(false);
   };
 
   const userData = {
-    profileImgUrl: "https://avatars.githubusercontent.com/u/30373425?v=4",
-    profileUsername: "muskElon",
-    profileName: "Andrew Tate",
+    profileImgUrl: user.userImg,
+    profileUsername: user.username,
+    profileName: user.name,
   };
 
   return (
@@ -224,7 +177,12 @@ export default function ProfileDropdown() {
             </Link>
           </DropdownItem>
           <DropdownItem key="logout">
-            <Button onClick={handleLogout} color="danger" fullWidth>
+            <Button
+              onClick={handleLogout}
+              color="danger"
+              fullWidth
+              isLoading={logoutBtnStatus}
+            >
               <HiOutlineLogout className="text-lg" />
               Log Out
             </Button>

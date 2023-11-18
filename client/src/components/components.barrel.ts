@@ -6,5 +6,7 @@ import Logo from '~/components/Logo/Logo';
 import BlogCard from '~/components/Cards/BlogCard';
 import ProfileDropDown from '~/components/Profile/ProfileDropDown';
 import ThemeSwitcher from '~/components/Switcher/ThemeSwitcher';
+import AvatarInput from '~/components/Input/AvatarInput';
+import CoverImgInput from '~/components/Input/CoverImgInput';
 
-export { NavLink, Loading, NotFound, PageError, Logo, BlogCard, ProfileDropDown, ThemeSwitcher, }
+export { NavLink, Loading, NotFound, PageError, Logo, BlogCard, ProfileDropDown, ThemeSwitcher, AvatarInput, CoverImgInput }

@@ -1,4 +1,4 @@
-import { Switch } from "@nextui-org/switch";
+import { Switch } from "@nextui-org/react";
 import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
 
 import { useAppSelector, useAppDispatch } from "~/utils/hooks/redux.hooks";

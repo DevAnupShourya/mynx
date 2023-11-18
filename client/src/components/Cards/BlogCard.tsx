@@ -1,5 +1,4 @@
-import { Image } from "@nextui-org/image";
-import { Link } from "@nextui-org/link";
+import { Image , Link} from "@nextui-org/react";
 
 type blogData = {
   heading: string;

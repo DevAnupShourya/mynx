@@ -1,5 +1,4 @@
-import { Link as LinkButton } from "@nextui-org/link";
-import { Tooltip } from "@nextui-org/tooltip";
+import { Link as LinkButton , Tooltip } from "@nextui-org/react";
 
 import { IconType } from "react-icons";
 import { useLocation, Link } from "react-router-dom";
