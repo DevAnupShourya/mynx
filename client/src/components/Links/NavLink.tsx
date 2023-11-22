@@ -1,7 +1,7 @@
-import { Link as LinkButton , Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@nextui-org/react";
 
 import { IconType } from "react-icons";
-import { useLocation, Link } from "react-router-dom";
+import { NavLink as NavLinkBtn } from "react-router-dom";
 
 interface nav_item {
   icon: IconType;
@@ -10,31 +10,24 @@ interface nav_item {
 }
 
 export default function NavLink({ icon, name, url }: nav_item) {
-  const path = useLocation().pathname;
   const Icon = icon;
-  
+
+  const isActiveLinkStyle =
+    "grid place-items-center p-2 transition-colors rounded-md tracking-widest dark:hover:bg-dark-default hover:bg-light-default bg-light-default dark:bg-dark-default shadow-2xl outline-none border-none dark:text-dark-main text-light-main";
+  const isNotActiveLinkStyle =
+    "grid place-items-center p-2 transition-colors rounded-md tracking-widest dark:hover:bg-dark-default hover:bg-light-default outline-none border-none";
+
   return (
-    <Tooltip content={name} className="bg-all shadow-2xl">
-      <LinkButton
+    <Tooltip content={name} className="bg-main-text-default">
+      <NavLinkBtn
         to={url}
-        as={Link}
-        className={`grid place-items-center p-2 transition-colors rounded-md tracking-widest dark:hover:bg-dark-default hover:bg-light-default ${
-          (path === url ? true : false)
-            ? "bg-light-default dark:bg-dark-default shadow-2xl"
-            : null
-        }`}
+        className={({ isActive }) =>
+          isActive ? isActiveLinkStyle : isNotActiveLinkStyle
+        }
         title={name}
       >
-        <h1
-          className={`dark:text-dark-default text-light-default ${
-            (path === url ? true : false)
-              ? "dark:text-dark-main text-light-main"
-              : null
-          }`}
-        >
-          <Icon />
-        </h1>
-      </LinkButton>
+        <Icon />
+      </NavLinkBtn>
     </Tooltip>
   );
 }

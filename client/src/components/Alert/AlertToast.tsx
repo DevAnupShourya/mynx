@@ -25,12 +25,16 @@ export default function AlertToast() {
   };
 
   return (
-    <>
+    <aside key={notification.msg}>
       <HideAlertToast />
       <div
         className={`fixed bottom-2 left-0 max-md:bottom-16 z-50 w-screen px-2 grid max-md:place-items-center transition-all`}
       >
-        <Card radius="lg" shadow="lg" className={`bg-all max-w-md`}>
+        <Card
+          radius="lg"
+          shadow="lg"
+          className={`bg-all max-w-md max-md:w-11/12`}
+        >
           <CardHeader className="justify-between">
             <Button
               type="button"
@@ -71,11 +75,12 @@ export default function AlertToast() {
             </Button>
           </CardHeader>
           <Divider />
-          <CardBody className="text-base capitalize tracking-tighter">
-            {notification.msg?.trim().slice(0, 101)}.
+          <CardBody className="text-base capitalize tracking-tighter 37/100">
+            {/* {notification.msg?.trim().slice(0, 101)}. */}
+            {notification.msg}.
           </CardBody>
         </Card>
       </div>
-    </>
+    </aside>
   );
 }

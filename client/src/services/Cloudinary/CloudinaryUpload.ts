@@ -11,10 +11,9 @@ const uploadFile = async (file: string) => {
 
     try {
         const cldResponse = await axios.post(url, fd);
-        return cldResponse.data.secure_url
+        return cldResponse.data.secure_url;
     } catch (error) {
         console.log('Error while uploading Image to Cloudinary ', error)
     }
 }
-
-export { uploadFile };
+export default uploadFile;

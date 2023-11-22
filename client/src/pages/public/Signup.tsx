@@ -18,6 +18,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdMail } from "react-icons/md";
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
 import { TbBrandFirebase } from "react-icons/tb";
+import { FcGoogle } from "react-icons/fc";
+import { BiSolidRename } from "react-icons/bi";
+import { BsFillFileEarmarkRichtextFill } from "react-icons/bs";
 
 import { AvatarInput, CoverImgInput } from "~/components/components.barrel";
 import { FormDataInterface } from "~/types/types.barrel";
@@ -29,13 +32,11 @@ import { Auth } from "~/services/services.barrel";
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
 import { showAlert } from "~/context/alert/alertSlice";
-// import { updateUserData } from "~/context/user/userSlice";
 
 function Signup() {
   const navigate = useNavigate();
   // ? Redux States
   const dispatch = useAppDispatch();
-  // const userState = useAppSelector((state) => state.user);
 
   // ? States
   const [formData, setFormData] = useState<FormDataInterface>({
@@ -48,6 +49,7 @@ function Signup() {
     gender: "",
     password: "",
     email: "",
+    uId: "",
   });
 
   const [formSubmitStatus, setFormSubmitStatus] = useState(false);
@@ -72,15 +74,15 @@ function Signup() {
 
       if (usernamesResponse === 404) {
         window.alert(
-          "Your username must not contain spaces or special characters or spaces."
+          "Your username must not contain spaces or special characters."
         );
       } else if (usernamesResponse === 403) {
         window.alert("This username is not available to use.");
       } else {
         const response = await Auth.createUser(formData);
         if (response.status === 201) {
-          console.warn('Redirecting User to \'/\'....')
-          navigate("/");
+          console.warn("Redirecting User to '/'....");
+          navigate("/", { replace: true });
           dispatch(
             showAlert({
               show: true,
@@ -109,7 +111,44 @@ function Signup() {
         })
       );
     }
+    setFormSubmitStatus(false);
+  };
+  // ? Google Signin
+  const handleGoogleSignin = async () => {
+    setFormSubmitStatus(true);
+    try {
+      const response = await Auth.createUserWithGoogle();
 
+      if (response === 201) {
+        console.warn("Redirecting User to '/'....");
+        navigate("/", { replace: true });
+        dispatch(
+          showAlert({
+            show: true,
+            type: "success",
+            msg: "Successfully Created Your Account",
+          })
+        );
+      } else {
+        dispatch(
+          showAlert({
+            show: true,
+            type: "danger",
+            msg: "Error! Check Your Inputs Again..",
+          })
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      dispatch(
+        showAlert({
+          show: true,
+          type: "danger",
+          msg: `Error ! Try Again : ${error}`,
+        })
+      );
+    }
     setFormSubmitStatus(false);
   };
 
@@ -140,12 +179,28 @@ function Signup() {
           </p>
         </CardHeader>
         <Divider />
+        <CardBody className="flex flex-col gap-4">
+          <Button
+            startContent={<FcGoogle size={20} />}
+            onClick={handleGoogleSignin}
+            fullWidth
+            variant="ghost"
+            color="secondary"
+            size="md"
+          >
+            Create Account With Google
+          </Button>
+        </CardBody>
+        <Divider />
         <CardBody className="gap-4">
           <Input
             name="name"
             autoFocus
             type="text"
             label="Name"
+            endContent={
+              <BiSolidRename className="text-2xl pointer-events-none" />
+            }
             placeholder="Elon Musk"
             labelPlacement="inside"
             onChange={(e) => {
@@ -163,6 +218,9 @@ function Signup() {
             type="text"
             label="Username"
             placeholder="@elonmusk"
+            endContent={
+              <BsFillFileEarmarkRichtextFill className="text-2xl pointer-events-none" />
+            }
             labelPlacement="inside"
             startContent={
               <div className="pointer-events-none flex items-center">
@@ -292,53 +350,6 @@ function Signup() {
             </LinkBtn>
           </div>
         </CardBody>
-
-        <Divider />
-
-        {/* <CardBody className="flex flex-col gap-4">
-          <Button
-            startContent={<FcGoogle size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              try {
-                // * Saving User in firebase
-                const { user: savedUser } = await signInWithPopup(
-                  auth,
-                  provider
-                );
-
-                // * Saving User in Global Redux State [User]
-                dispatch(
-                  updateUserData({
-                    ...userState,
-                    name: savedUser.displayName!,
-                    mail: savedUser.email!,
-                    username: savedUser.displayName!,
-                    dateJoined: savedUser.metadata.creationTime!,
-                    userImg: savedUser.photoURL!,
-                  })
-                );
-
-                console.log("Created User In Firestore.");
-                // ? saving in firebase with just password , email
-                // ? saving in my db with more data
-
-                // ? Navidate to dasboard with /
-              } catch (error) {
-                console.log("Error While Signing in with google", error);
-              }
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="secondary"
-            size="md"
-          >
-            Create Account With Google
-          </Button>
-        </CardBody> */}
-
         <CardBody className="flex flex-row justify-end gap-4">
           <Button color="danger" variant="flat" type="reset">
             Reset

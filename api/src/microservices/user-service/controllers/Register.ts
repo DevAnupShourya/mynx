@@ -1,8 +1,4 @@
 import { Request, Response } from 'express';
-
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-
 import User from '../models/User.model';
 
 import infoLogger from '../utils/winstomLoggers';
@@ -19,6 +15,7 @@ export const registerUser = async (req: Request, res: Response) => {
             country: string,
             gender: string,
             email: string,
+            uId: string
         } = req.body;
 
         // ? Saving The Data in Database
@@ -34,12 +31,32 @@ export const registerUser = async (req: Request, res: Response) => {
         });
     }
 }
-export const getAllUsernames = async (req: Request, res: Response) => {
+export const getAllUsernames = async (_: Request, res: Response) => {
     try {
         const allUsernames = await User.find().select('username');;
         const usernameArray = allUsernames.map(user => user.username);
         const usernamesString = usernameArray.join(', ');
         responseInfo(res, 200, "All Usernames Found!", { usernames: usernamesString });
+    } catch (error) {
+        responseError(res, 500, "Something Went Wrong Please Try Again Later!!!", null);
+        return infoLogger.error({
+            "status": "Error",
+            "message": "Something Went Wrong Please Try Again Later!",
+            "error": error
+        });
+    }
+}
+
+export const getUserById = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findOne({ uId: userId });
+        if (user) {
+            responseInfo(res, 200, "User Found!", { user });
+        } else {
+            responseError(res, 400, "No user Found", null);
+        }
+
     } catch (error) {
         responseError(res, 500, "Something Went Wrong Please Try Again Later!!!", null);
         return infoLogger.error({

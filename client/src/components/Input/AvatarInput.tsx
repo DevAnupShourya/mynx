@@ -49,7 +49,7 @@ function AvatarInput({
             />
           }
         />
-        <Button type="button" variant="bordered" onClick={clickAvatarInput}>
+        <Button type="button" variant="flat" onClick={clickAvatarInput}>
           Change Avatar
         </Button>
         <input

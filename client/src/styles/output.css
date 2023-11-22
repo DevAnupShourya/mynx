@@ -3809,14 +3809,8 @@ video {
 */
 
 * {
-  font-family: "Inconsolata", monospace;
+  font-family: "Inconsolata";
 }
-
-/* 
-html,
-body {
-  height: 100vh;
-} */
 
 @layer {
   .bg-main-text-main {

@@ -10,6 +10,7 @@ import auth from "~/firebase";
 import { updateUserData } from "~/context/user/userSlice";
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
 import AlertToast from "~/components/Alert/AlertToast";
+import { getUserByUID } from "~/services/Auth/Authentication.services";
 
 function App() {
   // ? Redux States
@@ -17,17 +18,23 @@ function App() {
   const theme = useAppSelector((state) => state.theme.mode);
   const userState = useAppSelector((state) => state.user);
 
+  // TODO : Check User is Connected with Internet or Not and show page according to that
+  // TODO : Check Our API is Live and responding or Not and show page according to that
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
+        const { data } = await getUserByUID(authUser.uid);
+
+        // ? After Getting user data from db set it as state
         dispatch(
           updateUserData({
-            userId : authUser.uid,
-            name: authUser.displayName!,
+            userId: authUser.uid,
+            name: data.responseData.user.name!,
             mail: authUser.email!,
-            username: authUser.displayName!,
-            dateJoined: authUser.metadata.creationTime!,
-            userImg: authUser.photoURL!,
+            username: data.responseData.user.username!,
+            dateJoined: data.responseData.user.createdAt!,
+            userImg: data.responseData.user.avatarURL!,
             authStatus: "authenticated",
           })
         );
@@ -47,7 +54,7 @@ function App() {
 
   return (
     <section aria-label="App" className={`${theme}`}>
-      <AlertToast/>
+      <AlertToast />
       {userState.authStatus === "loading" ? (
         <Spinner
           label="Loading Please Wait"

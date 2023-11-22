@@ -53,8 +53,11 @@ export default function Navbar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <Button as={Link} to="/login" variant="shadow" color="secondary">
+        <Button as={Link} to="/login" variant="light" color="primary">
           Login
+        </Button>
+        <Button as={Link} to="/signup" variant="shadow" color="secondary">
+          Create Account
         </Button>
       </NavbarContent>
 

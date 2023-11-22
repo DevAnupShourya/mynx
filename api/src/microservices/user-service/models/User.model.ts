@@ -21,20 +21,29 @@ const userSchema = new Schema({
         min: [5, 'Username Should be at least 10 chars!!'],
     },
     country: {
+        required: [true, 'Country Is Required!!'],
         type: String,
     },
     gender: {
+        required: [true, 'Gender Is Required!!'],
         type: String,
     },
     bio: {
+         required: [true, 'Bio Is Required!!'],
         type: String,
         max: 100,
         min: 10,
     },
     avatarURL: {
+         required: [true, 'Avatar Image Is Required!!'],
         type: String,
     },
     coverURL: {
+        required: [true, 'Cover Image Is Required!!'],
+        type: String,
+    },
+    uId: {
+        required: true,
         type: String,
     },
     following: {

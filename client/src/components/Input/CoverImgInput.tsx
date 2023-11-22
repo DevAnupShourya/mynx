@@ -66,7 +66,7 @@ export default function CoverImgInput({
       </div>
       <Button
         type="button"
-        variant="bordered"
+        variant="flat"
         onClick={handleCoverPicChangeBtn}
       >
         Change Cover

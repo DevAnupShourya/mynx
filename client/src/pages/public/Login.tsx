@@ -9,19 +9,27 @@ import {
   Checkbox,
 } from "@nextui-org/react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaGithubAlt } from "react-icons/fa";
-import { MdMail } from "react-icons/md";
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
+import { MdMail } from "react-icons/md";
 import { TbBrandFirebase } from "react-icons/tb";
-import { BsMicrosoft } from "react-icons/bs";
-import { FaSquareXTwitter, FaSquareFacebook , FaApple  } from "react-icons/fa6";
 
 import auth from "~/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
+// ? Services
+import { Auth } from "~/services/services.barrel";
+
+// ? Redux
+import { useAppDispatch } from "~/utils/hooks/redux.hooks";
+import { showAlert } from "~/context/alert/alertSlice";
+
 export default function Login() {
+  const navigate = useNavigate();
+  // ? Redux States
+  const dispatch = useAppDispatch();
+
   // ? States
   const [formData, setFormData] = useState({
     email: "",
@@ -43,20 +51,69 @@ export default function Login() {
     e.preventDefault();
     setFormSubmitStatus(true);
     try {
-      // TODO : use services for this
-      const savedUser = await signInWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      console.warn("Redirecting User to '/'....");
+      navigate("/", { replace: true });
+      dispatch(
+        showAlert({
+          show: true,
+          type: "success",
+          msg: "Successfully Found Your Account",
+        })
       );
-      console.log(savedUser);
     } catch (error) {
+      dispatch(
+        showAlert({
+          show: true,
+          type: "danger",
+          msg: "Error! No User Found",
+        })
+      );
+
       console.log(
-        "Some Error Occurred while saving the user using firebase",
+        "Some Error Occurred while Logging the user using firebase",
         error
       );
     }
 
+    setFormSubmitStatus(false);
+  };
+  // ? Google Signin
+  const handleGoogleSignin = async () => {
+    setFormSubmitStatus(true);
+    try {
+      const response = await Auth.createUserWithGoogle();
+
+      if (response === 201) {
+        console.warn("Redirecting User to '/'....");
+        navigate("/", { replace: true });
+        dispatch(
+          showAlert({
+            show: true,
+            type: "success",
+            msg: "Successfully Found Your Account",
+          })
+        );
+      } else {
+        dispatch(
+          showAlert({
+            show: true,
+            type: "danger",
+            msg: "Error! Check Your Inputs Again..",
+          })
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
+      dispatch(
+        showAlert({
+          show: true,
+          type: "danger",
+          msg: `Error ! Try Again : ${error}`,
+        })
+      );
+    }
     setFormSubmitStatus(false);
   };
 
@@ -134,12 +191,7 @@ export default function Login() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             startContent={<FcGoogle size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Google........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
+            onClick={handleGoogleSignin}
             fullWidth
             variant="ghost"
             color="secondary"
@@ -147,7 +199,32 @@ export default function Login() {
           >
             Login With Google
           </Button>
-          <Button
+        </CardFooter>
+        <CardFooter className="flex flex-row justify-end gap-4">
+          <Button color="danger" variant="flat" type="reset">
+            Reset
+          </Button>
+          <Button color="primary" type="submit" isLoading={formSubmitStatus}>
+            Proceed
+          </Button>
+        </CardFooter>
+        <CardFooter className="flex flex-row justify-end">
+          <LinkBtn as={Link} color="primary" to="/signup" size="sm">
+            Don't Have Account
+          </LinkBtn>
+        </CardFooter>
+      </form>
+    </Card>
+  );
+}
+/**
+ * 
+ * 
+import { FaGithubAlt } from "react-icons/fa";
+import { BsMicrosoft } from "react-icons/bs";
+import { FaSquareXTwitter, FaSquareFacebook, FaApple } from "react-icons/fa6";
+
+ *  <Button
             startContent={<BsMicrosoft size={20} />}
             onClick={async () => {
               setFormSubmitStatus(true);
@@ -222,21 +299,4 @@ export default function Login() {
           >
             Login With Facebook
           </Button>
-        </CardFooter>
-        <CardFooter className="flex flex-row justify-end gap-4">
-          <Button color="danger" variant="flat" type="reset">
-            Reset
-          </Button>
-          <Button color="primary" type="submit" isLoading={formSubmitStatus}>
-            Proceed
-          </Button>
-        </CardFooter>
-        <CardFooter className="flex flex-row justify-end">
-          <LinkBtn as={Link} color="primary" to="/signup" size="sm">
-            Don't Have Account
-          </LinkBtn>
-        </CardFooter>
-      </form>
-    </Card>
-  );
-}
+ */

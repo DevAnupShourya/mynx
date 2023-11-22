@@ -17,7 +17,7 @@ import {
   Button,
 } from "@nextui-org/react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import auth from "~/firebase";
 
@@ -26,6 +26,7 @@ import { useAppSelector } from "~/utils/hooks/redux.hooks";
 import { useState } from "react";
 
 export default function ProfileDropdown() {
+  const navigation = useNavigate();
   // ? Redux State
   const user = useAppSelector((state) => state.user);
   const [logoutBtnStatus, setLogoutBtnStatus] = useState(false);
@@ -34,6 +35,7 @@ export default function ProfileDropdown() {
     setLogoutBtnStatus(true);
     try {
       await auth.signOut();
+      navigation("/");
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -45,7 +47,7 @@ export default function ProfileDropdown() {
     profileUsername: user.username,
     profileName: user.name,
   };
-
+    
   return (
     <Dropdown
       size="lg"
