@@ -1,85 +1,83 @@
 import axios from 'axios';
-const API_URL = ' http://127.0.0.1:3300/api';
-
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import auth, { provider } from "~/firebase";
+const API_URL = import.meta.env.VITE_API_URL as string;
 
 import { FormDataInterface } from "~/types/types.barrel";
 import uploadFile from '~/services/Cloudinary/CloudinaryUpload';
 
 const createUser = async (formData: FormDataInterface) => {
-    // ? Save user to Firebase
-    const resultFromFirebase = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-    );
+    try {
+        // ? Save User Images to Cloudinary DB
+        const avatarCloudURL = await uploadFile(formData.avatarURL);
+        const coverCloudURL = await uploadFile(formData.coverURL);
 
-    // ? Save User Images to Cloudinary DB
-    const avatarCloudURL = await uploadFile(formData.avatarURL);
-    const coverCloudURL = await uploadFile(formData.coverURL);
-
-    // ? Save User Data to Local DB
-    const response = await axios.post(`${API_URL}/users/register`, {
-        email: resultFromFirebase.user.email,
-        name: formData.name,
-        username: formData.username,
-        country: formData.country,
-        gender: formData.gender,
-        bio: formData.bio,
-        avatarURL: avatarCloudURL,
-        coverURL: coverCloudURL,
-        uId: resultFromFirebase.user.uid
-    })
-
-    return response;
-}
-const createUserWithGoogle = async () => {
-    // ? Save user to Firebase
-    const { user: savedUser } = await signInWithPopup(
-        auth,
-        provider
-    );
-    // ? Save User Data to Local DB in User is New
-    if (savedUser.metadata.creationTime === savedUser.metadata.lastSignInTime) {
-        await axios.post(`${API_URL}/users/register`, {
-            email: savedUser.email,
-            name: savedUser.displayName,
-            username: savedUser.displayName?.toLowerCase().replace(' ', '_'),
-            avatarURL: savedUser.photoURL,
-            uId: savedUser.uid,
-            gender: "NA",
-            coverURL: "https://res.cloudinary.com/dpdmpt1rg/image/upload/v1700375937/default-coverURl_ewwpme.jpg",
-            bio: "Your Bio goes here",
-            country: "NA",
+        // ? Save User Data to Local DB
+        const response = await axios.post(`${API_URL}/users/signup`, {
+            username: formData.username,
+            password: formData.password,
+            bio: formData.bio,
+            avatarURL: avatarCloudURL,
+            coverURL: coverCloudURL,
+            name: formData.name,
+            country: formData.country,
+            gender: formData.gender,
+            email: formData.email,
         })
-        return 201;
+
+        return response;
+    } catch (error) {
+        console.error("Error occurred While crating user account", error);
     }
-    return 201;
 }
+
+const authenticateUser = async (formData: { email: string; password: string; }) => {
+    try {
+        const res = await axios.post(`${API_URL}/users/login`, { email: formData.email, password: formData.password })
+        return res;
+    } catch (error) {
+        console.error("Error occurred While crating user account", error);
+    }
+}
+
 const checkUsernameAvailability = async (username: string) => {
-    console.log('in checkUsernameAvailability')
     // ? Check if username is valid string
-    const validUsernameRegex = /^[\w]+$/;
+    const usernameRegex = /^(?![0-9])[^a-zA-Z0-9]*(?!(?:chats|followers|new|notifications|settings|trending)$)[a-zA-Z][a-zA-Z0-9]*$/;
+    const isValidUsername = usernameRegex.test(username);
 
-    if (!validUsernameRegex.test(username)) {
-        return 404;
-    }
+    if (isValidUsername) {
+        const response = await axios.get(`${API_URL}/users/usernames?username=${username}`);
 
-    // ? Check if username is available to use
-    const { data } = await axios.get(`${API_URL}/users/usernames`);
-
-    if (data.responseData.usernames.includes(username)) {
-        return 403;
+        if (response.data.responseData.canUseQuery === 200) {
+            return 200; // * OK
+        } else if (response.data.responseData.canUseQuery === 406) {
+            return 403; // * Already Used
+        }
     } else {
-        return 200;
+        return 400; // * Invalid
     }
 }
+
 const getUserByUID = async (uId: string) => {
-    const userData = await axios.get(`${API_URL}/users/user/${uId}`)
-    return userData;
+    try {
+        const userData = await axios.get(`${API_URL}/api/users?userid=${uId}`)
+        return userData.data.responseData;
+    } catch (error) {
+        console.error("Error occurred While getting user info", error);
+    }
+}
+
+const getCurrentUser = async (token: string) => {
+    try {
+        const { data } = await axios.get(`${API_URL}/users/current`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return data.responseData.userInfo;
+    } catch (error) {
+        console.error("Error occurred While getting user info", error);
+    }
 }
 
 export {
-    createUser, checkUsernameAvailability, getUserByUID, createUserWithGoogle
+    createUser, checkUsernameAvailability, getUserByUID, getCurrentUser, authenticateUser
 };

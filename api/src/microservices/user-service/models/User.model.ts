@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import bcrypt from 'bcrypt';
 
 const userSchema = new Schema({
     name: {
@@ -29,20 +30,20 @@ const userSchema = new Schema({
         type: String,
     },
     bio: {
-         required: [true, 'Bio Is Required!!'],
+        required: [true, 'Bio Is Required!!'],
         type: String,
         max: 100,
         min: 10,
     },
     avatarURL: {
-         required: [true, 'Avatar Image Is Required!!'],
+        required: [true, 'Avatar Image Is Required!!'],
         type: String,
     },
     coverURL: {
         required: [true, 'Cover Image Is Required!!'],
         type: String,
     },
-    uId: {
+    password: {
         required: true,
         type: String,
     },
@@ -56,6 +57,14 @@ const userSchema = new Schema({
     },
 },
     { timestamps: true }
+)
+
+userSchema.pre("save",
+    // ? Generating a hashed password
+    async function () {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
 )
 
 const User = mongoose.model('user', userSchema);

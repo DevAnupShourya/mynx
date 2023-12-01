@@ -16,38 +16,46 @@ import {
   SelectItem,
   Button,
 } from "@nextui-org/react";
-
+import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 
-import auth from "~/firebase";
-
 // ? Redux
-import { useAppSelector } from "~/utils/hooks/redux.hooks";
+import { updateUserData } from "~/context/user/userSlice";
+import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
 import { useState } from "react";
 
 export default function ProfileDropdown() {
   const navigation = useNavigate();
   // ? Redux State
   const user = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+
   const [logoutBtnStatus, setLogoutBtnStatus] = useState(false);
+
+  const [, , removeCookie] = useCookies(["secret_text"]);
 
   const handleLogout = async () => {
     setLogoutBtnStatus(true);
     try {
-      await auth.signOut();
-      navigation("/");
+      removeCookie("secret_text", { path: "/" });
+
+      dispatch(
+        updateUserData({
+          authStatus: "unauthenticated",
+          mail: "",
+          name: "",
+          userImg: "",
+          username: "",
+        })
+      );
+
+      navigation("/", { replace: true });
     } catch (error) {
       console.error("Error signing out:", error);
     }
     setLogoutBtnStatus(false);
   };
 
-  const userData = {
-    profileImgUrl: user.userImg,
-    profileUsername: user.username,
-    profileName: user.name,
-  };
-    
   return (
     <Dropdown
       size="lg"
@@ -58,12 +66,7 @@ export default function ProfileDropdown() {
       backdrop="blur"
     >
       <DropdownTrigger className="cursor-pointer">
-        <Avatar
-          showFallback
-          radius="full"
-          size="lg"
-          src={userData.profileImgUrl}
-        />
+        <Avatar showFallback radius="full" size="lg" src={user.userImg} />
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Profile Dropdown List"
@@ -86,15 +89,15 @@ export default function ProfileDropdown() {
             className="h-14 gap-2 opacity-100"
           >
             <User
-              name={userData.profileName}
-              description={`@${userData.profileUsername}`}
+              name={user.name}
+              description={`@${user.username}`}
               classNames={{
                 name: "text-default-600",
                 description: "text-default-500",
               }}
               avatarProps={{
                 size: "sm",
-                src: userData.profileImgUrl,
+                src: user.userImg,
               }}
             />
           </DropdownItem>
@@ -102,7 +105,7 @@ export default function ProfileDropdown() {
             key="dashboard"
             endContent={<MdOutlineWidgets className="text-lg" />}
           >
-            <Link to={`/${userData.profileUsername}`} color="foreground">
+            <Link to={`/${user.username}`} color="foreground">
               Profile
             </Link>
           </DropdownItem>

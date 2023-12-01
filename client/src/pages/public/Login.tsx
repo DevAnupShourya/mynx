@@ -1,4 +1,5 @@
 import { useState, FormEvent, ChangeEvent } from "react";
+import { useCookies } from "react-cookie";
 import {
   Card,
   CardBody,
@@ -10,25 +11,22 @@ import {
 } from "@nextui-org/react";
 
 import { Link, useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
 import { MdMail } from "react-icons/md";
-import { TbBrandFirebase } from "react-icons/tb";
-
-import auth from "~/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-
-// ? Services
-import { Auth } from "~/services/services.barrel";
 
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
 import { showAlert } from "~/context/alert/alertSlice";
+import { updateUserData } from "~/context/user/userSlice";
+
+// ? Services
+import { Auth } from "~/services/services.barrel";
 
 export default function Login() {
   const navigate = useNavigate();
   // ? Redux States
   const dispatch = useAppDispatch();
+  const [, setCookie] = useCookies(["secret_text"]);
 
   // ? States
   const [formData, setFormData] = useState({
@@ -51,16 +49,61 @@ export default function Login() {
     e.preventDefault();
     setFormSubmitStatus(true);
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      console.warn("Redirecting User to '/'....");
-      navigate("/", { replace: true });
-      dispatch(
-        showAlert({
-          show: true,
-          type: "success",
-          msg: "Successfully Found Your Account",
-        })
-      );
+      const resFromServer = await Auth.authenticateUser(formData);
+
+      if (resFromServer?.status === 202) {
+        setCookie("secret_text", resFromServer?.data.responseData.token, {
+          path: "/",
+          maxAge: 28 * 24 * 60 * 60 * 1000,
+        });
+
+        dispatch(
+          updateUserData({
+            authStatus: "loading",
+            mail: "",
+            name: "",
+            userImg: "",
+            username: "",
+          })
+        );
+
+        dispatch(
+          showAlert({
+            show: true,
+            type: "warning",
+            msg: "Please Wait!!",
+          })
+        );
+
+        dispatch(
+          updateUserData({
+            authStatus: "authenticated",
+            mail: resFromServer.data.responseData.userAvailable.email,
+            name: resFromServer.data.responseData.userAvailable.name,
+            userImg: resFromServer.data.responseData.userAvailable.avatarURL,
+            username: resFromServer.data.responseData.userAvailable.username,
+          })
+        );
+
+        navigate("/", { replace: true });
+
+        dispatch(
+          showAlert({
+            show: true,
+            type: "success",
+            msg: "Successfully Found Your Account",
+          })
+        );
+      } else {
+        console.warn(resFromServer);
+        dispatch(
+          showAlert({
+            show: true,
+            type: "warning",
+            msg: `Error : ${resFromServer}`,
+          })
+        );
+      }
     } catch (error) {
       dispatch(
         showAlert({
@@ -78,64 +121,12 @@ export default function Login() {
 
     setFormSubmitStatus(false);
   };
-  // ? Google Signin
-  const handleGoogleSignin = async () => {
-    setFormSubmitStatus(true);
-    try {
-      const response = await Auth.createUserWithGoogle();
-
-      if (response === 201) {
-        console.warn("Redirecting User to '/'....");
-        navigate("/", { replace: true });
-        dispatch(
-          showAlert({
-            show: true,
-            type: "success",
-            msg: "Successfully Found Your Account",
-          })
-        );
-      } else {
-        dispatch(
-          showAlert({
-            show: true,
-            type: "danger",
-            msg: "Error! Check Your Inputs Again..",
-          })
-        );
-      }
-    } catch (error) {
-      console.error(error);
-
-      dispatch(
-        showAlert({
-          show: true,
-          type: "danger",
-          msg: `Error ! Try Again : ${error}`,
-        })
-      );
-    }
-    setFormSubmitStatus(false);
-  };
 
   return (
     <Card className="w-full max-w-lg mx-auto bg-main-text-default">
       <h1 className="text-2xl font-bold text-center text-light-main dark:text-dark-main my-3 capitalize">
         Welcome! Login
       </h1>
-      <p className="text-base capitalize flex flex-1 flex-row justify-center items-center ">
-        Powered By
-        <LinkBtn
-          href="https://firebase.google.com/"
-          size="md"
-          color="warning"
-          isExternal={true}
-          className="mx-2"
-          showAnchorIcon
-        >
-          <TbBrandFirebase size={25} />
-          Firebase
-        </LinkBtn>
-      </p>
       <form onSubmit={handleFormSubmit}>
         <CardBody>
           <Input
@@ -148,6 +139,7 @@ export default function Login() {
             autoComplete="current-password"
             name="email"
             value={formData.email}
+            isRequired={true}
             onChange={handleInputCapture}
           />
           <br />
@@ -174,6 +166,7 @@ export default function Login() {
             name="password"
             value={formData.password}
             onChange={handleInputCapture}
+            isRequired={true}
           />
           <div className="flex py-2 px-1 justify-between">
             <Checkbox
@@ -188,22 +181,7 @@ export default function Login() {
             </LinkBtn>
           </div>
         </CardBody>
-        <CardFooter className="flex flex-col gap-4">
-          <Button
-            startContent={<FcGoogle size={20} />}
-            onClick={handleGoogleSignin}
-            fullWidth
-            variant="ghost"
-            color="secondary"
-            size="md"
-          >
-            Login With Google
-          </Button>
-        </CardFooter>
         <CardFooter className="flex flex-row justify-end gap-4">
-          <Button color="danger" variant="flat" type="reset">
-            Reset
-          </Button>
           <Button color="primary" type="submit" isLoading={formSubmitStatus}>
             Proceed
           </Button>
@@ -217,86 +195,3 @@ export default function Login() {
     </Card>
   );
 }
-/**
- * 
- * 
-import { FaGithubAlt } from "react-icons/fa";
-import { BsMicrosoft } from "react-icons/bs";
-import { FaSquareXTwitter, FaSquareFacebook, FaApple } from "react-icons/fa6";
-
- *  <Button
-            startContent={<BsMicrosoft size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Microsoft........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="success"
-            size="md"
-          >
-            Login With Microsoft
-          </Button>
-          <Button
-            startContent={<FaSquareXTwitter size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with X........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="primary"
-            size="md"
-          >
-            Login With X
-          </Button>
-          <Button
-            startContent={<FaGithubAlt size={20} />}
-            onClick={() => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Github...........");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="default"
-            size="md"
-          >
-            Login With Github
-          </Button>
-          <Button
-            startContent={<FaApple  size={20} />}
-            onClick={() => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Apple ...........");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="warning"
-            size="md"
-          >
-            Login With Apple 
-          </Button>
-          <Button
-            startContent={<FaSquareFacebook size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Facebook........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="primary"
-            size="md"
-          >
-            Login With Facebook
-          </Button>
- */

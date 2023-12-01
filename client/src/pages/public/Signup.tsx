@@ -14,11 +14,10 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 import { MdMail } from "react-icons/md";
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
-import { TbBrandFirebase } from "react-icons/tb";
-import { FcGoogle } from "react-icons/fc";
 import { BiSolidRename } from "react-icons/bi";
 import { BsFillFileEarmarkRichtextFill } from "react-icons/bs";
 
@@ -31,6 +30,7 @@ import { Auth } from "~/services/services.barrel";
 
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
+import { updateUserData } from "~/context/user/userSlice";
 import { showAlert } from "~/context/alert/alertSlice";
 
 function Signup() {
@@ -55,6 +55,8 @@ function Signup() {
   const [formSubmitStatus, setFormSubmitStatus] = useState(false);
   const [passwordView, setPasswordView] = useState(false);
 
+  const [, setCookie] = useCookies(["secret_text"]);
+
   // ? Handlers
   const handleInputCapture = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -72,30 +74,71 @@ function Signup() {
         formData.username
       );
 
-      if (usernamesResponse === 404) {
-        window.alert(
-          "Your username must not contain spaces or special characters."
+      if (usernamesResponse === 400) {
+        dispatch(
+          showAlert({
+            show: true,
+            type: "danger",
+            msg: `Error ! Your username must not contain spaces or special characters.`,
+          })
         );
       } else if (usernamesResponse === 403) {
-        window.alert("This username is not available to use.");
+        dispatch(
+          showAlert({
+            show: true,
+            type: "danger",
+            msg: `Error ! This username is not available to use.`,
+          })
+        );
       } else {
-        const response = await Auth.createUser(formData);
-        if (response.status === 201) {
-          console.warn("Redirecting User to '/'....");
-          navigate("/", { replace: true });
+        const resFromServer = await Auth.createUser(formData);
+
+        dispatch(
+          showAlert({
+            show: true,
+            type: "warning",
+            msg: "Please Wait!! Creating your account ",
+          })
+        );
+
+        if (resFromServer?.status === 202) {
+          dispatch(
+            showAlert({
+              show: true,
+              type: "warning",
+              msg: "Almost Done",
+            })
+          );
+
+          setCookie("secret_text", resFromServer?.data.responseData.token, {
+            path: "/",
+            maxAge: 28 * 24 * 60 * 60 * 1000,
+          });
+
+          dispatch(
+            updateUserData({
+              authStatus: "loading",
+              mail: "",
+              name: "",
+              userImg: "",
+              username: "",
+            })
+          );
+
           dispatch(
             showAlert({
               show: true,
               type: "success",
-              msg: "Successfully Created Your Account",
+              msg: "Successfully Created Your Account!",
             })
           );
+          navigate("/", { replace: true });
         } else {
           dispatch(
             showAlert({
               show: true,
               type: "danger",
-              msg: "Error! Check Your Inputs Again..",
+              msg: `Error! ${resFromServer?.data.message}`,
             })
           );
         }
@@ -113,44 +156,6 @@ function Signup() {
     }
     setFormSubmitStatus(false);
   };
-  // ? Google Signin
-  const handleGoogleSignin = async () => {
-    setFormSubmitStatus(true);
-    try {
-      const response = await Auth.createUserWithGoogle();
-
-      if (response === 201) {
-        console.warn("Redirecting User to '/'....");
-        navigate("/", { replace: true });
-        dispatch(
-          showAlert({
-            show: true,
-            type: "success",
-            msg: "Successfully Created Your Account",
-          })
-        );
-      } else {
-        dispatch(
-          showAlert({
-            show: true,
-            type: "danger",
-            msg: "Error! Check Your Inputs Again..",
-          })
-        );
-      }
-    } catch (error) {
-      console.error(error);
-
-      dispatch(
-        showAlert({
-          show: true,
-          type: "danger",
-          msg: `Error ! Try Again : ${error}`,
-        })
-      );
-    }
-    setFormSubmitStatus(false);
-  };
 
   return (
     <form onSubmit={handleFormSubmit}>
@@ -163,34 +168,7 @@ function Signup() {
             This information will be displayed <br /> publicly so be careful
             what you share.
           </p>
-          <p className="text-base capitalize flex flex-1 flex-row justify-center items-center ">
-            Powered By
-            <LinkBtn
-              href="https://firebase.google.com/"
-              size="md"
-              color="warning"
-              isExternal={true}
-              className="mx-2"
-              showAnchorIcon
-            >
-              <TbBrandFirebase size={25} />
-              Firebase
-            </LinkBtn>
-          </p>
         </CardHeader>
-        <Divider />
-        <CardBody className="flex flex-col gap-4">
-          <Button
-            startContent={<FcGoogle size={20} />}
-            onClick={handleGoogleSignin}
-            fullWidth
-            variant="ghost"
-            color="secondary"
-            size="md"
-          >
-            Create Account With Google
-          </Button>
-        </CardBody>
         <Divider />
         <CardBody className="gap-4">
           <Input
@@ -370,81 +348,3 @@ function Signup() {
 }
 
 export default Signup;
-
-/**
- * <Button
-            startContent={<BsMicrosoft size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Microsoft........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="success"
-            size="md"
-          >
-            Create Account With Microsoft
-          </Button>
-          <Button
-            startContent={<FaSquareXTwitter size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with X........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="primary"
-            size="md"
-          >
-            Create Account With X
-          </Button>
-          <Button
-            startContent={<FaGithubAlt size={20} />}
-            onClick={() => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Github...........");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="default"
-            size="md"
-          >
-            Create Account With Github
-          </Button>
-          <Button
-            startContent={<FaApple size={20} />}
-            onClick={() => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Apple ...........");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="warning"
-            size="md"
-          >
-            Create Account With Apple
-          </Button>
-          <Button
-            startContent={<FaSquareFacebook size={20} />}
-            onClick={async () => {
-              setFormSubmitStatus(true);
-              console.log("Signing in with Facebook........... ");
-              setFormSubmitStatus(false);
-            }}
-            type="submit"
-            fullWidth
-            variant="ghost"
-            color="primary"
-            size="md"
-          >
-            Create Account With Facebook
-          </Button>
- */

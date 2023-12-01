@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           }
           persistor={persistor}
         >
-          <App />
+            <App />
         </PersistGate>
       </NextUIProvider>
     </Provider>

@@ -6,16 +6,18 @@ import cors from 'cors';
 
 // ? Declarations
 const app = express();
-dotenv.config();
-app.use(express.json());
-const corsOptions = {
-    origin: 'http://localhost:5173',
-};
-
-app.use(cors(corsOptions));
 
 // ? Middleware function
 app.use(helmet.xssFilter());
+
+dotenv.config();
+
+app.use(express.json());
+
+const corsOptions = {
+    // origin: ['http://localhost:5173']
+};
+app.use(cors());
 
 // ? Routes
 app.get('/', (_, res: Response) => {
@@ -34,7 +36,7 @@ app.get('/api', (_, res: Response) => {
 });
 
 import userRoute from '~/microservices/user-service/routes/Users';
-app.use('/api/users', userRoute);
+app.use('/api/users/', userRoute);
 
 app.get('*', (_, res: Response) => {
     res.status(200).send({
@@ -44,7 +46,17 @@ app.get('*', (_, res: Response) => {
     });
 });
 
-const port = process.env.PORT;
-app.listen(port, () => {
-    console.log(`⚡️ API Listening on : http://127.0.0.1:${port} ⚡️`);
+
+// TODO : for HTTPS
+// import fs from 'fs';
+// "dev": "HTTPS=true SSL_CRT_FILE={A:/Projects/Vixel/code/client/localhost.crt}.pem SSL_KEY_FILE={A:/Projects/Vixel/code/client/localhost.key}.pem concurrently \"vite\" \"npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/output.css --watch\"",
+// "dev": "set HTTPS=true && set SSL_CRT_FILE=A:/Projects/Vixel/code/client/localhost.crt && set SSL_KEY_FILE=A:/Projects/Vixel/code/client/localhost.key && concurrently \"vite --https\" \"npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/output.css --watch\"",
+// const serverOptions = {
+//     key: fs.readFileSync('A:/Projects/Vixel/code/api/localhost.key'),
+//     cert: fs.readFileSync('A:/Projects/Vixel/code/api/localhost.crt'),
+// };
+
+import { API_PORT } from '~/microservices/user-service/config/Variables';
+app.listen(API_PORT, () => {
+    console.log(`⚡️ API Listening on : http://127.0.0.1:${API_PORT} ⚡️`);
 });
