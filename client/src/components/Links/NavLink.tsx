@@ -7,9 +7,10 @@ interface nav_item {
   icon: IconType;
   name: string;
   url: string;
+  withName?: boolean;
 }
 
-export default function NavLink({ icon, name, url }: nav_item) {
+export default function NavLink({ icon, name, url, withName }: nav_item) {
   const Icon = icon;
 
   const isActiveLinkStyle =
@@ -27,6 +28,7 @@ export default function NavLink({ icon, name, url }: nav_item) {
         title={name}
       >
         <Icon />
+        {withName && name}
       </NavLinkBtn>
     </Tooltip>
   );

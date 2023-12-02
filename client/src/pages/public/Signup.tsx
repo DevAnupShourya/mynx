@@ -49,7 +49,6 @@ function Signup() {
     gender: "",
     password: "",
     email: "",
-    uId: "",
   });
 
   const [formSubmitStatus, setFormSubmitStatus] = useState(false);
@@ -159,12 +158,16 @@ function Signup() {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <Card className="w-full h-auto max-w-lg mx-auto bg-main-text-default">
-        <CardHeader className="block">
-          <h1 className="text-2xl font-bold text-center text-light-main dark:text-dark-main my-3 capitalize">
-            Welcome! Create Account
+      <Card
+        radius="sm"
+        shadow="lg"
+        className="bg-main-text-main  max-sm:min-w-[320px] min-w-[500px]"
+      >
+        <CardHeader className="flex-col justify-center">
+          <h1 className="text-center text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main my-3">
+            Create Account
           </h1>
-          <p className="text-sm mt-1 leading-6 text-center my-4">
+          <p className=" text-center mt-1 my-4 text-sm font-medium -tracking-wider capitalize">
             This information will be displayed <br /> publicly so be careful
             what you share.
           </p>
@@ -329,7 +332,24 @@ function Signup() {
           </div>
         </CardBody>
         <CardBody className="flex flex-row justify-end gap-4">
-          <Button color="danger" variant="flat" type="reset">
+          <Button
+            color="danger"
+            variant="flat"
+            type="reset"
+            onClick={() => {
+              setFormData({
+                username: "",
+                bio: "",
+                avatarURL: "",
+                coverURL: "",
+                name: "",
+                country: "",
+                gender: "",
+                password: "",
+                email: "",
+              });
+            }}
+          >
             Reset
           </Button>
           <Button color="primary" type="submit" isLoading={formSubmitStatus}>

@@ -4,10 +4,10 @@ function Blogs() {
   return (
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
       <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
-        <p className="title-1 mb-4 text-light-main dark:text-dark-main">
+        <p className="mb-4 text-5xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
           Our Blog
         </p>
-        <p className="font-light title-2">
+        <p className="text-sm font-medium -tracking-wider capitalize">
           We use an agile approach to test assumptions and connect with the
           needs of your audience early and often.
         </p>

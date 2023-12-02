@@ -1,4 +1,4 @@
-import {nextui} from '@nextui-org/theme';
+import { nextui } from '@nextui-org/theme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -10,29 +10,32 @@ export default {
     extend: {
       backgroundColor: {
         dark: {
-          "all": "#161823",
-          "main": "#11131d",
-          "default": "#1a1d28",
+          // "all": "#171717",
+          "all": "#050505",
+          "main": "#040707",
+          // "main": "#110011",
+          "default": "#120321",
+          // "default": "#050505",
         },
         light: {
-          "all": "#f3f4f6",
-          "main": "#e5e7eb",
-          "default": "#d1d5db",
+          "all": "#F8F8FF",
+          "main": "#F5F5F5",
+          "default": "#FFFFFF",
         },
       },
       textColor: {
         dark: {
-          "default": "#81869b",
-          "main": "#ffffff",
+          "default": "#F8F8FF",
+          "main": "#F5F5F5",
         },
         light: {
-          "default": "#4b5563",
-          "main": "#111827",
+          "default": "#010B13",
+          "main": "#100C08",
         },
       },
       colors: {
-        "primary": "#615dfa",
-        "secondary": "#22d1e2",
+        "primary": "#64CFF6",
+        "secondary": "#6359E9",
       },
     },
     variants: {

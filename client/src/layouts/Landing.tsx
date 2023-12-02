@@ -10,13 +10,18 @@ import {
   Login,
   Signup,
 } from "~/pages/public/public.pages.barrel";
+import { Divider } from "@nextui-org/react";
 
 export default function Landing() {
   return (
-    <section aria-label="Landing Page Container" className={`h-auto bg-def`}>
+    <section
+      aria-label="Landing Page Container"
+      className={`w-screen min-h-screen bg-def`}
+    >
       <BrowserRouter>
         <Navbar />
-        <main className="flex- py-20 max-sm:py-10">
+        <Divider />
+        <main className="py-20 max-sm:py-10 grid place-items-center">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -27,6 +32,7 @@ export default function Landing() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+        <Divider />
         <Footer />
       </BrowserRouter>
     </section>

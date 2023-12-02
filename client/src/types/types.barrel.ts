@@ -38,5 +38,4 @@ export interface FormDataInterface {
     gender: string,
     password: string,
     email: string,
-    uId: string,
 }

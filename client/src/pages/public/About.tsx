@@ -5,13 +5,10 @@ export default function About() {
     <div className="mx-auto">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
-          <p className="title-3 leading-7 text-primary">
-            Vixel - World in Pixels
-          </p>
-          <p className="mt-2 title-1 capitalize text-light-main dark:text-dark-main">
+          <h1 className="mt-2 text-5xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
             Everything you need to Know about us
-          </p>
-          <p className="mt-6 text-lg leading-8 capitalize title-3">
+          </h1>
+          <p className="mt-6 text-sm font-medium -tracking-wider capitalize">
             Unleash the potential of seamless task management and collaboration
             with Echo. Our innovative platform is designed to elevate your
             productivity, foster teamwork, and bring your projects to life. Say
@@ -32,9 +29,11 @@ export default function About() {
                       aria-hidden="true"
                     />
                   </div>
-                  {feature.name}
+                  <h1 className="text-xl font-semibold tracking-wider capitalize">
+                    {feature.name}
+                  </h1>
                 </dt>
-                <dd className="mt-2 text-base leading-7">
+                <dd className="mt-2 text-sm font-medium -tracking-wider capitalize">
                   {feature.description}
                 </dd>
               </div>

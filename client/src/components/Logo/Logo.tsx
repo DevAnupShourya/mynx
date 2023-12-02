@@ -1,34 +1,13 @@
-import "./style.scss";
-
-import { Tooltip } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
-export default function Logo({ type }: { type: "sm" | "lg" }) {
+export default function Logo() {
   return (
-    <Tooltip
-      showArrow={true}
-      placement="bottom"
-      content="Vixel"
-      classNames={{
-        base: "bg-main-text-main title-3",
-        arrow: "bg-main-text-main",
-      }}
+    <Link
+      to="/"
+      id="logo"
+      className="text-4xl text-black dark:text-white p-2 uppercase border-1 border-dashed border-black dark:border-white"
     >
-      <Link to="/" className="text-5xl max-sm:text-3xl text-secondary p-2 ">
-        {type === "lg" ? (
-          <>
-            VI
-            <span className="font-tesla">X</span>
-            EL
-          </>
-        ) : (
-          <span className="font-tesla">X</span>
-        )}
-      </Link>
-    </Tooltip>
+      vixel
+    </Link>
   );
 }
-
-Logo.defaultProps = { 
-  type : 'sm'
-} 

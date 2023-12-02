@@ -14,7 +14,6 @@ import {
 
 import Logo from "~/components/Logo/Logo";
 import NavLink from "~/components/Links/NavLink";
-// import ThemeSwitch from "@src/components/buttons/ThemeSwitch";
 import { MenuLinks } from "~/utils/data/data.barrel";
 
 export default function Navbar() {
@@ -22,27 +21,50 @@ export default function Navbar() {
 
   return (
     <Nav
-      className="rounded-md shadow-2xl bg-main-text-default w-11/12 mx-auto"
+      shouldHideOnScroll
+      isBordered
+      className="bg-main-text-default py-2"
+      // border-b dark:border-white light:border-black
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
+      {/* Nav Mobile */}
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle
           className="text-light-main dark:text-dark-main"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         />
       </NavbarContent>
-
-      <NavbarContent className="sm:hidden pr-3" justify="center">
+      <NavbarMenu
+        onClick={() => {
+          setIsMenuOpen(false);
+        }}
+        className="bg-main-text-main w-full h-full py-10 grid place-items-center"
+      >
+        {MenuLinks.map((item) => {
+          return (
+            <NavbarMenuItem key={item.name}>
+              <NavLink
+                icon={item.icon}
+                name={item.name}
+                url={item.href}
+                withName={true}
+              />
+            </NavbarMenuItem>
+          );
+        })}
+      </NavbarMenu>
+      <NavbarContent className="sm:hidden" justify="start">
         <NavbarBrand>
           <Logo />
         </NavbarBrand>
       </NavbarContent>
 
+      {/* Nav Desktop */}
+      <NavbarBrand className="max-sm:hidden">
+        <Logo />
+      </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarBrand>
-          <Logo />
-        </NavbarBrand>
         {MenuLinks.map((item) => {
           return (
             <NavbarItem key={item.name}>
@@ -53,28 +75,19 @@ export default function Navbar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <Button as={Link} to="/login" variant="light" color="primary">
+        <Button
+          as={Link}
+          to="/login"
+          variant="light"
+          color="primary"
+          className="max-sm:hidden"
+        >
           Login
         </Button>
         <Button as={Link} to="/signup" variant="shadow" color="secondary">
           Create Account
         </Button>
       </NavbarContent>
-
-      <NavbarMenu
-        className="mx-auto py-10 flex flex-col gap-10 items-center md:w-11/12 w-10/12 rounded-md shadow-2xl bg-main-text-default"
-        onClick={() => {
-          setIsMenuOpen(false);
-        }}
-      >
-        {MenuLinks.map((item) => {
-          return (
-            <NavbarMenuItem key={item.name}>
-              <NavLink icon={item.icon} name={item.name} url={item.href} />
-            </NavbarMenuItem>
-          );
-        })}
-      </NavbarMenu>
     </Nav>
   );
 }

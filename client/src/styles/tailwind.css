@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Pixelify+Sans:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,10 +8,15 @@
 ? npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/output.css --watch 
 */
 
-@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;500;600;900&display=swap");
-
 * {
-  font-family: "Inconsolata";
+  font-family: "DM Mono";
+}
+
+#logo {
+  font-family: "Pixelify Sans";
+}
+.ps_font {
+  font-family: "Pixelify Sans";
 }
 
 @layer {
@@ -25,23 +32,46 @@
   .bg-def {
     @apply bg-light-default text-light-default dark:bg-dark-default dark:text-dark-default;
   }
-  .f-row {
-    @apply flex flex-row justify-center items-center;
-  }
-  .f-col {
-    @apply flex flex-col justify-center items-center;
-  }
-  .gr-cen {
-    @apply grid place-items-center;
-  }
-
-  .title-1 {
-    @apply text-7xl max-sm:text-5xl tracking-widest font-bold;
-  }
-  .title-2 {
-    @apply text-5xl max-sm:text-3xl tracking-wider font-semibold;
-  }
-  .title-3 {
-    @apply text-3xl max-sm:text-xl tracking-wide font-thin;
-  }
 }
+
+/* 
+? Color Pal 1
+ theme: {
+    extend: {
+      backgroundColor: {
+        dark: {
+          "all": "#161823",
+          "main": "#11131d",
+          "default": "#1a1d28",
+        },
+        light: {
+          "all": "#f3f4f6",
+          "main": "#e5e7eb",
+          "default": "#d1d5db",
+        },
+      },
+      textColor: {
+        dark: {
+          "default": "#81869b",
+          "main": "#ffffff",
+        },
+        light: {
+          "default": "#4b5563",
+          "main": "#111827",
+        },
+      },
+      colors: {
+        "primary": "#615dfa",
+        "secondary": "#22d1e2",
+      },
+    },
+    variants: {
+      extend: {
+        backgroundColor: ['dark', 'light'],
+        textColor: ['dark', 'light'],
+        colors: ['primary', 'secondary'],
+      },
+    },
+  },
+  
+*/

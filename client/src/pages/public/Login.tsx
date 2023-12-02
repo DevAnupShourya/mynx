@@ -8,6 +8,8 @@ import {
   Link as LinkBtn,
   Input,
   Checkbox,
+  CardHeader,
+  Divider,
 } from "@nextui-org/react";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -123,24 +125,31 @@ export default function Login() {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto bg-main-text-default">
-      <h1 className="text-2xl font-bold text-center text-light-main dark:text-dark-main my-3 capitalize">
-        Welcome! Login
-      </h1>
-      <form onSubmit={handleFormSubmit}>
+    <form onSubmit={handleFormSubmit}>
+      <Card
+        radius="sm"
+        shadow="lg"
+        className="bg-main-text-main max-sm:min-w-[320px] min-w-[500px]"
+      >
+        <CardHeader className="justify-center">
+          <h1 className="text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
+            Welcome back!
+          </h1>
+        </CardHeader>
+        <Divider />
         <CardBody>
           <Input
             autoFocus
             endContent={<MdMail className="text-2xl pointer-events-none" />}
             label="Email"
             placeholder="Enter your email"
-            variant="bordered"
             type="email"
             autoComplete="current-password"
             name="email"
             value={formData.email}
             isRequired={true}
             onChange={handleInputCapture}
+            variant="bordered"
           />
           <br />
           <Input
@@ -176,7 +185,7 @@ export default function Login() {
             >
               Remember me
             </Checkbox>
-            <LinkBtn as={Link} color="primary" to="/login/pwd-reset" size="sm">
+            <LinkBtn as={Link} color="warning" to="/login/pwd-reset" size="sm">
               Forgot password?
             </LinkBtn>
           </div>
@@ -186,12 +195,13 @@ export default function Login() {
             Proceed
           </Button>
         </CardFooter>
+        <Divider />
         <CardFooter className="flex flex-row justify-end">
-          <LinkBtn as={Link} color="primary" to="/signup" size="sm">
+          <LinkBtn as={Link} color="secondary" to="/signup" size="sm">
             Don't Have Account
           </LinkBtn>
         </CardFooter>
-      </form>
-    </Card>
+      </Card>
+    </form>
   );
 }
