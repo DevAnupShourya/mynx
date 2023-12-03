@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
-    authStatus: 'unauthenticated' as 'unauthenticated' | "authenticated" | "loading",
+    authStatus: 'loading' as 'unauthenticated' | "authenticated" | "loading",
     name: '',
     mail: '',
     username: '',

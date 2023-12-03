@@ -1,35 +1,29 @@
-import { Tooltip } from "@nextui-org/react";
-
+import { Tooltip, Link } from "@nextui-org/react";
 import { IconType } from "react-icons";
-import { NavLink as NavLinkBtn } from "react-router-dom";
+import { useLocation, Link as RouterLink } from "react-router-dom";
 
 interface nav_item {
   icon: IconType;
   name: string;
   url: string;
-  withName?: boolean;
 }
 
-export default function NavLink({ icon, name, url, withName }: nav_item) {
+export default function NavLink({ icon, name, url }: nav_item) {
   const Icon = icon;
-
-  const isActiveLinkStyle =
-    "grid place-items-center p-2 transition-colors rounded-md tracking-widest dark:hover:bg-dark-default hover:bg-light-default bg-light-default dark:bg-dark-default shadow-2xl outline-none border-none dark:text-dark-main text-light-main";
-  const isNotActiveLinkStyle =
-    "grid place-items-center p-2 transition-colors rounded-md tracking-widest dark:hover:bg-dark-default hover:bg-light-default outline-none border-none";
+  const location = useLocation();
 
   return (
-    <Tooltip content={name} className="bg-main-text-default">
-      <NavLinkBtn
+    <Tooltip content={name} className="">
+      <Link
+        as={RouterLink}
         to={url}
-        className={({ isActive }) =>
-          isActive ? isActiveLinkStyle : isNotActiveLinkStyle
-        }
+        className={`flex justify-center items-center p-2 transition-colors rounded-md tracking-widest outline-none border-none text-xl  ${
+          location.pathname === url ? "bg-primary text-white" : ""
+        }`}
         title={name}
       >
         <Icon />
-        {withName && name}
-      </NavLinkBtn>
+      </Link>
     </Tooltip>
   );
 }

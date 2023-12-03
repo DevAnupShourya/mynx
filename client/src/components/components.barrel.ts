@@ -8,5 +8,7 @@ import ProfileDropDown from '~/components/Profile/ProfileDropDown';
 import ThemeSwitcher from '~/components/Switcher/ThemeSwitcher';
 import AvatarInput from '~/components/Input/AvatarInput';
 import CoverImgInput from '~/components/Input/CoverImgInput';
+import TrendingCard from '~/components/Cards/TrendingCard';
+import PostCard from '~/components/Cards/PostCard';
 
-export { NavLink, Loading, NotFound, PageError, Logo, BlogCard, ProfileDropDown, ThemeSwitcher, AvatarInput, CoverImgInput }
+export { PostCard, NavLink, Loading, NotFound, PageError, Logo, BlogCard, ProfileDropDown, ThemeSwitcher, AvatarInput, CoverImgInput, TrendingCard }

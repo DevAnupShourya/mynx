@@ -6,16 +6,21 @@ import { BsFillPatchPlusFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 import { AuthMenuLinks } from "~/utils/data/data.barrel";
-// import ThemeSwitch from "@src/components/buttons/ThemeSwitch";
-import { ProfileDropDown, NavLink, Logo , ThemeSwitcher} from "~/components/components.barrel";
+import {
+  ProfileDropDown,
+  NavLink,
+  Logo,
+  ThemeSwitcher,
+} from "~/components/components.barrel";
 
 export default function NavbarPrivate() {
   return (
-    <nav className="max-sm:w-full max-md:w-11/12 w-10/12 rounded-md shadow-2xl max-md:px-1 px-5 py-4 f-row bg-main-text-default justify-between">
-      <div id="logo" className="h-full">
-        <Logo type="sm" />
-      </div>
-      <div id="links" className="f-row h-full flex-row gap-5 max-md:hidden">
+    <nav className="max-sm:w-full max-md:w-11/12 w-10/12 rounded-md shadow-2xl max-md:px-1 px-5 py-4 flex flex-row items-center bg-main-text-default justify-between">
+      <Logo />
+      <div
+        id="links"
+        className="flex flex-row  justify-center items-center h-full gap-5 max-md:hidden"
+      >
         {AuthMenuLinks.map((item) => {
           return (
             <NavLink
@@ -27,7 +32,10 @@ export default function NavbarPrivate() {
           );
         })}
       </div>
-      <div id="menu" className="f-row gap-4 h-full">
+      <div
+        id="menu"
+        className="flex flex-row justify-center items-center  gap-4 h-full"
+      >
         <ThemeSwitcher />
         <div className="f-row gap-2">
           <Button

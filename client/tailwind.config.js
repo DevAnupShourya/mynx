@@ -11,11 +11,14 @@ export default {
       backgroundColor: {
         dark: {
           // "all": "#171717",
-          "all": "#050505",
-          "main": "#040707",
           // "main": "#110011",
-          "default": "#120321",
           // "default": "#050505",
+          // "all": "#050505",
+          // "main": "#040707",
+          // "default": "#120321",
+          "all": "#211030",
+          "main": "#12032C",
+          "default": "#120321",
         },
         light: {
           "all": "#F8F8FF",

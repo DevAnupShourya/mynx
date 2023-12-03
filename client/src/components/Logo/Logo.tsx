@@ -5,6 +5,7 @@ export default function Logo() {
     <Link
       to="/"
       id="logo"
+      aria-label="Vixel Logo"
       className="text-4xl text-black dark:text-white p-2 uppercase border-1 border-dashed border-black dark:border-white"
     >
       vixel
