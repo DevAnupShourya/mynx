@@ -13,11 +13,12 @@ app.use(helmet.xssFilter());
 dotenv.config();
 
 app.use(express.json());
-
-const corsOptions = {
-    // origin: ['http://localhost:5173']
-};
 app.use(cors());
+
+
+// ? Database Connection
+import DatabaseConnection from '~/config/Database';
+DatabaseConnection();
 
 // ? Routes
 app.get('/', (_, res: Response) => {
@@ -35,8 +36,12 @@ app.get('/api', (_, res: Response) => {
     });
 });
 
-import userRoute from '~/microservices/user-service/routes/Users';
+import userRoute from '~/routes/Users';
 app.use('/api/users/', userRoute);
+
+// ? For Posts Services
+import postRoute from '~/routes/Posts';
+app.use('/api/posts/', postRoute);
 
 app.get('*', (_, res: Response) => {
     res.status(200).send({
@@ -56,7 +61,7 @@ app.get('*', (_, res: Response) => {
 //     cert: fs.readFileSync('A:/Projects/Vixel/code/api/localhost.crt'),
 // };
 
-import { API_PORT } from '~/microservices/user-service/config/Variables';
+import { API_PORT } from '~/config/Variables';
 app.listen(API_PORT, () => {
     console.log(`⚡️ API Listening on : http://127.0.0.1:${API_PORT} ⚡️`);
 });

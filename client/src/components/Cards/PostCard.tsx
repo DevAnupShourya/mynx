@@ -11,7 +11,7 @@ import {
 
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineShareAlt } from "react-icons/ai";
-import { BiCommentDots, BiSolidCommentDots } from "react-icons/bi";
+import { BsChatLeftQuoteFill , BsChatLeftQuote } from "react-icons/bs";
 
 import { NavLink, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
@@ -39,7 +39,7 @@ function PostCard(postDetails: postType) {
   };
 
   return (
-    <Card className="w-full bg-main-text-default">
+    <Card className="w-full">
       <CardHeader className="justify-between">
         <Link
           as={RouterLink}
@@ -134,7 +134,7 @@ function PostCard(postDetails: postType) {
               setIsCommented(!isCommented);
             }}
           >
-            {isCommented ? <BiSolidCommentDots /> : <BiCommentDots />}
+            {isCommented ? <BsChatLeftQuoteFill/> : <BsChatLeftQuote/>}
             {postDetails.comments}
           </Button>
         </div>

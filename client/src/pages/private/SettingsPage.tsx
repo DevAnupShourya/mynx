@@ -1,5 +1,10 @@
+import { PageTitle } from "~/components/components.barrel";
+
 export default function SettingsPage() {
   return (
-    <div>SettingsPage</div>
+    <>
+      <PageTitle title="Settings" />
+      <section>Settings list of some </section>
+    </>
   )
 }

@@ -1,5 +1,10 @@
+import { PageTitle } from "~/components/components.barrel";
+
 export default function FollowerPage() {
   return (
-    <div>FollowerPage</div>
+    <>
+    <PageTitle title="followers" />
+    <section>list for friend , followers & followings</section>
+  </>
   )
 }

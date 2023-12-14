@@ -51,7 +51,7 @@ export default function BlogCards({
   blogType,
 }: blogData) {
   return (
-    <article className="p-6 bg-light-all rounded-lg shadow-2xl dark:bg-dark-all">
+    <article className="p-6 rounded-lg shadow-2xl">
       <div className="flex justify-between items-center mb-5">
         <span className="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800">
           {blogType === "Article" ? <ArticleChip /> : <TutorialChip />}

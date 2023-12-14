@@ -1,6 +1,6 @@
 import Footer from "~/layouts/Footer";
 import Navbar from "~/layouts/Navbar";
-import NavbarPrivate from "~/layouts/NavbarPrivate";
-import NavbarMobilePrivate from "~/layouts/NavbarMobilePrivate";
+import TopbarPrivate from "~/layouts/TopbarPrivate";
+import BottomBarPrivate from "~/layouts/BottomBarPrivate";
 
-export { Footer, Navbar, NavbarPrivate, NavbarMobilePrivate };
+export { Footer, Navbar, TopbarPrivate, BottomBarPrivate };

@@ -1,4 +1,4 @@
-import { PostCard } from "~/components/components.barrel";
+import { PostCard , PageTitle } from "~/components/components.barrel";
 
 const postData = [
   {
@@ -60,10 +60,13 @@ const postData = [
 
 export default function FeedPage() {
   return (
-    <section className="w-full h-full flex flex-wrap gap-5 py-10">
-      {postData.map((post) => {
-        return <PostCard {...post} />;
-      })}
-    </section>
+    <>
+      <PageTitle title="Feed"/>
+      <section className="w-full h-full flex flex-wrap gap-5">
+        {postData.map((post) => {
+          return <PostCard {...post} />;
+        })}
+      </section>
+    </>
   );
 }

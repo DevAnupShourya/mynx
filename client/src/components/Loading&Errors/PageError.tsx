@@ -10,7 +10,7 @@ export default function Error({
   console.error(error);
 
   return (
-    <section className="w-full h-full bg-light-default dark:bg-dark-default grid place-items-center">
+    <section className="w-full h-full grid place-items-center">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div className="mx-auto max-w-screen-sm text-center">
           <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary dark:text-primary-500">

@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 export default function Logo() {
   return (
     <Link
-      to="/"
       id="logo"
+      to="/"
       aria-label="Vixel Logo"
-      className="text-4xl text-black dark:text-white p-2 uppercase border-1 border-dashed border-black dark:border-white"
+      className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary via-green-600 to-secondary"
+      title="Mynx"
     >
-      vixel
+      M
     </Link>
   );
 }

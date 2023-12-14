@@ -2,7 +2,7 @@ import { MdOutlineSignalWifiConnectedNoInternet4 } from "react-icons/md";
 
 function NoInternet() {
   return (
-    <section className="w-screen h-screen bg-main-text-default bg-red-200">
+    <section className="w-screen h-screen bg-zinc-900 text-zinc-100">
       <div className="container flex items-center min-h-screen px-6 py-12 mx-auto">
         <div className="flex flex-col items-center max-w-sm mx-auto text-center">
           <p className="p-3  font-medium rounded-full bg-red-500 text-white text-5xl">

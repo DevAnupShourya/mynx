@@ -119,7 +119,7 @@ I would appreciate any feedback or suggestions you have for the project. Please 
 - refactor ♻️ : [msg]
 - test 🧪 : [msg]
 - fix 🧱 : [msg]
-- chore 🚀 : [msg]
+- feat 🚀 : [msg]
 - docs 📃 : [msg]
 - ci 🎡 : [msg]
 
@@ -129,3 +129,10 @@ We want to express our gratitude to the open-source community and all the contri
 If you have any questions or need assistance, feel free to contact us or join our community discussions.
 
 Happy Vixeling !
+
+### Features to Implement 🧠
+- [ ] : `'/[username]/edit'` page
+- [ ] : `'/[username]/settings'` page
+- [ ] : `'/new'` page
+- [ ] : `'/'` page
+- [ ] : `'/trending'` page

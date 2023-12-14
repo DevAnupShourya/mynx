@@ -6,5 +6,6 @@ import NotFoundPrivate from "~/pages/private/NotFoundPrivate";
 import NotificationsPage from "~/pages/private/NotificationsPage";
 import SettingsPage from "~/pages/private/SettingsPage";
 import TrendingPage from "~/pages/private/TrendingPage";
+import UserProfilePage from "~/pages/private/UserProfilePage";
 
-export { ChatsPage, FeedPage, FollowerPage, NewPostPage, NotFoundPrivate, NotificationsPage, SettingsPage, TrendingPage, }
+export { ChatsPage, FeedPage, FollowerPage, NewPostPage, NotFoundPrivate, NotificationsPage, SettingsPage, TrendingPage, UserProfilePage}

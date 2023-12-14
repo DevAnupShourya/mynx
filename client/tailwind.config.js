@@ -10,20 +10,12 @@ export default {
     extend: {
       backgroundColor: {
         dark: {
-          // "all": "#171717",
-          // "main": "#110011",
-          // "default": "#050505",
-          // "all": "#050505",
-          // "main": "#040707",
-          // "default": "#120321",
-          "all": "#211030",
-          "main": "#12032C",
-          "default": "#120321",
+          "default": "#3f3f46",
+          "main": "#09090b",
         },
         light: {
-          "all": "#F8F8FF",
+          "default": "#F8F8FF",
           "main": "#F5F5F5",
-          "default": "#FFFFFF",
         },
       },
       textColor: {
@@ -32,13 +24,13 @@ export default {
           "main": "#F5F5F5",
         },
         light: {
-          "default": "#010B13",
-          "main": "#100C08",
+          "default": "#3f3f46",
+          "main": "#09090b",
         },
       },
       colors: {
-        "primary": "#64CFF6",
-        "secondary": "#6359E9",
+        "primary": "#35d2ad",
+        "secondary": "#950df6",
       },
     },
     variants: {

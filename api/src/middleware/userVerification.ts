@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // ? Importing JWT TOken From config
-import { JWT_SECRET } from '~/microservices/user-service/config/Variables';
-import User from '~/microservices/user-service/models/User.model';
+import { JWT_SECRET } from '~/config/Variables';
+import User from '~/models/User.model';
 
-import { responseError, responseWarn } from '~/microservices/user-service/utils/apiResponseMsg';
+import { responseError, responseWarn } from '~/utils/apiResponseMsg';
 
 // ? Custom interface that extends the Request type with User
 interface AuthenticatedRequest extends Request {

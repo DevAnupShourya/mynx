@@ -4,6 +4,8 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { GiHelp } from "react-icons/gi";
 import { MdOutlineWidgets } from "react-icons/md";
 
+import { ThemeSwitcher } from "~/components/components.barrel";
+
 import {
   Dropdown,
   DropdownItem,
@@ -20,7 +22,7 @@ import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 
 // ? Redux
-import { updateUserData } from "~/context/user/userSlice";
+import { updateUserData } from "~/redux/user/userSlice";
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
 import { useState } from "react";
 
@@ -124,6 +126,13 @@ export default function ProfileDropdown() {
             <Link to="/new" color="foreground">
               New Post
             </Link>
+          </DropdownItem>
+          <DropdownItem
+            isReadOnly
+            key="theme_switch"
+            endContent={<ThemeSwitcher />}
+          >
+            Theme
           </DropdownItem>
         </DropdownSection>
 

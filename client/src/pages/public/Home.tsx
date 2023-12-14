@@ -1,57 +1,49 @@
 import { Link } from "react-router-dom";
-import { Link as LinkBtn, Button } from "@nextui-org/react";
+import { Divider, Button } from "@nextui-org/react";
 
 export default function Home() {
   return (
-    <main id="hero" className="mx-auto w-2/3 ">
-      <div className="mb-4 max-sm:mb-6 flex justify-center">
-        <div className="relative rounded-full px-3 py-1 text-base leading-6 text-light-default dark:text-dark-default ring-1 text-center">
-          Welcoming Contributions on &nbsp;
-          <LinkBtn
-            as={Link}
-            to={"https://github.com/DevAnupShourya/vixel"}
-            color="secondary"
-            underline="hover"
-            isExternal
-            showAnchorIcon
-          >
-            Github
-          </LinkBtn>
-        </div>
-      </div>
-      <div className="text-center">
-        <h1 className="text-8xl font-bold tracking-widest uppercase ps_font text-light-main dark:text-dark-main">
-          World
-          <br />
-          in
-          <br />
-          Pixels
-        </h1>
-        <h3 className="mt-6 text-4xl font-semibold tracking-wider capitalize ps_font">
+    <main id="hero" className="w-11/12 h-screen my-18 max-md:my-28 grid place-items-center">
+      <div className="">
+        <p className="text-xl font-bold capitalize">
           the ultimate social media platform.
-        </h3>
-        <p className="mt-6 text-sm font-medium -tracking-wider capitalize">
-          social media platform designed to connect individuals through a
-          vibrant and visually captivating experience. With an intuitive
-          interface and cutting-edge features, Vixel empowers users to express
-          their creativity, share their life moments, and engage with a global
-          community. Whether you're an aspiring photographer, artist, or simply
-          looking to connect with like-minded individuals, Vixel offers a unique
-          platform to showcase your talents and foster meaningful connections.
-          Join us today and embark on a journey where the world unfolds pixel by
-          pixel.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Button
-            as={Link}
-            to={"/login"}
-            variant="shadow"
-            color="primary"
-            size="lg"
-          >
-            Join
-          </Button>
+        <h1 className="text-6xl max-md:text-4xl font-bold capitalize my-14">
+          <span id="logo" className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-green-600 to-secondary">Mynx</span>
+          <br />
+          Beyond the ordinary
+          <br />
+          within your reach.
+        </h1>
+        <Button
+          as={Link}
+          to={"/login"}
+          variant="shadow"
+          color="primary"
+          size="lg"
+        >
+          Explore
+        </Button>
+        <Divider className="my-10" />
+        <div className="w-full flex flex-row max-md:flex-col justify-center items-center">
+          <div className="w-1/3  text-center">
+            <h2 className="text-bold text-xl my-2">105M+</h2>
+            <p className="text-xs ">Users</p>
+          </div>
+          <Divider orientation="vertical" className="h-24 max-md:hidden" />
+          <Divider orientation="horizontal" className="my-10 md:hidden" />
+          <div className="w-1/3  text-center">
+            <h2 className="text-bold text-xl my-2">80M+</h2>
+            <p className="text-xs ">Posts Upload Daily</p>
+          </div>
+          <Divider orientation="vertical" className="h-24 max-md:hidden" />
+          <Divider orientation="horizontal" className="my-10 md:hidden" />
+          <div className="w-1/3  text-center">
+            <h2 className="text-bold text-xl my-2">$600M</h2>
+            <p className="text-xs ">Raised</p>
+          </div>
         </div>
+        <Divider className="my-10" />
       </div>
     </main>
   );

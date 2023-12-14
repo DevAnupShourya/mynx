@@ -16,12 +16,12 @@ export default function Landing() {
   return (
     <section
       aria-label="Landing Page Container"
-      className={`w-screen min-h-screen bg-def`}
+      className={`w-screen min-h-screen bg-main-text-default overflow-x-hidden`}
     >
       <BrowserRouter>
         <Navbar />
         <Divider />
-        <main className="py-20 max-sm:py-10 grid place-items-center">
+        <main className="grid place-items-center">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

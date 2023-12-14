@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
-import { responseError, responseInfo, responseWarn } from '~/microservices/user-service/utils/apiResponseMsg';
-import createSecretToken from '~/microservices/user-service/utils/secretToken';
-import User from '~/microservices/user-service/models/User.model';
+import { responseError, responseInfo } from '~/utils/apiResponseMsg';
+import createSecretToken from '~/utils/secretToken';
+import User from '~/models/User.model';
 
 export const signupUser = async (req: Request, res: Response) => {
     try {
@@ -48,7 +48,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
         if (userAvailable === null) {
             // ? User Not Available
-            responseWarn(res, 404, "No User Found", null);
+            responseInfo(res, 404, "No User Found", null);
         } else {
             // ? User Available then compare passwords
             const passwordComparison = await bcrypt.compare(password, userAvailable.password);
@@ -57,7 +57,7 @@ export const loginUser = async (req: Request, res: Response) => {
                 const tokenGenerated = createSecretToken(userAvailable._id.toString());
                 responseInfo(res, 202, "User Found!", { userAvailable, token: tokenGenerated });
             } else {
-                responseWarn(res, 403, "Wrong Credentials!!", null);
+                responseInfo(res, 403, "Wrong Credentials!!", null);
             }
         }
     } catch (error) {
@@ -76,7 +76,7 @@ export const getUserInfo = async (req: AuthenticatedRequest, res: Response) => {
         if (userInfo) {
             responseInfo(res, 200, "User Found!", { userInfo });
         } else {
-            responseWarn(res, 403, "User not found!!", null);
+            responseInfo(res, 403, "User not found!!", null);
         }
     } catch (error) {
         responseError(res, 500, "Something Went Wrong Please Try Again Later!!!", null);
@@ -92,11 +92,9 @@ export const checkUsernameAvailability = async (req: Request, res: Response) => 
         let canUseQuery: boolean;
         if (usernamesArray.includes(usernameToCheck)) {
             canUseQuery = false;
-            // responseInfo(res, 406, "Can Not Use This Username!", { canUseQuery });
             responseInfo(res, 200, "Can Not Use This Username!", { canUseQuery: 406 });
         } else {
             canUseQuery = true;
-            // responseInfo(res, 200, "Feel Free to use This username.", { canUseQuery });
             responseInfo(res, 200, "Feel Free to use This username.", { canUseQuery: 200 });
         }
     } catch (error) {
@@ -118,4 +116,17 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 }
 
-// ! https://www.freecodecamp.org/news/how-to-secure-your-mern-stack-application/
+export const getUserByUsername = async (req: Request, res: Response) => {
+    try {
+        const usernameToCheck = req.query.username as string;
+        const userFromDB = await User.find({ username: usernameToCheck }).select('-password -_id');
+
+        if (userFromDB.length === 0) {
+            responseInfo(res, 200, "No User Found with this Username!", userFromDB);
+        } else {
+            responseInfo(res, 200, "Found this User : ",  userFromDB);
+        }
+    } catch (error) {
+        responseError(res, 500, "Something Went Wrong Please Try Again Later!!!", null);
+    }
+}

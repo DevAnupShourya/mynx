@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "react-redux";
-import reduxStore from "~/context/redux.store.ts";
+import reduxStore from "~/redux/redux.store.ts";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 

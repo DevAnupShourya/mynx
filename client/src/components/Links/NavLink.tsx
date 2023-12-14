@@ -18,7 +18,7 @@ export default function NavLink({ icon, name, url }: nav_item) {
         as={RouterLink}
         to={url}
         className={`flex justify-center items-center p-2 transition-colors rounded-md tracking-widest outline-none border-none text-xl  ${
-          location.pathname === url ? "bg-primary text-white" : ""
+          location.pathname === url ? "bg-gray-200 shadow-2xl text-light-default dark:bg-zinc-800 dark:text-gray-200 scale-110" : "text-light-main dark:text-dark-main"
         }`}
         title={name}
       >

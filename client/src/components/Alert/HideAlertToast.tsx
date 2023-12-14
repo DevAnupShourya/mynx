@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 // ? Redux
 import { useAppSelector, useAppDispatch } from "~/utils/hooks/redux.hooks";
-import { showAlert } from "~/context/alert/alertSlice";
+import { showAlert } from "~/redux/alert/alertSlice";
 
 export default function HideAlertToast() {
   const notification = useAppSelector((state) => state.alert);

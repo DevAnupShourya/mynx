@@ -2,9 +2,11 @@ import { Input, Textarea, Button } from "@nextui-org/react";
 
 export default function Contact() {
   return (
-    <div className="p-8 lg:p-16 mx-auto max-w-screen-md rounded-lg shadow-2xl bg-light-all dark:bg-dark-all">
+    <div className="w-11/12 m-36 max-md:m-24">
+      
+    <div className="p-8 lg:p-16 mx-auto max-w-screen-md rounded-lg shadow-2xl">
       <p className="mb-4 text-center text-5xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
-        Contact Us
+        Contact me
       </p>
       <p className="mb-8 lg:mb-16 text-center text-sm font-medium -tracking-wider capitalize">
         Got a technical issue? Want to send feedback about a beta feature? Need
@@ -48,6 +50,9 @@ export default function Contact() {
           Send Us
         </Button>
       </form>
+    </div>
+
+    
     </div>
   );
 }

@@ -18,8 +18,8 @@ import { MdMail } from "react-icons/md";
 
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
-import { showAlert } from "~/context/alert/alertSlice";
-import { updateUserData } from "~/context/user/userSlice";
+import { showAlert } from "~/redux/alert/alertSlice";
+import { updateUserData } from "~/redux/user/userSlice";
 
 // ? Services
 import { Auth } from "~/services/services.barrel";
@@ -129,11 +129,11 @@ export default function Login() {
       <Card
         radius="sm"
         shadow="lg"
-        className="bg-main-text-main max-sm:min-w-[320px] min-w-[500px]"
+        className="bg-main-text-main m-36 max-md:m-24 max-sm:min-w-[320px] min-w-[500px]"
       >
         <CardHeader className="justify-center">
           <h1 className="text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
-            Welcome back!
+            Login
           </h1>
         </CardHeader>
         <Divider />
@@ -185,7 +185,7 @@ export default function Login() {
             >
               Remember me
             </Checkbox>
-            <LinkBtn as={Link} color="warning" to="/login/pwd-reset" size="sm">
+            <LinkBtn as={Link} color="danger" to="/login/pwd-reset" size="sm">
               Forgot password?
             </LinkBtn>
           </div>
@@ -197,8 +197,8 @@ export default function Login() {
         </CardFooter>
         <Divider />
         <CardFooter className="flex flex-row justify-end">
-          <LinkBtn as={Link} color="secondary" to="/signup" size="sm">
-            Don't Have Account
+          <LinkBtn as={Link} color="warning" to="/signup" size="sm">
+            Don't Have Account!
           </LinkBtn>
         </CardFooter>
       </Card>

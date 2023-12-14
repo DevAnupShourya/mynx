@@ -1,5 +1,10 @@
+import { PageTitle } from "~/components/components.barrel";
+
 export default function ChatsPage() {
   return (
-    <div>ChatsPage</div>
-  )
+    <>
+      <PageTitle title="chats" />
+      <section>chats list</section>
+    </>
+  );
 }

@@ -3,9 +3,9 @@ import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
-import themeReducer from '~/context/theme/ThemeSlice';
-import userReducer from '~/context/user/userSlice';
-import alertReducer from '~/context/alert/alertSlice';
+import themeReducer from '~/redux/theme/ThemeSlice';
+import userReducer from '~/redux/user/userSlice';
+import alertReducer from '~/redux/alert/alertSlice';
 
 const reducers = combineReducers({
     theme: themeReducer,

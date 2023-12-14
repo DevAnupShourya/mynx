@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Pixelify+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=JetBrains+Mono:wght@100;200;400;500;700;800&family=Pixelify+Sans:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -9,72 +9,34 @@
 */
 
 * {
-  font-family: "DM Mono";
+  font-family: "JetBrains Mono", monospace;
 }
 
 #logo {
-  font-family: "Pixelify Sans";
+  font-family: "Space Horizon";
 }
-.ps_font {
-  font-family: "Pixelify Sans";
+
+body {
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.8;
+  -webkit-overflow-scrolling: touch;
+  transition: all 0.05s ease-in;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
 @layer {
   .bg-main-text-main {
-    @apply bg-light-main text-light-main dark:bg-dark-main dark:text-dark-main;
+    @apply bg-light-main dark:bg-dark-main text-light-main  dark:text-dark-main;
   }
   .bg-main-text-default {
-    @apply bg-light-main text-light-default dark:bg-dark-main dark:text-dark-default;
-  }
-  .bg-all {
-    @apply bg-light-all text-light-default dark:bg-dark-all dark:text-dark-default;
+    @apply bg-light-main dark:bg-dark-main text-light-default dark:text-dark-default;
   }
   .bg-def {
-    @apply bg-light-default text-light-default dark:bg-dark-default dark:text-dark-default;
+    @apply bg-light-default dark:bg-dark-default text-light-default  dark:text-dark-default;
   }
   .f-row {
     @apply flex flex-row justify-center items-center;
   }
 }
-
-/* 
-? Color Pal 1
- theme: {
-    extend: {
-      backgroundColor: {
-        dark: {
-          "all": "#161823",
-          "main": "#11131d",
-          "default": "#1a1d28",
-        },
-        light: {
-          "all": "#f3f4f6",
-          "main": "#e5e7eb",
-          "default": "#d1d5db",
-        },
-      },
-      textColor: {
-        dark: {
-          "default": "#81869b",
-          "main": "#ffffff",
-        },
-        light: {
-          "default": "#4b5563",
-          "main": "#111827",
-        },
-      },
-      colors: {
-        "primary": "#615dfa",
-        "secondary": "#22d1e2",
-      },
-    },
-    variants: {
-      extend: {
-        backgroundColor: ['dark', 'light'],
-        textColor: ['dark', 'light'],
-        colors: ['primary', 'secondary'],
-      },
-    },
-  },
-  
-*/

@@ -5,7 +5,6 @@ import { FooterItems } from "~/utils/data/data.barrel";
 export default function Footer() {
   return (
     <footer className="bg-main-text-default">
-      {/* border-t-1 dark:border-white light:border-black */}
       <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
         <div className="text-center">
           <h2 className="mb-6 text-sm font-semibold uppercase text-light-main dark:text-dark-main">

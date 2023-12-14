@@ -1,5 +1,10 @@
+import { PageTitle } from "~/components/components.barrel";
+
 export default function TrendingPage() {
   return (
-    <div>TrendingPage</div>
-  )
+    <>
+      <PageTitle title="Trendings" />
+      <section>Trending posts list</section>
+    </>
+  );
 }

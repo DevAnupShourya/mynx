@@ -1,8 +1,9 @@
 import { BiHomeSmile } from 'react-icons/bi';
 import { FaRegUser } from 'react-icons/fa6';
 import { RiCustomerService2Line } from 'react-icons/ri';
-import { BsMailbox , BsChatSquareDots } from 'react-icons/bs';
-import { ImFeed } from 'react-icons/im';
+import { BsMailbox  } from 'react-icons/bs';
+import { HiOutlineChatBubbleLeftEllipsis } from "react-icons/hi2";
+import { MdOutlineDynamicFeed } from "react-icons/md";
 import { HiOutlineFire } from 'react-icons/hi';
 import { TbUserStar } from 'react-icons/tb';
 
@@ -33,7 +34,7 @@ export const AuthMenuLinks = [
     {
         name: "Circle",
         href: "/",
-        icon: ImFeed,
+        icon: MdOutlineDynamicFeed,
     },
     {
         name: "Trending",
@@ -48,7 +49,7 @@ export const AuthMenuLinks = [
     {
         name: "Chats",
         href: "/chats",
-        icon: BsChatSquareDots,
+        icon: HiOutlineChatBubbleLeftEllipsis ,
     }
 ];
 

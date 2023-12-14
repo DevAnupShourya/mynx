@@ -1,5 +1,10 @@
+import { PageTitle } from "~/components/components.barrel";
+
 export default function NotificationsPage() {
   return (
-    <div>NotificationsPage</div>
+    <>
+      <PageTitle title="Notifications" />
+      <section>Notifications list real-time</section>
+    </>
   )
 }

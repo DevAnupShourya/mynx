@@ -1,19 +1,17 @@
 import "~/styles/output.css";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL as string;
+import axiosInstance from "~/lib/AxiosInstance";
 
 import { Spinner } from "@nextui-org/react";
 import Landing from "~/layouts/Landing";
 import Dashboard from "~/layouts/Dashboard";
-// import {
-//   UnderMaintenance,
-//   NoInternet,
-// } from "~/pages/public/public.pages.barrel";
+import {
+  UnderMaintenance,
+  NoInternet,
+} from "~/pages/public/public.pages.barrel";
 
-import { updateUserData } from "~/context/user/userSlice";
+import { updateUserData } from "~/redux/user/userSlice";
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
 import AlertToast from "~/components/Alert/AlertToast";
 import { getCurrentUser } from "~/services/Auth/Authentication.services";
@@ -60,7 +58,7 @@ function App() {
 
     const checkApiStatus = async () => {
       try {
-        const response = await axios.get(`${API_URL}`);
+        const response = await axiosInstance.get(`/`);
 
         if (response.status === 200) {
           setApiStatus(true);
@@ -90,51 +88,33 @@ function App() {
     };
   }, [cookies, dispatch, userState, apiStatus]);
 
-  // if (isUserOnline) {
-  //   if (apiStatus) {
-  //     return (
-  //       <section
-  //         aria-label="App"
-  //         className={`${theme} transition-colors ease-soft-spring`}
-  //       >
-  //         <AlertToast />
-  //         {userState.authStatus === "loading" && (
-  //           <Spinner
-  //             label="Loading Please Wait"
-  //             color="primary"
-  //             labelColor="primary"
-  //             className="w-screen h-screen"
-  //           />
-  //         )}
-  //         {userState.authStatus === "unauthenticated" && <Landing />}
-  //         {userState.authStatus === "authenticated" && <Dashboard />}
-  //       </section>
-  //     );
-  //   } else {
-  //     return <UnderMaintenance />;
-  //   }
-  // } else {
-  //   return <NoInternet />;
-  // }
+  if (isUserOnline) {
+    if (apiStatus) {
+      return (
+        <section
+          aria-label="App"
+          className={`${theme} transition-colors ease-soft-spring`}
+        >
+          <AlertToast />
+          {userState.authStatus === "loading" && (
+            <Spinner
+              label="Loading Please Wait"
+              color="primary"
+              labelColor="primary"
+              className="w-screen h-screen"
+            />
+          )}
+          {userState.authStatus === "unauthenticated" && <Landing />}
+          {userState.authStatus === "authenticated" && <Dashboard />}
+        </section>
+      );
+    } else {
+      return <UnderMaintenance />;
+    }
+  } else {
+    return <NoInternet />;
+  }
 
-  return (
-    <section
-      aria-label="App"
-      className={`${theme} transition-colors ease-soft-spring`}
-    >
-      <AlertToast />
-      {userState.authStatus === "loading" && (
-        <Spinner
-          label="Loading Please Wait"
-          color="primary"
-          labelColor="primary"
-          className="w-screen h-screen"
-        />
-      )}
-      {userState.authStatus === "unauthenticated" && <Landing />}
-      {userState.authStatus === "authenticated" && <Dashboard />}
-    </section>
-  );
 }
 
 export default App;

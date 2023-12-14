@@ -1,5 +1,4 @@
-import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL as string;
+import axiosInstance from "~/lib/AxiosInstance";
 
 import { FormDataInterface } from "~/types/types.barrel";
 import uploadFile from '~/services/Cloudinary/CloudinaryUpload';
@@ -11,7 +10,7 @@ const createUser = async (formData: FormDataInterface) => {
         const coverCloudURL = await uploadFile(formData.coverURL);
 
         // ? Save User Data to Local DB
-        const response = await axios.post(`${API_URL}/users/signup`, {
+        const response = await axiosInstance.post(`/users/signup`, {
             username: formData.username,
             password: formData.password,
             bio: formData.bio,
@@ -31,7 +30,7 @@ const createUser = async (formData: FormDataInterface) => {
 
 const authenticateUser = async (formData: { email: string; password: string; }) => {
     try {
-        const res = await axios.post(`${API_URL}/users/login`, { email: formData.email, password: formData.password })
+        const res = await axiosInstance.post(`/users/login`, { email: formData.email, password: formData.password })
         return res;
     } catch (error) {
         console.error("Error occurred While crating user account", error);
@@ -44,7 +43,7 @@ const checkUsernameAvailability = async (username: string) => {
     const isValidUsername = usernameRegex.test(username);
 
     if (isValidUsername) {
-        const response = await axios.get(`${API_URL}/users/usernames?username=${username}`);
+        const response = await axiosInstance.get(`/users/usernames?username=${username}`);
 
         if (response.data.responseData.canUseQuery === 200) {
             return 200; // * OK
@@ -58,7 +57,7 @@ const checkUsernameAvailability = async (username: string) => {
 
 const getUserByUID = async (uId: string) => {
     try {
-        const userData = await axios.get(`${API_URL}/api/users?userid=${uId}`)
+        const userData = await axiosInstance.get(`/api/users?userid=${uId}`)
         return userData.data.responseData;
     } catch (error) {
         console.error("Error occurred While getting user info", error);
@@ -67,7 +66,7 @@ const getUserByUID = async (uId: string) => {
 
 const getCurrentUser = async (token: string) => {
     try {
-        const { data } = await axios.get(`${API_URL}/users/current`, {
+        const { data } = await axiosInstance.get(`/users/current`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
