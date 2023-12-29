@@ -17,6 +17,7 @@ import {
   VixetsContainer,
   VixdeoContainer,
   EngagementContainer,
+  ProfileEditModal
 } from "~/components/components.barrel";
 import { ScrollShadow, Divider } from "@nextui-org/react";
 
@@ -36,18 +37,19 @@ export default function Dashboard() {
             <main className="max-md:w-full w-2/3 h-full my-2">
               <Routes>
                 <Route path="/" element={<FeedPage />} />
+                <Route path="/:username/" element={<UserProfilePage />}>
+                  <Route index element={<VixetsContainer />} />
+                  <Route path="vixsnaps" element={<VixsnapsContainer />} />
+                  <Route path="vixdeos" element={<VixdeoContainer />} />
+                  <Route path="engagements" element={<EngagementContainer />} />
+                  <Route path="edit" element={<ProfileEditModal />} />
+                </Route>
                 <Route path="/new" element={<NewPostPage />} />
                 <Route path="/chats" element={<ChatsPage />} />
                 <Route path="/follower" element={<FollowerPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/trending" element={<TrendingPage />} />
-                <Route path="/:username/" element={<UserProfilePage />}>
-                  <Route index element={<VixetsContainer />} />
-                  <Route path="vixsnaps" element={<VixsnapsContainer />} />
-                  <Route path="vixdeos" element={<VixdeoContainer />} />
-                  <Route path="engagements" element={<EngagementContainer />} />
-                </Route>
                 <Route element={<NotFoundPrivate />} />
               </Routes>
             </main>

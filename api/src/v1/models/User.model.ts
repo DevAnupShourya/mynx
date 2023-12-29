@@ -1,5 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from 'bcrypt';
+
+import Post from '~/v1/models/Post.model';
 
 const userSchema = new Schema({
     name: {
@@ -22,39 +24,34 @@ const userSchema = new Schema({
         min: [5, 'Username Should be at least 10 chars!!'],
     },
     country: {
-        required: [true, 'Country Is Required!!'],
+        default: 'NA',
         type: String,
     },
     gender: {
-        required: [true, 'Gender Is Required!!'],
+        default: 'NA',
         type: String,
     },
     bio: {
-        required: [true, 'Bio Is Required!!'],
         type: String,
+        default: '',
         max: 100,
         min: 10,
     },
     avatarURL: {
-        required: [true, 'Avatar Image Is Required!!'],
         type: String,
+        default: '',
     },
     coverURL: {
-        required: [true, 'Cover Image Is Required!!'],
         type: String,
+        default: '',
     },
     password: {
         required: true,
         type: String,
     },
-    following: {
-        type: Number,
-        default: 0
-    },
-    followers: {
-        type: Number,
-        default: 0
-    },
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 },
     { timestamps: true }
 )
@@ -66,6 +63,12 @@ userSchema.pre("save",
         this.password = await bcrypt.hash(this.password, salt);
     }
 )
+
+userSchema.pre('deleteOne', async function (this: Document, next) {
+    await Post.deleteMany({ author: this._id });
+    console.log('Deleted all Posts of this user also')
+    next();
+});
 
 const User = mongoose.model('user', userSchema);
 

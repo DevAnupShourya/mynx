@@ -207,7 +207,7 @@ function UserProfilePage() {
               >
                 <Button
                   as={Link}
-                  to={`/username/edit`}
+                  to={`/${username}/edit`}
                   isIconOnly
                   color="warning"
                   variant="flat"
@@ -332,15 +332,11 @@ function UserProfilePage() {
             <ScrollShadow className="w-full h-full">
               <div className="flex flex-row justify-around items-center w-full">
                 <Button
-                  size="md"
-                  variant="light"
+                  size="sm"
+                  variant={pathname === `/${userData.username}` ? "shadow" : "light"}
+                  color="secondary"
                   fullWidth
-                  radius="none"
-                  className={`${
-                    pathname === `/${userData.username}`
-                      ? "border-b-2 border-primary font-bold text-light-main dark:text-dark-main"
-                      : "text-light-default dark:text-dark-default"
-                  } `}
+                  radius="md"
                   onClick={() => {
                     navigate(`/${userData.username}`, {
                       preventScrollReset: true,
@@ -350,15 +346,11 @@ function UserProfilePage() {
                   Vixets
                 </Button>
                 <Button
-                  size="md"
-                  variant="light"
+                  size="sm"
+                  variant={pathname === `/${userData.username}/vixsnaps` ? "shadow" : "light"}
+                  color="secondary"
                   fullWidth
-                  radius="none"
-                  className={`${
-                    pathname === `/${userData.username}/vixsnaps`
-                      ? "border-b-2 border-primary font-bold text-light-main dark:text-dark-main"
-                      : "text-light-default dark:text-dark-default"
-                  } `}
+                  radius="md"
                   onClick={() => {
                     navigate(`/${userData.username}/vixsnaps`, {
                       preventScrollReset: false,
@@ -368,33 +360,25 @@ function UserProfilePage() {
                   Vixsnap
                 </Button>
                 <Button
-                  size="md"
-                  variant="light"
+                  size="sm"
+                  variant={pathname === `/${userData.username}/vixdeos` ? "shadow" : "light"}
+                  color="secondary"
                   fullWidth
-                  radius="none"
-                  className={`${
-                    pathname === `/${userData.username}/vixdeos`
-                      ? "border-b-2 border-primary font-bold text-light-main dark:text-dark-main"
-                      : "text-light-default dark:text-dark-default"
-                  } `}
+                  radius="md"
                   onClick={() => {
                     navigate(`/${userData.username}/vixdeos`, {
                       preventScrollReset: false,
                     });
                   }}
-                >
+                  >
                   Vixdeo
                 </Button>
                 <Button
-                  size="md"
-                  variant="light"
+                  size="sm"
+                  variant={pathname === `/${userData.username}/engagements` ? "shadow" : "light"}
+                  color="secondary"
                   fullWidth
-                  radius="none"
-                  className={`${
-                    pathname === `/${userData.username}/engagements`
-                      ? "border-b-2 border-primary font-bold text-light-main dark:text-dark-main"
-                      : "text-light-default dark:text-dark-default"
-                  } `}
+                  radius="md"
                   onClick={() => {
                     navigate(`/${userData.username}/engagements`, {
                       preventScrollReset: false,
@@ -407,7 +391,7 @@ function UserProfilePage() {
             </ScrollShadow>
           </CardBody>
         </Card>
-        <section className="py-5 border">
+        <section className="py-5">
           <Outlet />
         </section>
       </>

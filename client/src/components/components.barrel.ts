@@ -36,6 +36,8 @@ import VixsnapsContainer from '~/components/PostsContainer/VixsnapsContainer';
 import VixdeoContainer from '~/components/PostsContainer/VixdeoContainer';
 import EngagementContainer from '~/components/PostsContainer/EngagementContainer';
 
+import ProfileEditModal from '~/components/Profile/ProfileEditModal';
+
 
 export {
     Vixdeo_Varient,
@@ -63,5 +65,6 @@ export {
     VixsnapsContainer,
     VixetsContainer,
     VixdeoContainer,
-    EngagementContainer
+    EngagementContainer,
+    ProfileEditModal
 }

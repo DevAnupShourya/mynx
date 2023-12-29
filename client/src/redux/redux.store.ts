@@ -14,7 +14,7 @@ const reducers = combineReducers({
 });
 
 const persistConfig = {
-    key: 'vixel',
+    key: 'Mynx',
     storage,
     whitelist: ['theme']
 };

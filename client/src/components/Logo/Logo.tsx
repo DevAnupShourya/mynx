@@ -5,7 +5,7 @@ export default function Logo() {
     <Link
       id="logo"
       to="/"
-      aria-label="Vixel Logo"
+      aria-label="Mynx Logo"
       className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary via-green-600 to-secondary"
       title="Mynx"
     >

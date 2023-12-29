@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // ? Importing JWT TOken From config
-import { JWT_SECRET } from '~/config/Variables';
-import User from '~/models/User.model';
+import { JWT_SECRET } from '~/v1/config/Variables';
+import User from '~/v1/models/User.model';
 
-import { responseError, responseWarn } from '~/utils/apiResponseMsg';
+import { responseError, responseWarn } from '~/v1/utils/apiResponseMsg';
 
 // ? Custom interface that extends the Request type with User
 interface AuthenticatedRequest extends Request {
@@ -17,7 +17,7 @@ const userVerification = async (req: AuthenticatedRequest, res: Response, next: 
     
     // ? If not token found
     if (token === undefined || token === null) {
-        responseError(res, 404, "No Entry!!!", null);
+        responseError(res, 404, "No Token Found!!!", null);
     } else {
         const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload;
         // ? If token is not valid

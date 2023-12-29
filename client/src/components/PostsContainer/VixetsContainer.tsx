@@ -1,7 +1,9 @@
 function VixetsContainer() {
   return (
-    <section>All Vixets of this user</section>
-  )
+    <div className="grid place-items-center">
+      <h1>All Vixets will appear here!!</h1>
+    </div>
+  );
 }
 
-export default VixetsContainer
+export default VixetsContainer;

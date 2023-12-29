@@ -205,7 +205,7 @@ function Signup() {
               labelPlacement="inside"
               startContent={
                 <div className="pointer-events-none flex items-center">
-                  <span className="text-primary text-small">vixel.com/</span>
+                  <span className="text-primary text-small">Mynx.com/</span>
                 </div>
               }
               onChange={(e) => {

@@ -11,10 +11,4 @@ export default defineConfig({
       "~": resolve(__dirname, "src"),
     },
   },
-  // server: {
-    // https: {
-      // key: fs.readFileSync('A:/Projects/Vixel/code/client/localhost.key'),
-      // cert: fs.readFileSync('A:/Projects/Vixel/code/client/localhost.crt'),
-    // },
-  // },
 })

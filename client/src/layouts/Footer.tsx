@@ -99,7 +99,7 @@ export default function Footer() {
         <span className="text-sm">
           &copy; 2023{" "}
           <LinkBtn as={Link} href="/">
-            Vixel
+            Mynx
           </LinkBtn>
           . All Rights Reserved.
         </span>

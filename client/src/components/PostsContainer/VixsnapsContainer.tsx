@@ -1,6 +1,8 @@
 function VixsnapsContainer() {
   return (
-    <div>All Vixsnaps Posts </div>
+    <div className="grid place-items-center">
+      <h1>All Vixsnaps will appear here!!</h1>
+    </div>
   )
 }
 

@@ -1,8 +1,8 @@
-# Vixel
+# Mynx
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Issues](https://img.shields.io/github/issues/DevAnupShourya/Vixel)](https://github.com/DevAnupShourya/Vixel/issues)
-[![GitHub Stars](https://img.shields.io/github/stars/DevAnupShourya/Vixel)](https://github.com/DevAnupShourya/Vixel/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/DevAnupShourya/Mynx)](https://github.com/DevAnupShourya/Mynx/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/DevAnupShourya/Mynx)](https://github.com/DevAnupShourya/Mynx/stargazers)
 
 ## Current State 🏃🏻‍♂️
 The project is currently in the alpha stage of development. This means that it has not been fully tested and may contain bugs.
@@ -18,7 +18,7 @@ I expect to complete the project by Dec 2023.
 I would appreciate any feedback or suggestions you have for the project. Please feel free to submit a pull request or issue on GitHub.
 
 ## Introduction 🦾
-Welcome to Vixel: World in Pixels, the ultimate social media platform designed to connect individuals through a vibrant and visually captivating experience. With an intuitive interface and cutting-edge features, Vixel empowers users to express their creativity, share their life moments, and engage with a global community. Whether you're an aspiring photographer, artist, or simply looking to connect with like-minded individuals, Vixel offers a unique platform to showcase your talents and foster meaningful connections. Join us today and embark on a journey where the world unfolds pixel by pixel.
+Welcome to Mynx: World in Pixels, the ultimate social media platform designed to connect individuals through a vibrant and visually captivating experience. With an intuitive interface and cutting-edge features, Mynx empowers users to express their creativity, share their life moments, and engage with a global community. Whether you're an aspiring photographer, artist, or simply looking to connect with like-minded individuals, Mynx offers a unique platform to showcase your talents and foster meaningful connections. Join us today and embark on a journey where the world unfolds pixel by pixel.
 
 ## Features ✨
 
@@ -63,7 +63,7 @@ Chirp - Where Voices Unite is built using the MERN stack (MongoDB, Express.js, R
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com:DevAnupShourya/Vixel.git
+   git clone https://github.com:DevAnupShourya/Mynx.git
    ```
 
 2. Navigate to the project directory:
@@ -124,11 +124,11 @@ I would appreciate any feedback or suggestions you have for the project. Please 
 - ci 🎡 : [msg]
 
 ## Acknowledgments 💯
-We want to express our gratitude to the open-source community and all the contributors who helped make Vixel.
+We want to express our gratitude to the open-source community and all the contributors who helped make Mynx.
 
 If you have any questions or need assistance, feel free to contact us or join our community discussions.
 
-Happy Vixeling !
+Happy Mynxing !
 
 ### Features to Implement 🧠
 - [ ] : `'/[username]/edit'` page

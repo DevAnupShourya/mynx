@@ -16,10 +16,10 @@ import { useAppSelector } from "~/utils/hooks/redux.hooks";
 import {
   Vixdeo_Varient,
   Vixet_Varient,
-  Vixlive_Varient,
   Vixogs_Varient,
   Vixpoll_Varient,
   Vixsnap_Varient,
+  Vixlive_Varient,
   PageTitle,
 } from "~/components/components.barrel";
 
