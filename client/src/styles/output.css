@@ -644,10 +644,6 @@ video {
   bottom: 0px;
 }
 
-.bottom-2{
-  bottom: 0.5rem;
-}
-
 .bottom-\[10\%\]{
   bottom: 10%;
 }
@@ -2122,10 +2118,6 @@ video {
   border-bottom-width: 1px;
 }
 
-.border-b-2{
-  border-bottom-width: 2px;
-}
-
 .border-b-medium{
   border-bottom-width: var(--nextui-border-width-medium);
 }
@@ -2438,6 +2430,11 @@ video {
 
 .bg-primary\/20{
   background-color: rgb(53 210 173 / 0.2);
+}
+
+.bg-red-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 226 226 / var(--tw-bg-opacity));
 }
 
 .bg-red-500{
@@ -3120,6 +3117,11 @@ video {
 
 .text-primary\/80{
   color: rgb(53 210 173 / 0.8);
+}
+
+.text-red-700{
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity));
 }
 
 .text-secondary{
@@ -5163,6 +5165,11 @@ body {
 .hover\:bg-default-100:hover{
   --tw-bg-opacity: 1;
   background-color: hsl(var(--nextui-default-100) / var(--nextui-default-100-opacity, var(--tw-bg-opacity)));
+}
+
+.hover\:bg-red-300:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
 }
 
 .hover\:\!text-danger-foreground:hover{
@@ -7441,10 +7448,6 @@ body {
     bottom: -2rem;
   }
 
-  .max-md\:bottom-16{
-    bottom: 4rem;
-  }
-
   .max-md\:m-24{
     margin: 6rem;
   }
@@ -7466,10 +7469,6 @@ body {
     height: 70px;
   }
 
-  .max-md\:w-11\/12{
-    width: 91.666667%;
-  }
-
   .max-md\:w-\[70px\]{
     width: 70px;
   }
@@ -7480,10 +7479,6 @@ body {
 
   .max-md\:flex-col{
     flex-direction: column;
-  }
-
-  .max-md\:place-items-center{
-    place-items: center;
   }
 
   .max-md\:px-10{

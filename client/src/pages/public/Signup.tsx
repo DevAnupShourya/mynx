@@ -30,7 +30,9 @@ import { Auth } from "~/services/services.barrel";
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
 import { updateUserData } from "~/redux/user/userSlice";
-import { showAlert } from "~/redux/alert/alertSlice";
+
+import { Toast } from "~/components/components.barrel";
+import { toast as reactToast } from "react-toastify";
 
 function Signup() {
   const navigate = useNavigate();
@@ -73,85 +75,48 @@ function Signup() {
       );
 
       if (usernamesResponse === 400) {
-        dispatch(
-          showAlert({
-            show: true,
-            type: "danger",
-            msg: `Error ! Your username must not contain spaces or special characters.`,
-          })
+        Toast.warning(
+          "Your username must not contain spaces or special characters."
         );
       } else if (usernamesResponse === 403) {
-        dispatch(
-          showAlert({
-            show: true,
-            type: "danger",
-            msg: `Error ! This username is not available to use.`,
-          })
-        );
+        Toast.error("Sorry ! This username is not available to use.");
       } else {
+        console.log(formData)
         const resFromServer = await Auth.createUser(formData);
+        reactToast.loading("Please Wait!! Creating your account....", {
+          toastId: "signup_form_waiting_1",
+        });
+
+        reactToast.done("signup_form_waiting_1");
+        reactToast.loading("Almost Done Creating your account.....", {
+          toastId: "signup_form_waiting_2",
+        });
+
+        setCookie("secret_text", resFromServer?.data.responseData.token, {
+          path: "/",
+          maxAge: 28 * 24 * 60 * 60 * 1000,
+        });
 
         dispatch(
-          showAlert({
-            show: true,
-            type: "warning",
-            msg: "Please Wait!! Creating your account ",
+          updateUserData({
+            authStatus: "loading",
+            mail: "",
+            name: "",
+            userImg: "",
+            username: "",
           })
         );
+        reactToast.done("signup_form_waiting_2");
+        Toast.info("Successfully Created Your Account!");
 
-        if (resFromServer?.status === 202) {
-          dispatch(
-            showAlert({
-              show: true,
-              type: "warning",
-              msg: "Almost Done",
-            })
-          );
-
-          setCookie("secret_text", resFromServer?.data.responseData.token, {
-            path: "/",
-            maxAge: 28 * 24 * 60 * 60 * 1000,
-          });
-
-          dispatch(
-            updateUserData({
-              authStatus: "loading",
-              mail: "",
-              name: "",
-              userImg: "",
-              username: "",
-            })
-          );
-
-          dispatch(
-            showAlert({
-              show: true,
-              type: "success",
-              msg: "Successfully Created Your Account!",
-            })
-          );
-          navigate("/", { replace: true });
-        } else {
-          dispatch(
-            showAlert({
-              show: true,
-              type: "danger",
-              msg: `Error! ${resFromServer?.data.message}`,
-            })
-          );
-        }
+        navigate("/", { replace: true });
       }
-    } catch (error) {
-      console.error(error);
-
-      dispatch(
-        showAlert({
-          show: true,
-          type: "danger",
-          msg: `Error ! Check your inputs again : ${error}`,
-        })
-      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      Toast.error(`Error : ${error.response.data.message}`);
+      console.error("Error :", error.response.data.message);
     }
+
     setFormSubmitStatus(false);
   };
 

@@ -5,12 +5,10 @@ import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import themeReducer from '~/redux/theme/ThemeSlice';
 import userReducer from '~/redux/user/userSlice';
-import alertReducer from '~/redux/alert/alertSlice';
 
 const reducers = combineReducers({
     theme: themeReducer,
     user: userReducer,
-    alert: alertReducer,
 });
 
 const persistConfig = {

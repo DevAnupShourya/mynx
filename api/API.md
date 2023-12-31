@@ -147,6 +147,11 @@ API responses are returned in JSON format.
   GET /users/username?username=myusername
   ```
 
+#### `GET /users/info`
+
+- **Description**: Get Current User Info.
+- **Method**: GET
+
 #### `POST /users/follow/:toBeFollowedUserId`
 
 - **Description**: Follow or unfollow user.

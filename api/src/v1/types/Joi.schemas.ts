@@ -9,7 +9,7 @@ export const userSignUpSchema = Joi.object({
     avatarURL: Joi.string().uri().default('').allow(''),
     coverURL: Joi.string().uri().default('').allow(''),
     country: Joi.string().max(50).default('NA').allow('NA'),
-    gender: Joi.string().valid('Male', 'Female', 'Transgender').default('NA').allow('NA'),
+    gender: Joi.string().valid('male', 'female', 'transgender').default('NA').allow('NA'),
 });
 
 export const userLoginSchema = Joi.object({

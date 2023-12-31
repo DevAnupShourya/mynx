@@ -4,50 +4,50 @@ import { FormDataInterface } from "~/types/types.barrel";
 import uploadFile from '~/services/Cloudinary/CloudinaryUpload';
 
 const createUser = async (formData: FormDataInterface) => {
-    try {
-        // ? Save User Images to Cloudinary DB
-        const avatarCloudURL = await uploadFile(formData.avatarURL);
-        const coverCloudURL = await uploadFile(formData.coverURL);
-
-        // ? Save User Data to Local DB
-        const response = await axiosInstance.post(`/users/signup`, {
-            username: formData.username,
-            password: formData.password,
-            bio: formData.bio,
-            avatarURL: avatarCloudURL,
-            coverURL: coverCloudURL,
-            name: formData.name,
-            country: formData.country,
-            gender: formData.gender,
-            email: formData.email,
-        })
-
-        return response;
-    } catch (error) {
-        console.error("Error occurred While crating user account", error);
+    let coverCloudURL;
+    let avatarCloudURL;
+    
+    // ? Save User Images to Cloudinary DB if Needed
+    if (!(formData.coverURL === '')) {
+        coverCloudURL = await uploadFile(formData.coverURL);
     }
+    if (!(formData.avatarURL === '')) {
+        avatarCloudURL = await uploadFile(formData.avatarURL);
+    }
+
+    // ? Save User Data to Local DB
+    const response = await axiosInstance.post(`/users/signup`, {
+        username: formData.username,
+        password: formData.password,
+        bio: formData.bio,
+        avatarURL: avatarCloudURL,
+        coverURL: coverCloudURL,
+        name: formData.name,
+        country: formData.country,
+        gender: formData.gender,
+        email: formData.email,
+    })
+
+    return response;
 }
 
 const authenticateUser = async (formData: { email: string; password: string; }) => {
-    try {
-        const res = await axiosInstance.post(`/users/login`, { email: formData.email, password: formData.password })
-        return res;
-    } catch (error) {
-        console.error("Error occurred While crating user account", error);
-    }
+    const res = await axiosInstance.post(`/users/login`, { email: formData.email, password: formData.password })
+    return res;
 }
 
 const checkUsernameAvailability = async (username: string) => {
     // ? Check if username is valid string
-    const usernameRegex = /^(?![0-9])[^a-zA-Z0-9]*(?!(?:chats|followers|new|notifications|settings|trending)$)[a-zA-Z][a-zA-Z0-9]*$/;
+    const usernameRegex = /^(?![0-9])[^a-zA-Z0-9]*(?!(?:chats|followers|new|notifications|settings|trending)$)[a-zA-Z_][a-zA-Z0-9_]*$/
+
     const isValidUsername = usernameRegex.test(username);
 
     if (isValidUsername) {
-        const response = await axiosInstance.get(`/users/usernames?username=${username}`);
+        const response = await axiosInstance.get(`/users/username-status?username=${username}`);
 
-        if (response.data.responseData.canUseQuery === 200) {
+        if (response.data.responseData.canUseQuery) {
             return 200; // * OK
-        } else if (response.data.responseData.canUseQuery === 406) {
+        } else {
             return 403; // * Already Used
         }
     } else {
@@ -56,25 +56,17 @@ const checkUsernameAvailability = async (username: string) => {
 }
 
 const getUserByUID = async (uId: string) => {
-    try {
-        const userData = await axiosInstance.get(`/api/users?userid=${uId}`)
-        return userData.data.responseData;
-    } catch (error) {
-        console.error("Error occurred While getting user info", error);
-    }
+    const userData = await axiosInstance.get(`/users/u/${uId}`)
+    return userData.data.responseData;
 }
 
 const getCurrentUser = async (token: string) => {
-    try {
-        const { data } = await axiosInstance.get(`/users/current`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return data.responseData.userInfo;
-    } catch (error) {
-        console.error("Error occurred While getting user info", error);
-    }
+    const { data } = await axiosInstance.get(`/users/info`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return data.responseData.userInfo;
 }
 
 export {

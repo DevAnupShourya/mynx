@@ -18,8 +18,9 @@ import { MdMail } from "react-icons/md";
 
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
-import { showAlert } from "~/redux/alert/alertSlice";
 import { updateUserData } from "~/redux/user/userSlice";
+import { Toast } from "~/components/components.barrel";
+import { toast as reactToast } from "react-toastify";
 
 // ? Services
 import { Auth } from "~/services/services.barrel";
@@ -53,74 +54,43 @@ export default function Login() {
     try {
       const resFromServer = await Auth.authenticateUser(formData);
 
-      if (resFromServer?.status === 202) {
-        setCookie("secret_text", resFromServer?.data.responseData.token, {
-          path: "/",
-          maxAge: 28 * 24 * 60 * 60 * 1000,
-        });
+      setCookie("secret_text", resFromServer?.data.responseData.token, {
+        path: "/",
+        maxAge: 28 * 24 * 60 * 60 * 1000,
+      });
 
-        dispatch(
-          updateUserData({
-            authStatus: "loading",
-            mail: "",
-            name: "",
-            userImg: "",
-            username: "",
-          })
-        );
-
-        dispatch(
-          showAlert({
-            show: true,
-            type: "warning",
-            msg: "Please Wait!!",
-          })
-        );
-
-        dispatch(
-          updateUserData({
-            authStatus: "authenticated",
-            mail: resFromServer.data.responseData.userAvailable.email,
-            name: resFromServer.data.responseData.userAvailable.name,
-            userImg: resFromServer.data.responseData.userAvailable.avatarURL,
-            username: resFromServer.data.responseData.userAvailable.username,
-          })
-        );
-
-        navigate("/", { replace: true });
-
-        dispatch(
-          showAlert({
-            show: true,
-            type: "success",
-            msg: "Successfully Found Your Account",
-          })
-        );
-      } else {
-        console.warn(resFromServer);
-        dispatch(
-          showAlert({
-            show: true,
-            type: "warning",
-            msg: `Error : ${resFromServer}`,
-          })
-        );
-      }
-    } catch (error) {
       dispatch(
-        showAlert({
-          show: true,
-          type: "danger",
-          msg: "Error! No User Found",
+        updateUserData({
+          authStatus: "loading",
+          mail: "",
+          name: "",
+          userImg: "",
+          username: "",
         })
       );
 
-      console.log(
-        "Some Error Occurred while Logging the user using firebase",
-        error
-      );
-    }
+      reactToast.loading("Please Wait!!", { toastId: "login_form_waiting" });
 
+      dispatch(
+        updateUserData({
+          authStatus: "authenticated",
+          mail: resFromServer.data.responseData.userAvailable.email,
+          name: resFromServer.data.responseData.userAvailable.name,
+          userImg: resFromServer.data.responseData.userAvailable.avatarURL,
+          username: resFromServer.data.responseData.userAvailable.username,
+        })
+      );
+
+      navigate("/", { replace: true });
+
+      reactToast.done("login_form_waiting");
+
+      Toast.success("Successfully Found Your Account");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      Toast.error(`Error : ${error.response.data.message}`);
+      console.error("Error :", error.response.data.message);
+    }
     setFormSubmitStatus(false);
   };
 

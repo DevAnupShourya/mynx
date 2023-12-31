@@ -38,6 +38,9 @@ import EngagementContainer from '~/components/PostsContainer/EngagementContainer
 
 import ProfileEditModal from '~/components/Profile/ProfileEditModal';
 
+import Toast from '~/components/CustomToast/Toast';
+import CloseBtn from '~/components/CustomToast/CloseBtn';
+
 
 export {
     Vixdeo_Varient,
@@ -66,5 +69,7 @@ export {
     VixetsContainer,
     VixdeoContainer,
     EngagementContainer,
-    ProfileEditModal
+    ProfileEditModal,
+    Toast,
+    CloseBtn
 }
