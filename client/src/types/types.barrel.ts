@@ -39,3 +39,14 @@ export interface FormDataInterface {
     password: string,
     email: string,
 }
+
+export interface UpdateUserProfileInterface {
+    username: string,
+    bio: string,
+    avatarURL: string,
+    coverURL: string,
+    name: string,
+    password: string,
+    email: string
+}
+

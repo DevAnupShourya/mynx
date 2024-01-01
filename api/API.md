@@ -160,7 +160,7 @@ API responses are returned in JSON format.
   - `userId` (string, required): The userId to follow or unfollow.
 - **Example Request**:
   ```http
-  GET /users/follow/:649fe3a4945564b46980ce9b
+  GET /users/follow/649fe3a4945564b46980ce9b
   ```
 
 ### 2. `/posts`

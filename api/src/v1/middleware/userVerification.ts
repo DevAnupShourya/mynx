@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken/';
 
 // ? Importing JWT TOken From config
 import { JWT_SECRET } from '~/v1/config/Variables';
@@ -14,25 +14,29 @@ interface AuthenticatedRequest extends Request {
 
 const userVerification = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    // ? If not token found
-    if (token === undefined || token === null) {
-        responseError(res, 404, "No Token Found!!!", null);
-    } else {
-        const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload;
-        // ? If token is not valid
-        if (!id) {
-            responseError(res, 403, "User Unauthorized!!", null);
+
+    try {
+        // ? If not token found
+        if (token === undefined || token === null) {
+            responseError(res, 404, "No Token Found!!!", null);
         } else {
-            const userFromDB = await User.findById(id);
-            // ? If no User found with token
-            if (userFromDB) {
-                req.userId = userFromDB._id.toString()
-                next();
+            const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload;
+            // ? If token is not valid
+            if (!id) {
+                responseError(res, 403, "User Unauthorized!!", null);
             } else {
-                return responseWarn(res, 403, "No User Found!", null);
+                const userFromDB = await User.findById(id);
+                // ? If no User found with token
+                if (userFromDB) {
+                    req.userId = userFromDB._id.toString()
+                    next();
+                } else {
+                    return responseWarn(res, 403, "No User Found!", null);
+                }
             }
         }
+    } catch (error : any) {
+        responseError(res, 403, `Error : ${error}`, null);
     }
 }
 

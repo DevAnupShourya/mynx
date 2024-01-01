@@ -16,7 +16,7 @@ function ThemeSwitcher() {
     <Switch
       defaultSelected={theme === "dark" ? true : false}
       size="lg"
-      color="default"
+      color={theme === "dark" ? 'primary' : 'danger'}
       startContent={<BsFillMoonStarsFill />}
       endContent={<BsFillSunFill />}
       onClick={handleThemeClick}

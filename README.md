@@ -131,8 +131,6 @@ If you have any questions or need assistance, feel free to contact us or join ou
 Happy Mynxing !
 
 ### Features to Implement 🧠
-- [ ] : `'/[username]/edit'` page
-- [ ] : `'/[username]/settings'` page
 - [ ] : `'/new'` page
 - [ ] : `'/'` page
 - [ ] : `'/trending'` page

@@ -7,7 +7,6 @@ import {
   Outlet,
 } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import axiosInstance from "~/lib/AxiosInstance";
 
 import {
   Avatar,
@@ -23,7 +22,6 @@ import {
 } from "@nextui-org/react";
 
 import { UserNotFound } from "~/components/components.barrel";
-import formatLargeNumber from "~/utils/formatLargeNumber";
 
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
@@ -36,6 +34,28 @@ import {
   PiGenderMaleFill,
 } from "react-icons/pi";
 
+import {
+  getUserByUsername,
+  followUserById,
+} from "~/services/Users/User.services";
+
+type UserProfile = {
+  name: string;
+  id: string;
+  username: string;
+  posts: string[];
+  followers: string[];
+  following: string[];
+  bio: string;
+  gender: string;
+  country: string;
+  joining: Date | null;
+  coverImgSrc: string;
+  avatarImgSrc: string;
+  admin: boolean;
+  isFollowThisUser: boolean;
+};
+
 function UserProfilePage() {
   const { username } = useParams();
   const navigate = useNavigate();
@@ -47,55 +67,74 @@ function UserProfilePage() {
   const [userSearchStatus, setUserSearchStatus] = useState<null | true | false>(
     null
   );
+  const [followBtnState, setFollowBtnState] = useState(false);
 
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<UserProfile>({
     name: "",
-    username: username,
-    posts: "",
-    followers: "",
-    following: "",
+    username: username!,
+    posts: [""],
+    followers: [""],
+    following: [""],
     bio: "",
-    gender: "",
+    gender: "na",
     country: "",
-    joining: "",
+    joining: null,
     coverImgSrc: "",
     avatarImgSrc: "",
     admin: false,
+    id: "",
+    isFollowThisUser: false,
   });
 
+  async function followOrUnfollowUserById() {
+    setFollowBtnState(true);
+    try {
+      const data = await followUserById(
+        userData.id,
+        cookies["secret_text"] as string
+      );
+      setUserData({
+        ...userData,
+        isFollowThisUser: data.responseData.following,
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error following the User:", error.response.data.message);
+    }
+    setFollowBtnState(false);
+  }
+
   useEffect(() => {
-    async function checkAuth() {
+    async function findUserByUsername() {
       try {
         if (!cookies["secret_text"]) {
           console.warn("No Token Found!");
         } else {
-          const { data } = await axiosInstance.get(
-            `/users/username?username=${username}`,
-            {
-              headers: {
-                Authorization: `Bearer ${cookies["secret_text"] as string}`,
-              },
-            }
+          const data = await getUserByUsername(
+            username!,
+            cookies["secret_text"] as string
           );
 
           if (data.responseData.length === 0) {
             setUserSearchStatus(false);
           } else {
-            const foundUser = data.responseData[0];
-
+            const foundUser = data.responseData.userFromDB;
             setUserData({
+              isFollowThisUser: data.responseData.isFollowedByMe,
               admin: userState.mail === foundUser.email,
               avatarImgSrc: foundUser.avatarURL,
               bio: foundUser.bio,
               country: foundUser.country,
               coverImgSrc: foundUser.coverURL,
-              followers: formatLargeNumber(foundUser.followers),
-              following: formatLargeNumber(foundUser.following),
+              followers: foundUser.followers.length,
+              following: foundUser.following.length,
               gender: foundUser.gender,
               joining: foundUser.createdAt,
               name: foundUser.name,
-              posts: "0",
+              posts: foundUser.posts.length,
               username: foundUser.username,
+              id: foundUser._id,
             });
             setUserSearchStatus(true);
           }
@@ -104,11 +143,7 @@ function UserProfilePage() {
         console.error("Error fetching User:", error);
       }
     }
-    checkAuth();
-
-    return () => {
-      checkAuth();
-    };
+    findUserByUsername();
     // eslint-disable-next-line
   }, []);
 
@@ -167,11 +202,11 @@ function UserProfilePage() {
             title="Gender"
             className="capitalize my-1 flex flex-row gap-4 items-center text-xs"
           >
-            {userData.gender === "female" ? (
+            {userData.gender.toLowerCase() === "female" ? (
               <PiGenderFemaleFill className="text-2xl" />
-            ) : userData.gender === "male" ? (
+            ) : userData.gender.toLowerCase() === "male" ? (
               <PiGenderMaleFill className="text-2xl" />
-            ) : userData.gender === "transgender" ? (
+            ) : userData.gender.toLowerCase() === "transgender" ? (
               <PiGenderTransgenderFill className="text-2xl" />
             ) : (
               <FaGenderless />
@@ -189,11 +224,12 @@ function UserProfilePage() {
         <Card className="bg-main-text-main my-5">
           {/* Background and profile */}
           <CardHeader
-            className="relative flex h-56 max-md:h-36 w-full justify-center bg-cover"
+            className="relative flex h-56 max-md:h-36 w-full justify-center bg-center bg-cover bg-no-repeat"
             style={{ backgroundImage: `url('${userData.coverImgSrc}')` }}
           >
             <Avatar
               size="lg"
+              radius="md"
               isBordered
               src={userData.avatarImgSrc}
               alt={`${userData.name}`}
@@ -207,7 +243,7 @@ function UserProfilePage() {
               >
                 <Button
                   as={Link}
-                  to={`/${username}/edit`}
+                  to={`/settings`}
                   isIconOnly
                   color="warning"
                   variant="flat"
@@ -270,35 +306,33 @@ function UserProfilePage() {
               </p>
             </div>
           </CardBody>
+
           {/* Follow , Friend ad chat btn */}
-          <CardBody className="flex flex-row gap-10 max-sm:gap-5 justify-center">
-            <Button
-              startContent={"icon"}
-              variant="bordered"
-              color="primary"
-              size="sm"
-            >
-              Follow
-            </Button>
-            <Divider orientation="vertical" className="h-10" />
-            <Button
-              startContent={"icon"}
-              variant="flat"
-              color="secondary"
-              size="sm"
-            >
-              Friend
-            </Button>
-            <Divider orientation="vertical" className="h-10" />
-            <Button
-              startContent={"icon"}
-              variant="light"
-              color="danger"
-              size="sm"
-            >
-              Chat
-            </Button>
-          </CardBody>
+          {!(userData.admin === true) && (
+            <CardBody className="flex flex-row gap-10 max-sm:gap-5 justify-center">
+              <Button
+                startContent={"icon"}
+                variant="bordered"
+                color="primary"
+                size="sm"
+                onClick={followOrUnfollowUserById}
+                isLoading={followBtnState}
+              >
+                {userData.isFollowThisUser ? "Unfollow" : "Follow"}
+              </Button>
+              <Divider orientation="vertical" className="h-10" />
+              <Button
+                startContent={"icon"}
+                variant="light"
+                color="danger"
+                size="sm"
+                as={Link}
+                to={`/chats?u=${userData.id}`}
+              >
+                Chat
+              </Button>
+            </CardBody>
+          )}
 
           {/* Bio and Dat */}
           <CardBody className="w-10/12 mx-auto">
@@ -308,20 +342,20 @@ function UserProfilePage() {
               className="capitalize my-1 flex flex-row gap-4 items-center text-xs"
             >
               <CiCalendarDate className="text-2xl" />
-              {new Date(userData.joining).toDateString()}
+              {new Date(userData.joining as Date).toDateString()}
             </p>
             <p
               title="Gender"
               className="capitalize my-1 flex flex-row gap-4 items-center text-xs"
             >
-              {userData.gender === "female" ? (
+              {userData.gender.toLowerCase() === "female" && (
                 <PiGenderFemaleFill className="text-2xl" />
-              ) : userData.gender === "male" ? (
+              )}
+              {userData.gender.toLowerCase() === "male" && (
                 <PiGenderMaleFill className="text-2xl" />
-              ) : userData.gender === "transgender" ? (
+              )}
+              {userData.gender.toLowerCase() === "transgender" && (
                 <PiGenderTransgenderFill className="text-2xl" />
-              ) : (
-                <FaGenderless />
               )}
               {userData.gender}
             </p>
@@ -333,10 +367,12 @@ function UserProfilePage() {
               <div className="flex flex-row justify-around items-center w-full">
                 <Button
                   size="sm"
-                  variant={pathname === `/${userData.username}` ? "shadow" : "light"}
+                  variant={
+                    pathname === `/${userData.username}` ? "shadow" : "light"
+                  }
                   color="secondary"
                   fullWidth
-                  radius="md"
+                  radius="none"
                   onClick={() => {
                     navigate(`/${userData.username}`, {
                       preventScrollReset: true,
@@ -347,10 +383,14 @@ function UserProfilePage() {
                 </Button>
                 <Button
                   size="sm"
-                  variant={pathname === `/${userData.username}/vixsnaps` ? "shadow" : "light"}
+                  variant={
+                    pathname === `/${userData.username}/vixsnaps`
+                      ? "shadow"
+                      : "light"
+                  }
                   color="secondary"
                   fullWidth
-                  radius="md"
+                  radius="none"
                   onClick={() => {
                     navigate(`/${userData.username}/vixsnaps`, {
                       preventScrollReset: false,
@@ -361,24 +401,32 @@ function UserProfilePage() {
                 </Button>
                 <Button
                   size="sm"
-                  variant={pathname === `/${userData.username}/vixdeos` ? "shadow" : "light"}
+                  variant={
+                    pathname === `/${userData.username}/vixdeos`
+                      ? "shadow"
+                      : "light"
+                  }
                   color="secondary"
                   fullWidth
-                  radius="md"
+                  radius="none"
                   onClick={() => {
                     navigate(`/${userData.username}/vixdeos`, {
                       preventScrollReset: false,
                     });
                   }}
-                  >
+                >
                   Vixdeo
                 </Button>
                 <Button
                   size="sm"
-                  variant={pathname === `/${userData.username}/engagements` ? "shadow" : "light"}
+                  variant={
+                    pathname === `/${userData.username}/engagements`
+                      ? "shadow"
+                      : "light"
+                  }
                   color="secondary"
                   fullWidth
-                  radius="md"
+                  radius="none"
                   onClick={() => {
                     navigate(`/${userData.username}/engagements`, {
                       preventScrollReset: false,

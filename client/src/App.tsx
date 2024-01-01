@@ -46,7 +46,7 @@ function App() {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme={"dark"}
+            theme={theme}
             closeButton={CloseBtn}
             limit={4}
           />

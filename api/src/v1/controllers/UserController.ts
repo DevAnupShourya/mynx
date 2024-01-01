@@ -8,7 +8,7 @@ import createSecretToken from '~/v1/utils/secretToken';
 import User from '~/v1/models/User.model';
 
 interface AuthenticatedRequest extends Request {
-    userId?: String;
+    userId?: mongoose.Types.ObjectId;
 }
 
 export const signupUser = async (req: Request, res: Response) => {
@@ -24,8 +24,10 @@ export const signupUser = async (req: Request, res: Response) => {
         if (userAvailable) {
             responseInfo(res, 403, "Email Already used!", null);
         } else {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(userData.password, salt);
             // ? Saving User Data in DB
-            const savedUser = await User.create(userData);
+            const savedUser = await User.create({ ...userData, password: hashedPassword });
             // ? Generate a JWT token
             const tokenGenerated = createSecretToken(savedUser._id.toString());
 
@@ -56,6 +58,7 @@ export const loginUser = async (req: Request, res: Response) => {
         } else {
             // ? User Available then compare passwords
             const passwordComparison = await bcrypt.compare(userCredentialsFiltered.password, userAvailable.password);
+
             if (passwordComparison === true) {
                 // ? Generate a JWT token
                 const tokenGenerated = createSecretToken(userAvailable._id.toString());
@@ -72,7 +75,8 @@ export const loginUser = async (req: Request, res: Response) => {
 export const getCurrentUserInfo = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userId = req.userId;
-        const userInfo = await User.findById(userId).select('name email username avatarURL -_id');
+        const userInfo = await User.findById(userId).select('-posts -following -followers -createdAt');
+
         if (userInfo) {
             responseInfo(res, 200, "User Found!", { userInfo });
         } else {
@@ -118,15 +122,15 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 }
 
-export const getUserByUsername = async (req: Request, res: Response) => {
+export const getUserByUsername = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const usernameToCheck = req.query.username as string;
-        const userFromDB = await User.find({ username: usernameToCheck }).select('-password -_id -updatedAt');
+        const userFromDB = await User.findOne({ username: usernameToCheck }).select('-password -updatedAt');
 
-        if (userFromDB.length === 0) {
-            responseInfo(res, 200, "No User Found with this Username!", userFromDB);
+        if (userFromDB) {
+            responseInfo(res, 200, "Found this User : ", { userFromDB, isFollowedByMe: userFromDB.followers.includes(req.userId!) });
         } else {
-            responseInfo(res, 200, "Found this User : ", userFromDB);
+            responseInfo(res, 200, "No User Found with this Username!", userFromDB);
         }
     } catch (error: any) {
         responseError(res, 500, error.message, null);
@@ -138,10 +142,18 @@ export const updateUserInfo = async (req: AuthenticatedRequest, res: Response) =
         const dataToUpdate = req.body;
         // ? Validating the user object against the schema
         const dataToUpdateFiltered = await userUpdateSchema.validateAsync(dataToUpdate);
+        const userProfile = await User.findById(req.userId);
 
-        const userToEdit = await User.findByIdAndUpdate(req.userId, dataToUpdateFiltered);
-        responseInfo(res, 200, `${userToEdit?.name}'s Values Updated.`, null);
-
+        if (userProfile?.password !== dataToUpdateFiltered.password) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(dataToUpdateFiltered.password, salt);
+            const userToEdit = await User.findByIdAndUpdate(req.userId, { ...dataToUpdateFiltered, password: hashedPassword });
+            responseInfo(res, 200, `${userToEdit?.name}'s Values Updated.`, { userToEdit });
+        } else {
+            const userToEdit = await User.findByIdAndUpdate(req.userId, dataToUpdateFiltered);
+            responseInfo(res, 200, `${userToEdit?.name}'s Values Updated.`, { userToEdit });
+        }
+        
     } catch (error: any) {
         responseError(res, 500, error.message, null);
     }
@@ -180,11 +192,7 @@ export const getAllUsers = async (req: AuthenticatedRequest, res: Response) => {
 
 export const deleteUserById = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const userToDelete = req.userId as string;
-
-        if (!mongoose.Types.ObjectId.isValid(userToDelete)) {
-            return responseWarn(res, 404, 'User Id is not valid', null);
-        }
+        const userToDelete = req.userId;
 
         if (userToDelete === req.userId) {
             const deletedUser = await User.deleteOne({ _id: userToDelete });
@@ -202,7 +210,7 @@ export const deleteUserById = async (req: AuthenticatedRequest, res: Response) =
 
 export const followOrUnfollowUserById = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const followingId = new mongoose.Types.ObjectId(req.userId as string);
+        const followingId = req.userId!;
         const followerId = new mongoose.Types.ObjectId(req.params.userId);
 
         if (!mongoose.Types.ObjectId.isValid(followerId)) {
@@ -230,7 +238,7 @@ export const followOrUnfollowUserById = async (req: AuthenticatedRequest, res: R
             followingUser.following = followingUser.following.filter((following) => !following.equals(followerId));
             await followingUser?.save();
 
-            return responseInfo(res, 200, `${followingUser?.username} unfollowed ${gettingFollowedUser.username} Successfully.`, null);
+            return responseInfo(res, 200, `${followingUser?.username} unfollowed ${gettingFollowedUser.username} Successfully.`, { following: false });
         } else {
             // ? If not following, follow
             gettingFollowedUser.followers.push(followingId);
@@ -238,7 +246,7 @@ export const followOrUnfollowUserById = async (req: AuthenticatedRequest, res: R
             followingUser?.following.push(followerId);
             await followingUser?.save();
 
-            return responseInfo(res, 200, `${followingUser?.username} followed ${gettingFollowedUser.username} Successfully.`, null);
+            return responseInfo(res, 200, `${followingUser?.username} followed ${gettingFollowedUser.username} Successfully.`, { following: true });
         }
     } catch (error: any) {
         return responseError(res, 500, error.message, null);

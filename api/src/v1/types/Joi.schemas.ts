@@ -1,15 +1,15 @@
 import Joi from 'joi';
 
 export const userSignUpSchema = Joi.object({
-    username: Joi.string().min(3).max(30).required(),
+    username: Joi.string().min(3).max(30).required().pattern(/^\S+$/),
     password: Joi.string().required(),
     email: Joi.string().email().required(),
     name: Joi.string().max(50).required(),
     bio: Joi.string().max(255).default('').allow(''),
     avatarURL: Joi.string().uri().default('').allow(''),
     coverURL: Joi.string().uri().default('').allow(''),
-    country: Joi.string().max(50).default('NA').allow('NA'),
-    gender: Joi.string().valid('male', 'female', 'transgender').default('NA').allow('NA'),
+    country: Joi.string().max(50).default('na').allow('na').lowercase(),
+    gender: Joi.string().valid('male', 'female', 'transgender').default('na').allow('na').lowercase(),
 });
 
 export const userLoginSchema = Joi.object({
@@ -18,8 +18,8 @@ export const userLoginSchema = Joi.object({
 });
 
 export const userUpdateSchema = Joi.object({
-    username: Joi.string().min(3).max(30),
-    password: Joi.string(),
+    username: Joi.string().min(3).max(30).pattern(/^\S+$/),
+    password: Joi.string().optional(), 
     bio: Joi.string().max(255),
     avatarURL: Joi.string().uri(),
     coverURL: Joi.string().uri(),

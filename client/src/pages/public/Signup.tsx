@@ -189,7 +189,7 @@ function Signup() {
               label="Email"
               placeholder="Enter your email"
               type="email"
-              autoComplete="current-password"
+              autoComplete="current-email"
               isRequired={true}
               value={formData.email}
               onChange={handleInputCapture}
@@ -214,7 +214,7 @@ function Signup() {
               label="Password"
               placeholder="Enter your password"
               type={passwordView === true ? "text" : "password"}
-              autoComplete="current-email"
+              autoComplete="current-password"
               isRequired={true}
               value={formData.password}
               onChange={handleInputCapture}

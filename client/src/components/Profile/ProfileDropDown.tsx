@@ -29,6 +29,7 @@ import { useState } from "react";
 export default function ProfileDropdown() {
   const navigation = useNavigate();
   // ? Redux State
+  const theme = useAppSelector((state) => state.theme.mode);
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
@@ -62,6 +63,7 @@ export default function ProfileDropdown() {
     <Dropdown
       size="lg"
       radius="sm"
+      className={theme}
       classNames={{
         base: "p-0",
       }}
@@ -85,11 +87,7 @@ export default function ProfileDropdown() {
         }}
       >
         <DropdownSection aria-label="Profile & Actions" showDivider>
-          <DropdownItem
-            isReadOnly
-            key="profile"
-            className="h-14 gap-2 opacity-100"
-          >
+          <DropdownItem textValue="profile" className="h-14 gap-2 opacity-100">
             <User
               name={user.name}
               description={`@${user.username}`}
@@ -104,7 +102,7 @@ export default function ProfileDropdown() {
             />
           </DropdownItem>
           <DropdownItem
-            key="dashboard"
+            textValue="dashboard"
             endContent={<MdOutlineWidgets className="text-lg" />}
           >
             <Link to={`/${user.username}`} color="foreground">
@@ -112,7 +110,7 @@ export default function ProfileDropdown() {
             </Link>
           </DropdownItem>
           <DropdownItem
-            key="settings"
+            textValue="settings"
             endContent={<RiUserSettingsLine className="text-lg" />}
           >
             <Link to={`/settings`} color="foreground">
@@ -120,7 +118,7 @@ export default function ProfileDropdown() {
             </Link>
           </DropdownItem>
           <DropdownItem
-            key="new_post"
+            textValue="new_post"
             endContent={<AiOutlineVideoCameraAdd className="text-lg" />}
           >
             <Link to="/new" color="foreground">
@@ -129,7 +127,7 @@ export default function ProfileDropdown() {
           </DropdownItem>
           <DropdownItem
             isReadOnly
-            key="theme_switch"
+            textValue="theme_switch"
             endContent={<ThemeSwitcher />}
           >
             Theme
@@ -138,7 +136,7 @@ export default function ProfileDropdown() {
 
         <DropdownSection aria-label="Preferences" showDivider>
           <DropdownItem
-            key="quick_search"
+            textValue="quick_search"
             shortcut="ctrl + K"
             onClick={() => {
               // TODO : Search Modal
@@ -149,7 +147,7 @@ export default function ProfileDropdown() {
           </DropdownItem>
           <DropdownItem
             isReadOnly
-            key="language"
+            textValue="language"
             className="cursor-default"
             startContent={
               <Select
@@ -181,16 +179,16 @@ export default function ProfileDropdown() {
           ></DropdownItem>
         </DropdownSection>
 
-        <DropdownSection aria-label="Help & Feedback" showDivider>
+        <DropdownSection aria-label="Help & Feedback">
           <DropdownItem
-            key="help_and_feedback"
+            textValue="help_and_feedback"
             endContent={<GiHelp className="text-lg" />}
           >
             <Link to="/contact" color="foreground">
               Help & Feedback
             </Link>
           </DropdownItem>
-          <DropdownItem key="logout">
+          <DropdownItem textValue="logout" isReadOnly>
             <Button
               onClick={handleLogout}
               color="danger"

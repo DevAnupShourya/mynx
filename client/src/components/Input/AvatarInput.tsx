@@ -1,15 +1,23 @@
 import { Avatar, Button } from "@nextui-org/react";
-import { useRef } from "react";
+import { SetStateAction, useRef } from "react";
 import { CgProfile } from "react-icons/cg";
 
-import { FormDataInterface } from "~/types/types.barrel";
+import {
+  FormDataInterface,
+  UpdateUserProfileInterface,
+} from "~/types/types.barrel";
+
+type FormDataType = FormDataInterface | UpdateUserProfileInterface;
+type SetFormDataType =
+  | React.Dispatch<React.SetStateAction<FormDataInterface>>
+  | React.Dispatch<React.SetStateAction<UpdateUserProfileInterface>>;
 
 function AvatarInput({
   formData,
   setFormData,
 }: {
-  formData: FormDataInterface;
-  setFormData: React.Dispatch<React.SetStateAction<FormDataInterface>>;
+  formData: FormDataType;
+  setFormData: SetFormDataType;
 }) {
   const avatarInput = useRef<HTMLInputElement | null>(null);
 
@@ -23,7 +31,11 @@ function AvatarInput({
       const reader = new FileReader();
 
       reader.onload = (event) => {
-        setFormData({ ...formData, avatarURL: event.target?.result as string });
+        setFormData({
+          ...formData,
+          avatarURL: event.target?.result as string,
+        } as SetStateAction<FormDataInterface> &
+          SetStateAction<UpdateUserProfileInterface>);
       };
 
       reader.onerror = (event) => {
@@ -36,7 +48,7 @@ function AvatarInput({
 
   return (
     <>
-      <p>Avatar Pic</p>
+      <p>Avatar Image</p>
       <div className="flex flex-row gap-2 items-center">
         <Avatar
           showFallback

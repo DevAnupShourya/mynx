@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=JetBrains+Mono:wght@100;200;400;500;700;800&family=Pixelify+Sans:wght@400;500;600;700&display=swap");
 
 /*
-! tailwindcss v3.3.5 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.0 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -34,9 +34,11 @@
 4. Use the user's configured `sans` font-family by default.
 5. Use the user's configured `sans` font-feature-settings by default.
 6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
 */
 
-html {
+html,
+:host {
   line-height: 1.5;
   /* 1 */
   -webkit-text-size-adjust: 100%;
@@ -46,12 +48,14 @@ html {
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
   font-variation-settings: normal;
   /* 6 */
+  -webkit-tap-highlight-color: transparent;
+  /* 7 */
 }
 
 /*
@@ -123,8 +127,10 @@ strong {
 }
 
 /*
-1. Use the user's configured `mono` font family by default.
-2. Correct the odd `em` font sizing in all browsers.
+1. Use the user's configured `mono` font-family by default.
+2. Use the user's configured `mono` font-feature-settings by default.
+3. Use the user's configured `mono` font-variation-settings by default.
+4. Correct the odd `em` font sizing in all browsers.
 */
 
 code,
@@ -133,8 +139,12 @@ samp,
 pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   /* 1 */
-  font-size: 1em;
+  font-feature-settings: normal;
   /* 2 */
+  font-variation-settings: normal;
+  /* 3 */
+  font-size: 1em;
+  /* 4 */
 }
 
 /*
@@ -636,10 +646,6 @@ video {
   bottom: -3.5rem;
 }
 
-.-bottom-\[calc\(theme\(fontSize\.tiny\)\*1\.5\)\]{
-  bottom: calc(calc(var(--nextui-font-size-tiny) * 1.5) * -1);
-}
-
 .bottom-0{
   bottom: 0px;
 }
@@ -778,6 +784,10 @@ video {
 
 .col-span-2{
   grid-column: span 2 / span 2;
+}
+
+.float-end{
+  float: inline-end;
 }
 
 .-m-2{
@@ -1188,6 +1198,30 @@ video {
   max-height: fit-content;
 }
 
+.min-h-3{
+  min-height: 0.75rem;
+}
+
+.min-h-3\.5{
+  min-height: 0.875rem;
+}
+
+.min-h-4{
+  min-height: 1rem;
+}
+
+.min-h-5{
+  min-height: 1.25rem;
+}
+
+.min-h-6{
+  min-height: 1.5rem;
+}
+
+.min-h-7{
+  min-height: 1.75rem;
+}
+
 .min-h-full{
   min-height: 100%;
 }
@@ -1202,6 +1236,10 @@ video {
 
 .min-h-unit-12{
   min-height: var(--nextui-spacing-unit-12);
+}
+
+.min-h-unit-14{
+  min-height: var(--nextui-spacing-unit-14);
 }
 
 .min-h-unit-16{
@@ -1374,6 +1412,38 @@ video {
 
 .w-unit-8{
   width: var(--nextui-spacing-unit-8);
+}
+
+.min-w-10{
+  min-width: 2.5rem;
+}
+
+.min-w-3{
+  min-width: 0.75rem;
+}
+
+.min-w-3\.5{
+  min-width: 0.875rem;
+}
+
+.min-w-4{
+  min-width: 1rem;
+}
+
+.min-w-5{
+  min-width: 1.25rem;
+}
+
+.min-w-6{
+  min-width: 1.5rem;
+}
+
+.min-w-8{
+  min-width: 2rem;
+}
+
+.min-w-9{
+  min-width: 2.25rem;
 }
 
 .min-w-\[200px\]{
@@ -1974,6 +2044,10 @@ video {
   white-space: nowrap;
 }
 
+.text-ellipsis{
+  text-overflow: ellipsis;
+}
+
 .whitespace-normal{
   white-space: normal;
 }
@@ -2114,6 +2188,14 @@ video {
   border-width: var(--nextui-border-width-small);
 }
 
+.border-1{
+  border-width: 1px;
+}
+
+.border-1\.5{
+  border-width: 1.5px;
+}
+
 .border-b{
   border-bottom-width: 1px;
 }
@@ -2200,6 +2282,11 @@ video {
 .border-warning{
   --tw-border-opacity: 1;
   border-color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-border-opacity)));
+}
+
+.border-red-700{
+  --tw-border-opacity: 1;
+  border-color: rgb(185 28 28 / var(--tw-border-opacity));
 }
 
 .border-x-transparent{
@@ -2543,6 +2630,14 @@ video {
           background-clip: text;
 }
 
+.bg-center{
+  background-position: center;
+}
+
+.bg-no-repeat{
+  background-repeat: no-repeat;
+}
+
 .stroke-current{
   stroke: currentColor;
 }
@@ -2758,6 +2853,10 @@ video {
   padding-bottom: 0.375rem;
 }
 
+.pe-2{
+  padding-inline-end: 0.5rem;
+}
+
 .pl-0{
   padding-left: 0px;
 }
@@ -2802,14 +2901,6 @@ video {
   padding-top: 0.5rem;
 }
 
-.pt-4{
-  padding-top: 1rem;
-}
-
-.pt-5{
-  padding-top: 1.25rem;
-}
-
 .text-left{
   text-align: left;
 }
@@ -2831,7 +2922,7 @@ video {
 }
 
 .font-sans{
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .text-2xl{
@@ -3231,10 +3322,6 @@ video {
 
 .opacity-50{
   opacity: 0.5;
-}
-
-.opacity-60{
-  opacity: 0.6;
 }
 
 .opacity-70{
@@ -4122,7 +4209,7 @@ body {
     color: rgb(9 9 11 / var(--tw-text-opacity));
   }
 
-  :is(.dark .bg-main-text-main){
+  :is(:where(.dark) .bg-main-text-main){
     --tw-bg-opacity: 1;
     background-color: rgb(9 9 11 / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
@@ -4136,7 +4223,7 @@ body {
     color: rgb(63 63 70 / var(--tw-text-opacity));
   }
 
-  :is(.dark .bg-main-text-default){
+  :is(:where(.dark) .bg-main-text-default){
     --tw-bg-opacity: 1;
     background-color: rgb(9 9 11 / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
@@ -4150,7 +4237,7 @@ body {
     color: rgb(63 63 70 / var(--tw-text-opacity));
   }
 
-  :is(.dark .bg-def){
+  :is(:where(.dark) .bg-def){
     --tw-bg-opacity: 1;
     background-color: rgb(63 63 70 / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
@@ -4823,16 +4910,16 @@ body {
   background-color: hsl(var(--nextui-default) / var(--nextui-default-opacity, var(--tw-bg-opacity)));
 }
 
+.after\:bg-default-foreground::after{
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--nextui-default-foreground) / var(--nextui-default-foreground-opacity, var(--tw-bg-opacity)));
+}
+
 .after\:bg-divider::after{
   content: var(--tw-content);
   --tw-bg-opacity: 1;
   background-color: hsl(var(--nextui-divider) / var(--nextui-divider-opacity, var(--tw-bg-opacity)));
-}
-
-.after\:bg-foreground::after{
-  content: var(--tw-content);
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--nextui-foreground) / var(--nextui-foreground-opacity, var(--tw-bg-opacity)));
 }
 
 .after\:bg-primary::after{
@@ -5353,10 +5440,6 @@ body {
   z-index: 10;
 }
 
-.data-\[has-helper\=true\]\:mb-4[data-has-helper=true]{
-  margin-bottom: 1rem;
-}
-
 .data-\[has-label\=true\]\:mt-\[calc\(theme\(fontSize\.small\)_\+_10px\)\][data-has-label=true]{
   margin-top: calc(var(--nextui-font-size-small) + 10px);
 }
@@ -5476,6 +5559,10 @@ body {
   justify-content: center;
 }
 
+.data-\[has-multiple-rows\=true\]\:rounded-large[data-has-multiple-rows=true]{
+  border-radius: var(--nextui-radius-large);
+}
+
 .data-\[thumb-hidden\=false\]\:border-x-\[calc\(theme\(spacing\.5\)\/2\)\][data-thumb-hidden=false]{
   border-left-width: calc(1.25rem / 2);
   border-right-width: calc(1.25rem / 2);
@@ -5545,9 +5632,9 @@ body {
   border-color: hsl(var(--nextui-danger) / var(--nextui-danger-opacity, var(--tw-border-opacity)));
 }
 
-.data-\[focus\=true\]\:border-foreground[data-focus=true]{
+.data-\[focus\=true\]\:border-default-foreground[data-focus=true]{
   --tw-border-opacity: 1;
-  border-color: hsl(var(--nextui-foreground) / var(--nextui-foreground-opacity, var(--tw-border-opacity)));
+  border-color: hsl(var(--nextui-default-foreground) / var(--nextui-default-foreground-opacity, var(--tw-border-opacity)));
 }
 
 .data-\[focus\=true\]\:border-primary[data-focus=true]{
@@ -5610,9 +5697,9 @@ body {
   border-color: hsl(var(--nextui-danger) / var(--nextui-danger-opacity, var(--tw-border-opacity)));
 }
 
-.data-\[open\=true\]\:border-foreground[data-open=true]{
+.data-\[open\=true\]\:border-default-foreground[data-open=true]{
   --tw-border-opacity: 1;
-  border-color: hsl(var(--nextui-foreground) / var(--nextui-foreground-opacity, var(--tw-border-opacity)));
+  border-color: hsl(var(--nextui-default-foreground) / var(--nextui-default-foreground-opacity, var(--tw-border-opacity)));
 }
 
 .data-\[open\=true\]\:border-primary[data-open=true]{
@@ -6698,6 +6785,10 @@ body {
   display: block;
 }
 
+.group[data-has-helper=true] .group-data-\[has-helper\=true\]\:flex{
+  display: flex;
+}
+
 .group[data-focus-visible=true] .group-data-\[focus-visible\=true\]\:hidden{
   display: none;
 }
@@ -6875,14 +6966,22 @@ body {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.group[data-has-label=true] .group-data-\[has-label\=true\]\:items-start{
+  align-items: flex-start;
+}
+
+.group[data-has-label=true] .group-data-\[has-label\=true\]\:items-end{
+  align-items: flex-end;
+}
+
 .group[data-focus=true] .group-data-\[focus\=true\]\:border-danger{
   --tw-border-opacity: 1;
   border-color: hsl(var(--nextui-danger) / var(--nextui-danger-opacity, var(--tw-border-opacity)));
 }
 
-.group[data-focus=true] .group-data-\[focus\=true\]\:border-foreground{
+.group[data-focus=true] .group-data-\[focus\=true\]\:border-default-foreground{
   --tw-border-opacity: 1;
-  border-color: hsl(var(--nextui-foreground) / var(--nextui-foreground-opacity, var(--tw-border-opacity)));
+  border-color: hsl(var(--nextui-default-foreground) / var(--nextui-default-foreground-opacity, var(--tw-border-opacity)));
 }
 
 .group[data-focus=true] .group-data-\[focus\=true\]\:border-primary{
@@ -7012,19 +7111,42 @@ body {
   padding-top: 1rem;
 }
 
+.group[data-has-label=true] .group-data-\[has-label\=true\]\:pt-4{
+  padding-top: 1rem;
+}
+
+.group[data-has-label=true] .group-data-\[has-label\=true\]\:pt-5{
+  padding-top: 1.25rem;
+}
+
 .group[data-disabled=true] .group-data-\[disabled\=true\]\:text-foreground-300{
   --tw-text-opacity: 1;
   color: hsl(var(--nextui-foreground-300) / var(--nextui-foreground-300-opacity, var(--tw-text-opacity)));
 }
 
-.group[data-filled-within=true] .group-data-\[filled-within\=true\]\:text-foreground-600{
+.group[data-filled-within=true] .group-data-\[filled-within\=true\]\:text-default-600{
   --tw-text-opacity: 1;
-  color: hsl(var(--nextui-foreground-600) / var(--nextui-foreground-600-opacity, var(--tw-text-opacity)));
+  color: hsl(var(--nextui-default-600) / var(--nextui-default-600-opacity, var(--tw-text-opacity)));
 }
 
-.group[data-filled=true] .group-data-\[filled\=true\]\:text-foreground-600{
+.group[data-filled-within=true] .group-data-\[filled-within\=true\]\:text-foreground{
   --tw-text-opacity: 1;
-  color: hsl(var(--nextui-foreground-600) / var(--nextui-foreground-600-opacity, var(--tw-text-opacity)));
+  color: hsl(var(--nextui-foreground) / var(--nextui-foreground-opacity, var(--tw-text-opacity)));
+}
+
+.group[data-filled=true] .group-data-\[filled\=true\]\:text-default-600{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-default-600) / var(--nextui-default-600-opacity, var(--tw-text-opacity)));
+}
+
+.group[data-filled=true] .group-data-\[filled\=true\]\:text-foreground{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-foreground) / var(--nextui-foreground-opacity, var(--tw-text-opacity)));
+}
+
+.group[data-has-value=true] .group-data-\[has-value\=true\]\:text-default-foreground{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-default-foreground) / var(--nextui-default-foreground-opacity, var(--tw-text-opacity)));
 }
 
 .group[data-has-value=true] .group-data-\[has-value\=true\]\:text-foreground{
@@ -7102,14 +7224,6 @@ body {
 }
 
 .group[data-copied=true] .group-data-\[copied\=true\]\:opacity-100{
-  opacity: 1;
-}
-
-.group[data-filled-within=true] .group-data-\[filled-within\=true\]\:opacity-100{
-  opacity: 1;
-}
-
-.group[data-filled=true] .group-data-\[filled\=true\]\:opacity-100{
   opacity: 1;
 }
 
@@ -7273,16 +7387,6 @@ body {
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
 
-:is([dir="rtl"] .rtl\:-rotate-180){
-  --tw-rotate: -180deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-:is([dir="rtl"] .rtl\:data-\[open\=true\]\:-rotate-90[data-open=true]){
-  --tw-rotate: -90deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
 @media (prefers-reduced-motion: reduce){
   .motion-reduce\:transition-none{
     transition-property: none;
@@ -7292,155 +7396,6 @@ body {
     content: var(--tw-content);
     transition-property: none;
   }
-}
-
-:is(.dark .dark\:border-white){
-  --tw-border-opacity: 1;
-  border-color: rgb(255 255 255 / var(--tw-border-opacity));
-}
-
-:is(.dark .dark\:bg-background\/20){
-  background-color: hsl(var(--nextui-background) / 0.2);
-}
-
-:is(.dark .dark\:bg-content2){
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--nextui-content2) / var(--nextui-content2-opacity, var(--tw-bg-opacity)));
-}
-
-:is(.dark .dark\:bg-default){
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--nextui-default) / var(--nextui-default-opacity, var(--tw-bg-opacity)));
-}
-
-:is(.dark .dark\:bg-primary-200){
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--nextui-primary-200) / var(--nextui-primary-200-opacity, var(--tw-bg-opacity)));
-}
-
-:is(.dark .dark\:bg-transparent){
-  background-color: transparent;
-}
-
-:is(.dark .dark\:bg-zinc-800){
-  --tw-bg-opacity: 1;
-  background-color: rgb(39 39 42 / var(--tw-bg-opacity));
-}
-
-:is(.dark .dark\:bg-opacity-50){
-  --tw-bg-opacity: 0.5;
-}
-
-:is(.dark .dark\:text-danger-500){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:text-dark-default){
-  --tw-text-opacity: 1;
-  color: rgb(248 248 255 / var(--tw-text-opacity));
-}
-
-:is(.dark .dark\:text-dark-main){
-  --tw-text-opacity: 1;
-  color: rgb(245 245 245 / var(--tw-text-opacity));
-}
-
-:is(.dark .dark\:text-gray-200){
-  --tw-text-opacity: 1;
-  color: rgb(229 231 235 / var(--tw-text-opacity));
-}
-
-:is(.dark .dark\:text-gray-400){
-  --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity));
-}
-
-:is(.dark .dark\:text-primary-500){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-primary-500) / var(--nextui-primary-500-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:text-primary-800){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-primary-800) / var(--nextui-primary-800-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:text-success){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:text-warning){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:text-white){
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-:is(.dark .dark\:placeholder\:text-danger-500)::-moz-placeholder{
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:placeholder\:text-danger-500)::placeholder{
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:placeholder\:text-success)::-moz-placeholder{
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:placeholder\:text-success)::placeholder{
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:placeholder\:text-warning)::-moz-placeholder{
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:placeholder\:text-warning)::placeholder{
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:before\:via-default-700\/10)::before{
-  content: var(--tw-content);
-  --tw-gradient-to: hsl(var(--nextui-default-700) / 0)  var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), hsl(var(--nextui-default-700) / 0.1) var(--tw-gradient-via-position), var(--tw-gradient-to);
-}
-
-:is(.dark .dark\:after\:bg-content2)::after{
-  content: var(--tw-content);
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--nextui-content2) / var(--nextui-content2-opacity, var(--tw-bg-opacity)));
-}
-
-:is(.dark .dark\:data-\[hover\=true\]\:bg-content2[data-hover=true]){
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--nextui-content2) / var(--nextui-content2-opacity, var(--tw-bg-opacity)));
-}
-
-:is(.dark .dark\:data-\[selected\=true\]\:text-danger-500[data-selected=true]){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:data-\[selected\=true\]\:text-success[data-selected=true]){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
-}
-
-:is(.dark .dark\:data-\[selected\=true\]\:text-warning[data-selected=true]){
-  --tw-text-opacity: 1;
-  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
 }
 
 @media not all and (min-width: 768px){
@@ -7687,6 +7642,165 @@ body {
     font-size: 8rem;
     line-height: 1;
   }
+}
+
+:is(:where([dir="rtl"]) .rtl\:-rotate-180){
+  --tw-rotate: -180deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+:is(:where([dir="rtl"]) .rtl\:data-\[open\=true\]\:-rotate-90[data-open=true]){
+  --tw-rotate: -90deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+:is(:where(.dark) .dark\:border-white){
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+:is(:where(.dark) .dark\:bg-background\/20){
+  background-color: hsl(var(--nextui-background) / 0.2);
+}
+
+:is(:where(.dark) .dark\:bg-content2){
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--nextui-content2) / var(--nextui-content2-opacity, var(--tw-bg-opacity)));
+}
+
+:is(:where(.dark) .dark\:bg-default){
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--nextui-default) / var(--nextui-default-opacity, var(--tw-bg-opacity)));
+}
+
+:is(:where(.dark) .dark\:bg-primary-200){
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--nextui-primary-200) / var(--nextui-primary-200-opacity, var(--tw-bg-opacity)));
+}
+
+:is(:where(.dark) .dark\:bg-transparent){
+  background-color: transparent;
+}
+
+:is(:where(.dark) .dark\:bg-zinc-800){
+  --tw-bg-opacity: 1;
+  background-color: rgb(39 39 42 / var(--tw-bg-opacity));
+}
+
+:is(:where(.dark) .dark\:bg-opacity-50){
+  --tw-bg-opacity: 0.5;
+}
+
+:is(:where(.dark) .dark\:text-danger-500){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:text-dark-default){
+  --tw-text-opacity: 1;
+  color: rgb(248 248 255 / var(--tw-text-opacity));
+}
+
+:is(:where(.dark) .dark\:text-dark-main){
+  --tw-text-opacity: 1;
+  color: rgb(245 245 245 / var(--tw-text-opacity));
+}
+
+:is(:where(.dark) .dark\:text-gray-200){
+  --tw-text-opacity: 1;
+  color: rgb(229 231 235 / var(--tw-text-opacity));
+}
+
+:is(:where(.dark) .dark\:text-gray-400){
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+:is(:where(.dark) .dark\:text-primary-500){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-primary-500) / var(--nextui-primary-500-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:text-primary-800){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-primary-800) / var(--nextui-primary-800-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:text-success){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:text-warning){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:text-white){
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+:is(:where(.dark) .dark\:placeholder\:text-danger-500)::-moz-placeholder{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:placeholder\:text-danger-500)::placeholder{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:placeholder\:text-success)::-moz-placeholder{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:placeholder\:text-success)::placeholder{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:placeholder\:text-warning)::-moz-placeholder{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:placeholder\:text-warning)::placeholder{
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:before\:via-default-700\/10)::before{
+  content: var(--tw-content);
+  --tw-gradient-to: hsl(var(--nextui-default-700) / 0)  var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), hsl(var(--nextui-default-700) / 0.1) var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+
+:is(:where(.dark) .dark\:after\:bg-content2)::after{
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--nextui-content2) / var(--nextui-content2-opacity, var(--tw-bg-opacity)));
+}
+
+:is(:where(.dark) .dark\:data-\[hover\=true\]\:bg-content2[data-hover=true]){
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--nextui-content2) / var(--nextui-content2-opacity, var(--tw-bg-opacity)));
+}
+
+:is(:where(.dark) .dark\:data-\[selected\=true\]\:text-danger-500[data-selected=true]){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-danger-500) / var(--nextui-danger-500-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:data-\[selected\=true\]\:text-success[data-selected=true]){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-success) / var(--nextui-success-opacity, var(--tw-text-opacity)));
+}
+
+:is(:where(.dark) .dark\:data-\[selected\=true\]\:text-warning[data-selected=true]){
+  --tw-text-opacity: 1;
+  color: hsl(var(--nextui-warning) / var(--nextui-warning-opacity, var(--tw-text-opacity)));
 }
 
 .\[\&\+\.border-medium\.border-danger\]\:ms-\[calc\(theme\(borderWidth\.medium\)\*-1\)\]+.border-medium.border-danger{

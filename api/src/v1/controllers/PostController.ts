@@ -13,12 +13,15 @@ interface AuthenticatedRequest extends Request {
 // ? Creating a Post
 export const createPost = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        const author = req.userId
         const postData = req.body;
 
         // ? Validating the user object against the schema
         const postDataFiltered = await postCreateSchema.validateAsync(postData);
 
-        const savedPost = await Post.create({ ...postDataFiltered, author: req.userId });
+        const savedPost = await Post.create({ ...postDataFiltered, author });
+
+        await User.findByIdAndUpdate(author, { $push: { posts: savedPost._id } });
         responseInfo(res, 202, "Post Created Successfully!", savedPost);
 
     } catch (error: any) {
@@ -256,13 +259,13 @@ export const likePostById = async (req: AuthenticatedRequest, res: Response) => 
             const totalLikes = post.likes.length;
             return responseWarn(res, 200, "Post Unliked successfully", { totalLikes });
         }
-        
+
         // ? Add the user's ID to the likes array
         post.likes.push(userIdToLike);
         // ? Save the updated post
         await post.save();
         const totalLikes = post.likes.length;
-        
+
         return responseWarn(res, 200, "Post liked successfully", { totalLikes });
     } catch (error: any) {
         responseError(res, 500, error.message, null);
