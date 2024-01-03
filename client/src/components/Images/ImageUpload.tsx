@@ -11,19 +11,12 @@ import {
 
 import { TfiFullscreen } from "react-icons/tfi";
 import { MdDeleteOutline } from "react-icons/md";
+import { PostDataInterface } from "~/types/types.barrel";
 
 type ImageUploadProps = {
   index?: number;
   image: string;
-  setPostData: React.Dispatch<
-    React.SetStateAction<{
-      description: string;
-      images: string[];
-      imagesDisplay: string[];
-      videoDisplay: string[];
-      video: string[];
-    }>
-  >;
+  setPostData: React.Dispatch<React.SetStateAction<PostDataInterface>>;
 };
 
 export default function ImageUpload({
@@ -34,7 +27,7 @@ export default function ImageUpload({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className={`relative`}>
+    <div className="relative">
       <div className="absolute z-20 top-4 right-4">
         <Button
           size="sm"
@@ -44,13 +37,17 @@ export default function ImageUpload({
           title="Delete Image"
           className="font-medium text-large mr-1"
           onClick={() => {
-            setPostData((prevData) => ({
-              ...prevData,
-              images: prevData.images.filter((_, i) => i !== index),
-              imagesDisplay: prevData.imagesDisplay.filter(
-                (_, i) => i !== index
-              ),
-            }));
+            setPostData((prevData: PostDataInterface) => {
+              return {
+                ...prevData,
+                images: prevData.images!.filter(
+                  (_: string, i: number) => i !== index
+                ),
+                imagesDisplay: prevData.imagesDisplay!.filter(
+                  (_: string, i: number) => i !== index
+                ),
+              };
+            });
           }}
         >
           <MdDeleteOutline />
@@ -103,6 +100,7 @@ export default function ImageUpload({
         height={400}
         radius="sm"
         src={image}
+        key={image}
         className="z-10 h-full w-full object-cover aspect-auto"
       />
     </div>

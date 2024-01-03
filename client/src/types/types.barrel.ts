@@ -50,3 +50,15 @@ export interface UpdateUserProfileInterface {
     email: string
 }
 
+
+export interface PostDataInterface {
+    postType: 'Vixet' | 'Vixdeo' | 'Vixsnap' | 'Vixogs' | 'Vixpoll' | 'Vixlive',
+    tags: string[],
+    title?: string,
+    description?: string,
+    videos?: string[]
+    videosDisplay?: string[]
+    images?: string[]
+    imagesDisplay?: string[]
+    pollOptions?: { pollName: string }[] | null,
+}

@@ -144,18 +144,18 @@ export const updateUserInfo = async (req: AuthenticatedRequest, res: Response) =
         const dataToUpdateFiltered = await userUpdateSchema.validateAsync(dataToUpdate);
         const userProfile = await User.findById(req.userId);
 
+        // ? Both should be hashed password
         if (userProfile?.password !== dataToUpdateFiltered.password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(dataToUpdateFiltered.password, salt);
-            const userToEdit = await User.findByIdAndUpdate(req.userId, { ...dataToUpdateFiltered, password: hashedPassword });
+            const userToEdit = await User.findByIdAndUpdate(req.userId, { ...dataToUpdateFiltered, password: hashedPassword }, { new: true });
             responseInfo(res, 200, `${userToEdit?.name}'s Values Updated.`, { userToEdit });
         } else {
-            const userToEdit = await User.findByIdAndUpdate(req.userId, dataToUpdateFiltered);
+            const userToEdit = await User.findByIdAndUpdate(req.userId, dataToUpdateFiltered, { new: true });
             responseInfo(res, 200, `${userToEdit?.name}'s Values Updated.`, { userToEdit });
         }
-        
     } catch (error: any) {
-        responseError(res, 500, error.message, null);
+        responseError(res, 500, error.message, error);
     }
 }
 

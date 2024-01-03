@@ -37,7 +37,6 @@ export default function SettingsPage() {
       name: "",
       bio: "",
       email: "",
-      // password: "yournewpasswordhere",
       password: "",
       avatarURL: "",
       coverURL: "",

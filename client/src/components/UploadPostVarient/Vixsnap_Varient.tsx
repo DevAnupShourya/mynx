@@ -7,27 +7,40 @@ import {
   Button,
   CardHeader,
   Tooltip,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Image,
+  Input,
+  Chip,
 } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
+
+import { ImageUpload } from "~/components/components.barrel";
+import useGetCookie from "~/utils/hooks/useGetCookie";
 
 import { TbSend } from "react-icons/tb";
 import { FcPicture } from "react-icons/fc";
 import { MdOutlineBrokenImage } from "react-icons/md";
-import { TfiFullscreen } from "react-icons/tfi";
-import { MdDeleteOutline } from "react-icons/md";
+
+import { uploadPosts } from "~/services/PostUpload/PostsUpload";
+import Toast from "~/components/CustomToast/Toast";
+import { PostDataInterface } from "~/types/types.barrel";
+import findTagsInText from "~/services/findTagsInText";
 
 export default function VixsnapUpload() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const MAX_IMAGES_ALLOWED = 6;
+  const navigate = useNavigate();
 
-  const [postData, setPostData] = useState({
-    images: "" as string,
-    imagesDisplay: "" as string,
+  const token = useGetCookie();
+  const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
+
+  const [postData, setPostData] = useState<PostDataInterface>({
+    title: "",
+    images: [],
+    tags: [],
+    videos: [],
+    imagesDisplay: [],
+    videosDisplay: [],
+    postType: "Vixsnap",
+    description: "",
+    pollOptions: null,
   });
 
   const imagesInputRef = useRef<HTMLInputElement | null>(null);
@@ -37,51 +50,84 @@ export default function VixsnapUpload() {
   function handleImageInputChange() {
     // ? Checking user input has something or not
     if (imagesInputRef.current?.files?.length) {
-      // ? Checking user files are not more than 4
-      if (imagesInputRef.current.files.length > 4) {
-        // TODO Alert Here!
-        window.alert("Not Allowed More Than 4 Images!!!");
+      // ? Checking user files are not more than MAX_IMAGES_ALLOWED
+      if (
+        imagesInputRef.current.files.length > MAX_IMAGES_ALLOWED &&
+        postData.images!.length > MAX_IMAGES_ALLOWED
+      ) {
+        Toast.warning(`Not Allowed More Than ${MAX_IMAGES_ALLOWED} Images!!!`);
         return;
       } else {
-        // TODO : Check file sizes
         const imageFiles = imagesInputRef.current.files as FileList;
         for (let i = 0; i < imageFiles.length; i++) {
           const imageBlob = imageFiles[i];
           const imageSizeInMB = imageBlob.size / (1024 * 1024);
 
-          if (imageSizeInMB > 4) {
-            // ? Alert the user if the file size exceeds 4MB
-            window.alert(`File ${imageBlob.name} exceeds 4MB size limit!`);
+          if (imageSizeInMB > 1) {
+            // ? Alert the user if the file size exceeds 1MB
+            Toast.warning(`File ${imageBlob.name} exceeds 1MB size limit!`);
             return;
           }
 
           const reader = new FileReader() as FileReader;
 
           reader.onload = (event) => {
-            setPostData({
-              images: event.target?.result as string,
-              imagesDisplay: URL.createObjectURL(imageBlob),
-            });
+            setPostData((prevData) => ({
+              ...prevData,
+              images: [...prevData.images!, event.target?.result as string],
+              imagesDisplay: [
+                ...prevData.imagesDisplay!,
+                URL.createObjectURL(imageBlob),
+              ],
+            }));
           };
           reader.onerror = (event) => {
             console.warn(event.target + " Error While Loading Images", event);
+            Toast.error(`Error While Loading Image ${event.target}`);
           };
 
-          reader.readAsArrayBuffer(imageBlob);
+          reader.readAsDataURL(imageBlob);
         }
       }
     }
   }
 
-  const handlePostSubmission = (e: FormEvent) => {
+  const handlePostSubmission = async (e: FormEvent) => {
     e.preventDefault();
-    // TODO : Take from Here
-    console.log(postData);
+    if (postData.tags.length === 0) {
+      Toast.warning("Add one tag in your Title At least");
+    } else {
+      if (postData.images!.length > MAX_IMAGES_ALLOWED) {
+        Toast.warning(
+          `Sorry! Images More Than ${MAX_IMAGES_ALLOWED} not Allowed!`
+        );
+      } else {
+        try {
+          setSubmitBtnLoadingStatus(true);
+          const res = await uploadPosts(postData, token!);
+          console.log(postData);
+          Toast.success(res?.data.message);
+          setSubmitBtnLoadingStatus(false);
+
+          navigate("/trending", { replace: true });
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          setSubmitBtnLoadingStatus(false);
+
+          Toast.error(error.response.data.message);
+          console.error(
+            "Error Uploading Post Data : ",
+            error.response.data.message
+          );
+        }
+      }
+    }
   };
   return (
     <Card radius="lg" className="w-full bg-main-text-main">
       <CardHeader className="flex gap-5">
-        <FcPicture  className="text-4xl" />
+        <FcPicture className="text-4xl" />
         <div className="flex flex-col">
           <p className="text-sm">Vixsnap</p>
           <p className="text-xs text-default-500">
@@ -93,83 +139,70 @@ export default function VixsnapUpload() {
       <Divider />
       <form onSubmit={handlePostSubmission}>
         <CardBody>
-          {postData.imagesDisplay ? (
-            <div className={`grid place-items-center`}>
-              <div className={`relative`}>
-                <div className="absolute z-20 top-4 right-4">
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    isIconOnly
-                    color="danger"
-                    title="Delete Image"
-                    className="font-medium text-large mr-1"
-                    onClick={() => {
-                      setPostData({
-                        images: "",
-                        imagesDisplay: "",
-                      });
-                    }}
-                  >
-                    <MdDeleteOutline />
-                  </Button>
-                  <Button
-                    title="Preview Image"
-                    variant="flat"
-                    size="sm"
-                    isIconOnly
-                    color="warning"
-                    className="font-medium text-large"
-                    href={postData.images}
-                    onPress={onOpen}
-                  >
-                    <TfiFullscreen />
-                  </Button>
-                  <Modal
-                    backdrop="blur"
-                    isOpen={isOpen}
-                    onOpenChange={onOpenChange}
-                    className="max-w-screen-sm text-warning"
-                    classNames={{
-                      closeButton: "text-danger font-bold bg-danger-300",
-                    }}
-                    radius="sm"
-                  >
-                    <ModalContent>
-                      {(onClose) => (
-                        <>
-                          <ModalHeader className="flex flex-col gap-1 text-sm">
-                            View Image
-                          </ModalHeader>
-                          <ModalBody className="grid place-items-center">
-                            <Image radius="none" src={postData.imagesDisplay} />
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button
-                              size="sm"
-                              color="danger"
-                              variant="solid"
-                              onPress={onClose}
-                            >
-                              Close
-                            </Button>
-                          </ModalFooter>
-                        </>
-                      )}
-                    </ModalContent>
-                  </Modal>
-                </div>
-                <Image
-                  width={300}
-                  height={400}
-                  radius="sm"
-                  src={postData.imagesDisplay}
-                  className="z-10 h-full w-full object-cover aspect-auto"
-                />
-              </div>
+          <Input
+            variant="underlined"
+            label="Tags"
+            name="title"
+            description="You can add # (hashtags) also like #coding #science"
+            labelPlacement="inside"
+            placeholder="#vibing"
+            isRequired={true}
+            onChange={(e) => {
+              const foundTags = findTagsInText(e.target.value as string);
+              setPostData({
+                ...postData,
+                tags: foundTags,
+              });
+            }}
+          />
+
+          {postData.images ? (
+            <div
+              className={`grid gap-1 place-items-center  ${
+                postData.images.length === 1
+                  ? "grid-cols-1"
+                  : postData.images.length <= 4
+                    ? "grid-cols-2"
+                    : postData.images.length <= 6
+                      ? "grid-cols-3"
+                      : postData.images.length <= 8
+                        ? "grid-cols-4"
+                        : ""
+              }`}
+            >
+              {postData.images.map((image, index) => {
+                return (
+                  <ImageUpload
+                    key={`${image}-${index}`}
+                    index={index}
+                    image={image}
+                    setPostData={setPostData}
+                  />
+                );
+              })}
             </div>
           ) : (
-            <h1 className="text-warning-500 text-center text-xs">Your Image will Show here.</h1>
+            <h1 className="text-warning-500 text-center text-xs">
+              Your Image will Show here.
+            </h1>
+          )}
+          <br />
+          {postData.tags && (
+            <div className="flex gap-4 flex-wrap">
+              {postData.tags.map((tag, index) => {
+                return (
+                  <Chip
+                    size="sm"
+                    color="danger"
+                    variant="shadow"
+                    className="lowercase"
+                    key={`${tag}-${index}`}
+                  >
+                    {tag}
+                  </Chip>
+                );
+              })}
+            </div>
           )}
         </CardBody>
         <Divider />
@@ -179,7 +212,11 @@ export default function VixsnapUpload() {
               color="default"
               isIconOnly
               variant="flat"
-              isDisabled={postData.imagesDisplay.length >= 2}
+              isDisabled={
+                postData.imagesDisplay
+                  ? postData.imagesDisplay.length >= MAX_IMAGES_ALLOWED
+                  : false
+              }
               aria-label="Image Upload"
               onClick={clickImageInput}
             >
@@ -200,6 +237,7 @@ export default function VixsnapUpload() {
             variant="ghost"
             type="submit"
             startContent={<TbSend />}
+            isLoading={submitBtnLoadingStatus}
           >
             Publish
           </Button>

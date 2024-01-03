@@ -6,6 +6,7 @@ import {
   Select,
   SelectItem,
   Avatar,
+  Chip,
 } from "@nextui-org/react";
 import { useState } from "react";
 
@@ -97,7 +98,15 @@ export default function NewPostPage() {
           </Select>
         </CardHeader>
         <Divider />
-        <CardBody>{variantsMap[postVariant] || null}</CardBody>
+        <CardBody>
+          {variantsMap[postVariant] || (
+            <div className="grid place-items-center my-4">
+              <Chip size="lg" variant="shadow" color="warning">
+                Please Select Any Option. Enjoy!
+              </Chip>
+            </div>
+          )}
+        </CardBody>
       </Card>
     </>
   );

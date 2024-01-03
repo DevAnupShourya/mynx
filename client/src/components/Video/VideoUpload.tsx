@@ -10,18 +10,13 @@ import {
 
 import { TfiFullscreen } from "react-icons/tfi";
 import { MdDeleteOutline } from "react-icons/md";
+import { PostDataInterface } from "~/types/types.barrel";
 
 type VideoUploadProps = {
   index: number;
   video: string;
   setPostData: React.Dispatch<
-    React.SetStateAction<{
-      description: string;
-      images: string[];
-      imagesDisplay: string[];
-      videoDisplay: string[];
-      video: string[];
-    }>
+    React.SetStateAction<PostDataInterface>
   >;
 };
 
@@ -45,8 +40,8 @@ export default function VideoUpload({
           onClick={() => {
             setPostData((prevData) => ({
               ...prevData,
-              video: prevData.video.filter((_, i) => i !== index),
-              videoDisplay: prevData.videoDisplay.filter((_, i) => i !== index),
+              videos: prevData.videos ? prevData.videos.filter((_, i) => i !== index) : [],
+              videosDisplay: prevData.videosDisplay ? prevData.videosDisplay.filter((_, i) => i !== index) : [],
             }));
           }}
         >

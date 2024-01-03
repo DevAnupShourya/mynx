@@ -27,6 +27,7 @@ export const followUserById = async (followingID: string, token: string) => {
 }
 
 export const updateUserDataService = async (token: string, userData: UpdateUserProfileInterface) => {
+    console.table(userData)
     const { data } = await axiosInstance.patch(
         `/users`,
         userData,

@@ -9,25 +9,39 @@ import {
   Textarea,
   Tooltip,
   Input,
+  Chip,
 } from "@nextui-org/react";
 
 import { TbSend } from "react-icons/tb";
 import { ImBlog } from "react-icons/im";
-import { MdOutlineGifBox, MdOutlineBrokenImage } from "react-icons/md";
+import { MdOutlineBrokenImage } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-import { ImageUpload, VideoUpload } from "~/components/components.barrel";
-
+import { ImageUpload } from "~/components/components.barrel";
+import useGetCookie from "~/utils/hooks/useGetCookie";
+import Toast from "~/components/CustomToast/Toast";
+import { uploadPosts } from "~/services/PostUpload/PostsUpload";
+import findTagsInText from "~/services/findTagsInText";
+import { PostDataInterface } from "~/types/types.barrel";
 export default function VixogsUpload() {
-  const [postData, setPostData] = useState({
-    title: "" as string,
-    description: "" as string,
-    content: "" as string,
-    images: [] as string[],
-    imagesDisplay: [] as string[],
-    video: [] as string[],
-    videoDisplay: [] as string[],
-    tags: "" as string,
-    // TODO : tags: [] as string[],
+  const MAX_IMAGES_ALLOWED = 1;
+
+  const navigate = useNavigate();
+
+  const token = useGetCookie();
+  const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
+
+  // Title & Description & ImageUrl & POstType & Taggs
+  const [postData, setPostData] = useState<PostDataInterface>({
+    title: "",
+    images: [],
+    tags: [],
+    videos: [],
+    imagesDisplay: [],
+    videosDisplay: [],
+    postType: "Vixogs",
+    description: "",
+    pollOptions: null,
   });
 
   const imagesInputRef = useRef<HTMLInputElement | null>(null);
@@ -38,9 +52,9 @@ export default function VixogsUpload() {
     // ? Checking user input has something or not
     if (imagesInputRef.current?.files?.length) {
       // ? Checking user files are not more than 4
-      if (imagesInputRef.current.files.length > 4) {
+      if (imagesInputRef.current.files.length > MAX_IMAGES_ALLOWED) {
         // TODO Alert Here!
-        window.alert("Not Allowed More Than 4 Images!!!");
+        window.alert(`Not Allowed More Than ${MAX_IMAGES_ALLOWED} Images!!!`);
         return;
       } else {
         // TODO : Check file sizes
@@ -60,9 +74,9 @@ export default function VixogsUpload() {
           reader.onload = (event) => {
             setPostData((prevData) => ({
               ...prevData,
-              images: [...prevData.images, event.target?.result as string],
+              images: [...prevData.images!, event.target?.result as string],
               imagesDisplay: [
-                ...prevData.imagesDisplay,
+                ...prevData.imagesDisplay!,
                 URL.createObjectURL(imageBlob),
               ],
             }));
@@ -71,65 +85,41 @@ export default function VixogsUpload() {
             console.warn(event.target + " Error While Loading Images", event);
           };
 
-          reader.readAsArrayBuffer(imageBlob);
+          reader.readAsDataURL(imageBlob);
         }
       }
     }
   }
 
-  const videoInputRef = useRef<HTMLInputElement | null>(null);
-  function clickVideoInput() {
-    videoInputRef.current?.click();
-  }
-  function handleVideoInputChange() {
-    if (videoInputRef.current?.files?.length) {
-      if (videoInputRef.current.files.length > 2) {
-        // TODO Alert Here!
-        window.alert("Not Allowed More Than 2 GIFs!!!");
-        return;
-      }
-      const videoFiles = videoInputRef.current.files as FileList;
-      for (let i = 0; i < videoFiles.length; i++) {
-        const videoBlob = videoFiles[i];
-        const videoSizeInMB = videoBlob.size / (1024 * 1024);
-
-        if (videoSizeInMB > 100) {
-          // TODO Alert Here!
-          // ? Alert the user if the file size exceeds 100MB
-          window.alert(`Video file size exceeds the limit (100MB)`);
-          return;
-        }
-
-        const reader = new FileReader() as FileReader;
-
-        reader.onload = (event) => {
-          setPostData((prevData) => ({
-            ...prevData,
-            video: [...prevData.video, event.target?.result as string],
-            videoDisplay: [
-              ...prevData.videoDisplay,
-              URL.createObjectURL(videoBlob),
-            ],
-          }));
-        };
-        reader.onerror = (event) => {
-          console.warn(event.target + " Error While Loading Video", event);
-        };
-
-        reader.readAsArrayBuffer(videoBlob);
-      }
-    }
-  }
-
-  const handlePostSubmission = (e: FormEvent) => {
+  const handlePostSubmission = async (e: FormEvent) => {
     e.preventDefault();
-    // TODO : Take from Here
-    console.log(postData);
+    if (postData.tags.length === 0) {
+      Toast.warning("Add one tag in your Title At least");
+    } else {
+      try {
+        setSubmitBtnLoadingStatus(true);
+        const res = await uploadPosts(postData, token!);
+        Toast.success(res?.data.message);
+        setSubmitBtnLoadingStatus(false);
+
+        navigate("/trending", { replace: true });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        setSubmitBtnLoadingStatus(false);
+
+        Toast.error(error.response.data.message);
+        console.error(
+          "Error Uploading Post Data : ",
+          error.response.data.message
+        );
+      }
+    }
   };
   return (
     <Card radius="lg" className="w-full bg-main-text-main">
       <CardHeader className="flex gap-5">
-        <ImBlog  className="text-4xl" />
+        <ImBlog className="text-4xl" />
         <div className="flex flex-col">
           <p className="text-sm">Vixogs</p>
           <p className="text-xs text-default-500">
@@ -149,14 +139,20 @@ export default function VixogsUpload() {
             isRequired={true}
             value={postData.title}
             onChange={(e) => {
-              setPostData({ ...postData, title: e.target.value });
+              const foundTags = findTagsInText(postData.title as string);
+              setPostData({
+                ...postData,
+                title: e.target.value,
+                tags: foundTags,
+              });
             }}
           />
           <br />
           <Textarea
             variant="underlined"
-            label="Description"
+            label="Blog Description"
             name="description"
+            description={'Write your Blog in Markdown format!'}
             labelPlacement="inside"
             placeholder="What's up!!"
             isRequired={true}
@@ -166,47 +162,21 @@ export default function VixogsUpload() {
             }}
           />
           <br />
-          <Textarea
-            variant="underlined"
-            label="Content"
-            name="content"
-            labelPlacement="inside"
-            placeholder="Your Long blog"
-            isRequired={true}
-            value={postData.content}
-            onChange={(e) => {
-              setPostData({ ...postData, content: e.target.value });
-            }}
-          />
-          <br />
-          <Input
-            variant="underlined"
-            label="Tags"
-            name="tags"
-            labelPlacement="inside"
-            placeholder="Nice Tags for your Blog post"
-            isRequired={true}
-            value={postData.tags}
-            onChange={(e) => {
-              setPostData({ ...postData, tags: e.target.value });
-            }}
-          />
-          <br />
-          {postData.images.length >= 1 && (
+          {postData.images && (
             <div
-              className={`grid gap-1 place-items-center  ${
+              className={`grid gap-1 place-items-center ${
                 postData.images.length === 1
                   ? "grid-cols-1"
                   : postData.images.length <= 4
-                  ? "grid-cols-2"
-                  : postData.images.length <= 6
-                  ? "grid-cols-3"
-                  : postData.images.length <= 8
-                  ? "grid-cols-4"
-                  : ""
+                    ? "grid-cols-2"
+                    : postData.images.length <= 6
+                      ? "grid-cols-3"
+                      : postData.images.length <= 8
+                        ? "grid-cols-4"
+                        : ""
               }`}
             >
-              {postData.imagesDisplay.map((image, index) => {
+              {postData.images.map((image, index) => {
                 return (
                   <ImageUpload
                     key={`${image}-${index}`}
@@ -219,28 +189,19 @@ export default function VixogsUpload() {
             </div>
           )}
           <br />
-          {postData.video.length >= 1 && (
-            <div
-              className={`grid gap-1 place-items-center  ${
-                postData.video.length === 1
-                  ? "grid-cols-1"
-                  : postData.video.length <= 4
-                  ? "grid-cols-2"
-                  : postData.video.length <= 6
-                  ? "grid-cols-3"
-                  : postData.video.length <= 8
-                  ? "grid-cols-4"
-                  : ""
-              }`}
-            >
-              {postData.videoDisplay.map((video, index) => {
+          {postData.tags && (
+            <div className="flex gap-4 flex-wrap">
+              {postData.tags.map((tag, index) => {
                 return (
-                  <VideoUpload
-                    key={`${video}-${index}`}
-                    index={index}
-                    video={video}
-                    setPostData={setPostData}
-                  />
+                  <Chip
+                    size="sm"
+                    color="danger"
+                    variant="shadow"
+                    className="lowercase"
+                    key={`${tag}-${index}`}
+                  >
+                    {tag}
+                  </Chip>
                 );
               })}
             </div>
@@ -248,54 +209,36 @@ export default function VixogsUpload() {
         </CardBody>
         <Divider />
         <CardFooter className="justify-between">
-          <div className="flex flex-row gap-4">
-            <Tooltip content="Upload Image">
-              <Button
-                color="default"
-                isIconOnly
-                variant="flat"
-                isDisabled={postData.images.length >= 4}
-                aria-label="Image Upload"
-                onClick={clickImageInput}
-              >
-                <MdOutlineBrokenImage className="text-2xl" />
-                <input
-                  type="file"
-                  ref={imagesInputRef}
-                  name="images"
-                  accept="image/png,image/jpeg,image/webp"
-                  multiple
-                  style={{ display: "none" }}
-                  onChange={handleImageInputChange}
-                />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Upload Video">
-              <Button
-                color="default"
-                isIconOnly
-                variant="flat"
-                isDisabled={postData.video.length > 2}
-                aria-label="GIF Upload"
-                onClick={clickVideoInput}
-              >
-                <input
-                  type="file"
-                  accept="video/mp4,video/webm,video/x-matroska,video/mov,video/avi"
-                  ref={videoInputRef}
-                  style={{ display: "none" }}
-                  multiple
-                  onChange={handleVideoInputChange}
-                />
-
-                <MdOutlineGifBox className="text-2xl" />
-              </Button>
-            </Tooltip>
-          </div>
+          <Tooltip content="Upload Cover Image of Blog">
+            <Button
+              color="default"
+              isIconOnly
+              variant="flat"
+              isDisabled={
+                postData.images && postData.videos
+                  ? postData.images.length >= 4 || postData.videos.length >= 1
+                  : false
+              }
+              aria-label="Image Upload"
+              onClick={clickImageInput}
+            >
+              <MdOutlineBrokenImage className="text-2xl" />
+              <input
+                type="file"
+                ref={imagesInputRef}
+                name="images"
+                accept="image/png,image/jpeg,image/webp"
+                multiple
+                style={{ display: "none" }}
+                onChange={handleImageInputChange}
+              />
+            </Button>
+          </Tooltip>
           <Button
             color="primary"
             variant="ghost"
             type="submit"
+            isLoading={submitBtnLoadingStatus}
             startContent={<TbSend />}
           >
             Publish

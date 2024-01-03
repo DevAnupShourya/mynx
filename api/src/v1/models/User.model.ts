@@ -21,7 +21,7 @@ const userSchema = new Schema({
         required: [true, 'Username Is Required!!'],
         unique: [true, 'Username Already Taken!!'],
         max: [50, 'Username Should be less than 50 chars!!'],
-        min: [5, 'Username Should be at least 10 chars!!'],
+        min: [3, 'Username Should be at least 10 chars!!'],
     },
     country: {
         default: 'NA',
@@ -34,8 +34,6 @@ const userSchema = new Schema({
     bio: {
         type: String,
         default: '',
-        max: 100,
-        min: 10,
     },
     avatarURL: {
         type: String,

@@ -18,15 +18,15 @@ export const userLoginSchema = Joi.object({
 });
 
 export const userUpdateSchema = Joi.object({
+    email: Joi.string().email().required(),
     username: Joi.string().min(3).max(30).pattern(/^\S+$/),
-    password: Joi.string().optional(), 
-    bio: Joi.string().max(255),
-    avatarURL: Joi.string().uri(),
-    coverURL: Joi.string().uri(),
-    name: Joi.string().max(50),
-    country: Joi.string().max(50),
-    gender: Joi.string().valid('Male', 'Female', 'Transgender'),
-    email: Joi.string().email(),
+    password: Joi.string().required(),
+    name: Joi.string().max(50).required(),
+    bio: Joi.string().default('').optional().allow(''),
+    avatarURL: Joi.string().uri().default('').optional().allow(''),
+    coverURL: Joi.string().uri().default('').optional().allow(''),
+    country: Joi.string().max(50).default('NA').optional().allow('NA'),
+    gender: Joi.string().valid('Male', 'Female', 'Transgender').default('NA').optional().allow('NA'),
 });
 
 // * Title & Images[] || Videos[]
@@ -60,7 +60,6 @@ const vixpollSchema = Joi.object({
     title: Joi.string().min(5).max(255).required(),
     pollOptions: Joi.array().items(Joi.object({ pollName: Joi.string().required(), pollCount: Joi.number().default(0) })).min(2).max(4).required(),
 });
-
 // * Title & LiveVideoStreamUrl
 const vixliveSchema = Joi.object({
     title: Joi.string().min(5).max(255).required(),
@@ -70,11 +69,11 @@ const vixliveSchema = Joi.object({
 export const postCreateSchema = Joi.object({
     postType: Joi.string().valid('Vixet', 'Vixdeo', 'Vixsnap', 'Vixogs', 'Vixpoll', 'Vixlive').required(),
     tags: Joi.array().min(1).required(),
-    title: Joi.string().min(5).max(255),
-    description: Joi.string().min(10).max(1024),
-    videoURL: Joi.array().items(Joi.string().uri()).default(null).min(1).max(2),
-    imagesURL: Joi.array().items(Joi.string().uri()).default(null).min(1).max(4),
-    pollOptions: Joi.array().min(2).max(4),
+    title: Joi.string().min(5).max(255).default('').allow(''),
+    description: Joi.string().min(10).max(1024).default('').allow(''),
+    videoURL: Joi.array().items(Joi.string().uri()).default(null).min(1).max(2).allow(null),
+    imagesURL: Joi.array().items(Joi.string().uri()).default(null).min(1).max(4).allow(null),
+    pollOptions: Joi.array().min(2).max(4).default(null).allow(null),
 }).when('.postType', {
     is: 'Vixet',
     then: vixetSchema,

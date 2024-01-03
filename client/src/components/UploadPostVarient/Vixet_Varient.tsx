@@ -6,23 +6,40 @@ import {
   Divider,
   Button,
   CardHeader,
-  Textarea,
+  Textarea,  
   Tooltip,
+  Chip,
 } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
 
 import { TbSend } from "react-icons/tb";
 import { FcEditImage } from "react-icons/fc";
 import { MdOutlineGifBox, MdOutlineBrokenImage } from "react-icons/md";
 
+import useGetCookie from "~/utils/hooks/useGetCookie";
 import { ImageUpload, VideoUpload } from "~/components/components.barrel";
+import Toast from "~/components/CustomToast/Toast";
+import { uploadPosts } from "~/services/PostUpload/PostsUpload";
+import findTagsInText from "~/services/findTagsInText";
+import { PostDataInterface } from "~/types/types.barrel";
 
 export default function VixetUpload() {
-  const [postData, setPostData] = useState({
-    description: "" as string,
-    images: [] as string[],
-    imagesDisplay: [] as string[],
-    video: [] as string[],
-    videoDisplay: [] as string[],
+  const MAX_IMAGES_ALLOWED = 6;
+  const navigate = useNavigate();
+
+  const token = useGetCookie();
+  const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
+
+  const [postData, setPostData] = useState<PostDataInterface>({
+    title: "",
+    images: [],
+    tags: [],
+    videos: [],
+    imagesDisplay: [],
+    videosDisplay: [],
+    postType: "Vixet",
+    description: "",
+    pollOptions: null,
   });
 
   const imagesInputRef = useRef<HTMLInputElement | null>(null);
@@ -33,9 +50,9 @@ export default function VixetUpload() {
     // ? Checking user input has something or not
     if (imagesInputRef.current?.files?.length) {
       // ? Checking user files are not more than 4
-      if (imagesInputRef.current.files.length > 4) {
+      if (imagesInputRef.current.files.length > MAX_IMAGES_ALLOWED) {
         // TODO Alert Here!
-        window.alert("Not Allowed More Than 4 Images!!!");
+        window.alert(`Not Allowed More Than ${MAX_IMAGES_ALLOWED} Images!!!`);
         return;
       } else {
         // TODO : Check file sizes
@@ -55,9 +72,9 @@ export default function VixetUpload() {
           reader.onload = (event) => {
             setPostData((prevData) => ({
               ...prevData,
-              images: [...prevData.images, event.target?.result as string],
+              images: [...prevData.images!, event.target?.result as string],
               imagesDisplay: [
-                ...prevData.imagesDisplay,
+                ...prevData.imagesDisplay!,
                 URL.createObjectURL(imageBlob),
               ],
             }));
@@ -66,7 +83,7 @@ export default function VixetUpload() {
             console.warn(event.target + " Error While Loading Images", event);
           };
 
-          reader.readAsArrayBuffer(imageBlob);
+          reader.readAsDataURL(imageBlob);
         }
       }
     }
@@ -88,10 +105,10 @@ export default function VixetUpload() {
         const videoBlob = videoFiles[i];
         const videoSizeInMB = videoBlob.size / (1024 * 1024);
 
-        if (videoSizeInMB > 100) {
+        if (videoSizeInMB > 10) {
           // TODO Alert Here!
-          // ? Alert the user if the file size exceeds 100MB
-          window.alert(`Video file size exceeds the limit (100MB)`);
+          // ? Alert the user if the file size exceeds 10MB
+          window.alert(`Video file size exceeds the limit (10MB)`);
           return;
         }
 
@@ -100,9 +117,9 @@ export default function VixetUpload() {
         reader.onload = (event) => {
           setPostData((prevData) => ({
             ...prevData,
-            video: [...prevData.video, event.target?.result as string],
-            videoDisplay: [
-              ...prevData.videoDisplay,
+            videos: [...prevData.videos!, event.target?.result as string],
+            videosDisplay: [
+              ...prevData.videosDisplay!,
               URL.createObjectURL(videoBlob),
             ],
           }));
@@ -111,17 +128,37 @@ export default function VixetUpload() {
           console.warn(event.target + " Error While Loading Video", event);
         };
 
-        reader.readAsArrayBuffer(videoBlob);
+        reader.readAsDataURL(videoBlob);
       }
     }
   }
 
-  const handlePostSubmission = (e: FormEvent) => {
+  const handlePostSubmission = async (e: FormEvent) => {
     e.preventDefault();
-    // TODO : Take from Here 
-    console.log(postData);
+    if (postData.tags.length === 0) {
+      Toast.warning("Add one tag in your Title At least");
+    } else {
+      try {
+        setSubmitBtnLoadingStatus(true);
+        const res = await uploadPosts(postData, token!);
+        Toast.success(res?.data.message);
+        setSubmitBtnLoadingStatus(false);
+
+        navigate("/trending", { replace: true });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        setSubmitBtnLoadingStatus(false);
+
+        Toast.error(error.response.data.message);
+        console.error(
+          "Error Uploading Post Data : ",
+          error.response.data.message
+        );
+      }
+    }
   };
-  
+
   return (
     <Card radius="lg" className="w-full bg-main-text-main">
       <CardHeader className="flex gap-5">
@@ -138,34 +175,40 @@ export default function VixetUpload() {
         <CardBody>
           <Textarea
             variant="underlined"
-            label="Description"
-            name="description"
+            label="Title"
+            name="title"
+            description="You can add # (hashtags) also like #coding #science"
             labelPlacement="inside"
             placeholder="What's up!!"
             min={5}
             max={100}
             isRequired={true}
-            value={postData.description}
+            value={postData.title}
             onChange={(e) => {
-              setPostData({ ...postData, description: e.target.value });
+              const foundTags = findTagsInText(postData.title as string);
+              setPostData({
+                ...postData,
+                title: e.target.value,
+                tags: foundTags,
+              });
             }}
           />
           <br />
-          {postData.images.length >= 1 && (
+          {postData.images && (
             <div
               className={`grid gap-1 place-items-center  ${
                 postData.images.length === 1
                   ? "grid-cols-1"
                   : postData.images.length <= 4
-                  ? "grid-cols-2"
-                  : postData.images.length <= 6
-                  ? "grid-cols-3"
-                  : postData.images.length <= 8
-                  ? "grid-cols-4"
-                  : ""
+                    ? "grid-cols-2"
+                    : postData.images.length <= 6
+                      ? "grid-cols-3"
+                      : postData.images.length <= 8
+                        ? "grid-cols-4"
+                        : ""
               }`}
             >
-              {postData.imagesDisplay.map((image, index) => {
+              {postData.images.map((image, index) => {
                 return (
                   <ImageUpload
                     key={`${image}-${index}`}
@@ -177,21 +220,21 @@ export default function VixetUpload() {
               })}
             </div>
           )}
-          {postData.video.length >= 1 && (
+          {postData.videos && (
             <div
               className={`grid gap-1 place-items-center  ${
-                postData.video.length === 1
+                postData.videos.length === 1
                   ? "grid-cols-1"
-                  : postData.video.length <= 4
-                  ? "grid-cols-2"
-                  : postData.video.length <= 6
-                  ? "grid-cols-3"
-                  : postData.video.length <= 8
-                  ? "grid-cols-4"
-                  : ""
+                  : postData.videos.length <= 4
+                    ? "grid-cols-2"
+                    : postData.videos.length <= 6
+                      ? "grid-cols-3"
+                      : postData.videos.length <= 8
+                        ? "grid-cols-4"
+                        : ""
               }`}
             >
-              {postData.videoDisplay.map((video, index) => {
+              {postData.videosDisplay!.map((video, index) => {
                 return (
                   <VideoUpload
                     key={`${video}-${index}`}
@@ -199,6 +242,24 @@ export default function VixetUpload() {
                     video={video}
                     setPostData={setPostData}
                   />
+                );
+              })}
+            </div>
+          )}
+          <br />
+          {postData.tags && (
+            <div className="flex gap-4 flex-wrap">
+              {postData.tags.map((tag, index) => {
+                return (
+                  <Chip
+                    size="sm"
+                    color="danger"
+                    variant="shadow"
+                    className="lowercase"
+                    key={`${tag}-${index}`}
+                  >
+                    {tag}
+                  </Chip>
                 );
               })}
             </div>
@@ -213,7 +274,9 @@ export default function VixetUpload() {
                 isIconOnly
                 variant="flat"
                 isDisabled={
-                  postData.images.length >= 4 || postData.video.length >= 1
+                  postData.images && postData.videos
+                    ? postData.images.length >= 4 || postData.videos.length >= 1
+                    : false
                 }
                 aria-label="Image Upload"
                 onClick={clickImageInput}
@@ -236,7 +299,9 @@ export default function VixetUpload() {
                 isIconOnly
                 variant="flat"
                 isDisabled={
-                  postData.video.length > 2 || postData.images.length >= 1
+                  postData.images && postData.videos
+                    ? postData.images.length >= 1 || postData.videos.length >= 2
+                    : false
                 }
                 aria-label="GIF Upload"
                 onClick={clickVideoInput}
@@ -258,6 +323,7 @@ export default function VixetUpload() {
             color="primary"
             variant="ghost"
             type="submit"
+            isLoading={submitBtnLoadingStatus}
             startContent={<TbSend />}
           >
             Publish

@@ -8,30 +8,37 @@ import {
   CardHeader,
   Textarea,
   Input,
+  Chip,
 } from "@nextui-org/react";
 
 import { TbSend } from "react-icons/tb";
 import { MdLiveTv } from "react-icons/md";
-
-// import { ImageUpload, VideoUpload } from "~/components/components.barrel";
+import { PostDataInterface } from "~/types/types.barrel";
+import findTagsInText from "~/services/findTagsInText";
 
 export default function VixliveUpload() {
-  const [postData, setPostData] = useState({
-    title: "" as string,
-    description: "" as string,
-    video: "" as string,
-    videoDisplay: "" as string,
+  const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
+
+  const [postData, setPostData] = useState<PostDataInterface>({
+    title: "",
+    images: [],
+    tags: [],
+    videos: [],
+    imagesDisplay: [],
+    videosDisplay: [],
+    postType: "Vixet",
+    description: "",
+    pollOptions: null,
   });
 
   const handlePostSubmission = (e: FormEvent) => {
     e.preventDefault();
-    // TODO : Take from Here
-    console.log(postData);
+    setSubmitBtnLoadingStatus(true);
   };
   return (
     <Card radius="lg" className="w-full bg-main-text-main">
       <CardHeader className="flex gap-5">
-        <MdLiveTv  className="text-4xl" />
+        <MdLiveTv className="text-4xl" />
         <div className="flex flex-col">
           <p className="text-sm">Vixlive</p>
           <p className="text-xs text-default-500">
@@ -53,7 +60,12 @@ export default function VixliveUpload() {
             isRequired={true}
             value={postData.title}
             onChange={(e) => {
-              setPostData({ ...postData, title: e.target.value });
+              const foundTags = findTagsInText(postData.title as string);
+              setPostData({
+                ...postData,
+                title: e.target.value,
+                tags: foundTags,
+              });
             }}
           />
           <br />
@@ -72,14 +84,38 @@ export default function VixliveUpload() {
             }}
           />
           <br />
-          <h1 className="text-xs text-center">You Live Stream will appear here</h1>
+          {postData.tags && (
+            <div className="flex gap-4 flex-wrap">
+              {postData.tags.map((tag, index) => {
+                return (
+                  <Chip
+                    size="sm"
+                    color="danger"
+                    variant="shadow"
+                    className="lowercase"
+                    key={`${tag}-${index}`}
+                  >
+                    {tag}
+                  </Chip>
+                );
+              })}
+            </div>
+          )}
+          <div className="grid place-items-center">
+            <Chip size="lg" variant="shadow" color="warning">
+              Sorry! This Feature is Yet To Enable. Enjoy
+            </Chip>
+          </div>
         </CardBody>
         <Divider />
-        <CardFooter className="justify-between">
+        <CardFooter>
           <Button
+            className="float-left"
             color="primary"
             variant="ghost"
             type="submit"
+            isLoading={submitBtnLoadingStatus}
+            isDisabled={true} // TODO : Change it
             startContent={<TbSend />}
           >
             Go Live

@@ -1,4 +1,4 @@
-import { useCookies } from "react-cookie";
+import useGetCookie from "~/utils/hooks/useGetCookie";
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
 import { updateUserData } from "~/redux/user/userSlice";
 import { getCurrentUser } from "~/services/Auth/Authentication.services";
@@ -6,20 +6,18 @@ import { getCurrentUser } from "~/services/Auth/Authentication.services";
 function useCheckUserAuth() {
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state) => state.user);
-  const [cookies] = useCookies();
+  const token = useGetCookie();
 
   async function checkAuth() {
     try {
-      if (!cookies["secret_text"]) {
+      if (!token) {
         console.warn("No Token Found!");
         dispatch(
           updateUserData({ ...userState, authStatus: "unauthenticated" })
         );
       } else {
-        const userDataFromServer = await getCurrentUser(
-          cookies["secret_text"] as string
-        );
-
+        const userDataFromServer = await getCurrentUser(token);
+        
         dispatch(
           updateUserData({
             authStatus: "authenticated",

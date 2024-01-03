@@ -1,4 +1,5 @@
 import { FormEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -9,6 +10,7 @@ import {
   Textarea,
   Tooltip,
   Input,
+  Chip,
 } from "@nextui-org/react";
 
 import { TbSend } from "react-icons/tb";
@@ -16,13 +18,29 @@ import { MdOndemandVideo } from "react-icons/md";
 import { IoVideocamOutline } from "react-icons/io5";
 
 import { VideoUpload } from "~/components/components.barrel";
+import useGetCookie from "~/utils/hooks/useGetCookie";
+import Toast from "~/components/CustomToast/Toast";
+import { toast } from "react-toastify";
+import { uploadPosts } from "~/services/PostUpload/PostsUpload";
+import findTagsInText from "~/services/findTagsInText";
+import { PostDataInterface } from "~/types/types.barrel";
 
 export default function VixdeoUpload() {
-  const [postData, setPostData] = useState({
-    title: "" as string,
-    description: "" as string,
-    video: [] as string[],
-    videoDisplay: [] as string[],
+  const navigate = useNavigate();
+
+  const token = useGetCookie();
+  const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
+
+  const [postData, setPostData] = useState<PostDataInterface>({
+    title: "",
+    images: [],
+    tags: [],
+    videos: [],
+    imagesDisplay: [],
+    videosDisplay: [],
+    postType: "Vixdeo",
+    description: "",
+    pollOptions: null,
   });
 
   const videoInputRef = useRef<HTMLInputElement | null>(null);
@@ -30,52 +48,78 @@ export default function VixdeoUpload() {
     videoInputRef.current?.click();
   }
   function handleVideoInputChange() {
+    toast.loading("Please wait.. getting your video onboard!", {
+      toastId: "video_wait_1",
+    });
     if (videoInputRef.current?.files?.length) {
       if (videoInputRef.current.files.length > 2) {
-        // TODO Alert Here!
-        window.alert("Not Allowed More Than 1 Video!!!");
+        Toast.warning("Not Allowed More Than 1 Video!!!");
         return;
       }
       const videoFiles = videoInputRef.current.files as FileList;
       const videoBlob = videoFiles[0];
       const videoSizeInMB = videoBlob.size / (1024 * 1024);
 
-      if (videoSizeInMB > 1000) {
-        // TODO Alert Here!
+      if (videoSizeInMB > 100) {
         // ? Alert the user if the file size exceeds 100MB
-        window.alert(`Video file size exceeds the limit (1GB)`);
+        Toast.warning(`Video file size exceeds the limit (100MB)`);
         return;
       }
 
       const reader = new FileReader() as FileReader;
 
       reader.onload = (event) => {
-        setPostData((prevData) => ({
+        setPostData((prevData: PostDataInterface) => ({
           ...prevData,
-          video: [...prevData.video, event.target?.result as string],
-          videoDisplay: [
-            ...prevData.videoDisplay,
+          videos: [...prevData.videos!, event.target?.result as string],
+          videosDisplay: [
+            ...prevData.videosDisplay!,
             URL.createObjectURL(videoBlob),
           ],
         }));
       };
       reader.onerror = (event) => {
-        console.warn(event.target + " Error While Loading Video", event);
+        Toast.error(event.target + " Error While Loading Video", event);
+        console.error("Error While Loading Video", event);
       };
 
-      reader.readAsArrayBuffer(videoBlob);
+      reader.readAsDataURL(videoBlob);
     }
+    toast.done("video_wait_1");
   }
 
-  const handlePostSubmission = (e: FormEvent) => {
+  const handlePostSubmission = async (e: FormEvent) => {
     e.preventDefault();
-    // TODO : Take from Here
-    console.log(postData);
+    if (postData.tags.length === 0) {
+      Toast.warning("Add one tag in your description At least");
+    } else {
+      if (postData.videos?.length === 0) {
+        Toast.warning("Add Your Video Please!");
+      } else {
+        try {
+          setSubmitBtnLoadingStatus(true);
+          const res = await uploadPosts(postData, token!);
+          Toast.success(res.data.message);
+          setSubmitBtnLoadingStatus(false);
+
+          navigate("/trending", { replace: true });
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          setSubmitBtnLoadingStatus(false);
+          Toast.error(error.response.data.message);
+          console.error(
+            "Error Uploading Post Data : ",
+            error.response.data.message
+          );
+        }
+      }
+    }
   };
   return (
     <Card radius="lg" className="w-full bg-main-text-main">
       <CardHeader className="flex gap-5">
-        <MdOndemandVideo  className="text-4xl" />
+        <MdOndemandVideo className="text-4xl" />
         <div className="flex flex-col">
           <p className="text-sm">Vixdeo</p>
           <p className="text-xs text-default-500">
@@ -112,33 +156,55 @@ export default function VixdeoUpload() {
             isRequired={true}
             value={postData.description}
             onChange={(e) => {
-              setPostData({ ...postData, description: e.target.value });
+              const foundTags = findTagsInText(postData.description as string);
+              setPostData({
+                ...postData,
+                tags: foundTags,
+                description: e.target.value,
+              });
             }}
           />
           <br />
-          {postData.video.length >= 1 && (
+          {postData.videos && (
             <div
               className={`grid gap-1 place-items-center  ${
-                postData.video.length === 1
+                postData.videos.length === 1
                   ? "grid-cols-1"
-                  : postData.video.length <= 4
-                  ? "grid-cols-2"
-                  : postData.video.length <= 6
-                  ? "grid-cols-3"
-                  : postData.video.length <= 8
-                  ? "grid-cols-4"
-                  : ""
+                  : postData.videos.length <= 4
+                    ? "grid-cols-2"
+                    : postData.videos.length <= 6
+                      ? "grid-cols-3"
+                      : postData.videos.length <= 8
+                        ? "grid-cols-4"
+                        : ""
               }`}
             >
-              {postData.videoDisplay.map((video, index) => {
+              {postData.videosDisplay!.map((video, index) => {
                 return (
                   <VideoUpload
                     key={`${video}-${index}`}
                     index={index}
                     video={video}
-                    // TODO : make it reusable with different states
                     setPostData={setPostData}
                   />
+                );
+              })}
+            </div>
+          )}
+          <br />
+          {postData.tags.length >= 1 && (
+            <div className="flex gap-4 flex-wrap">
+              {postData.tags.map((tag, index) => {
+                return (
+                  <Chip
+                    size="sm"
+                    color="danger"
+                    variant="shadow"
+                    className="lowercase"
+                    key={`${tag}-${index}`}
+                  >
+                    {tag}
+                  </Chip>
                 );
               })}
             </div>
@@ -151,7 +217,11 @@ export default function VixdeoUpload() {
               color="default"
               isIconOnly
               variant="flat"
-              isDisabled={postData.videoDisplay.length >= 1}
+              isDisabled={
+                postData.videosDisplay
+                  ? postData.videosDisplay.length >= 1
+                  : false
+              }
               aria-label="GIF Upload"
               onClick={clickVideoInput}
             >
@@ -173,6 +243,7 @@ export default function VixdeoUpload() {
             variant="ghost"
             type="submit"
             startContent={<TbSend />}
+            isLoading={submitBtnLoadingStatus}
           >
             Publish
           </Button>
