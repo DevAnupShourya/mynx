@@ -16,10 +16,10 @@ import TrendingPage from "~/pages/private/TrendingPage";
 import NotFoundPrivate from "~/pages/private/NotFoundPrivate";
 import Contact from "~/pages/public/Contact";
 
-import ActivityTab from "~/components/UserTabs/ActivityTab";
-import PostsTab from "~/components/UserTabs/PostsTab";
-import FollowersTab from "~/components/UserTabs/FollowersTab";
-import FollowingTab from "~/components/UserTabs/FollowingTab";
+import ActivityTab from "~/components/userTabs/ActivityTab";
+import PostsTab from "~/components/userTabs/PostsTab";
+import FollowersTab from "~/components/userTabs/FollowersTab";
+import FollowingTab from "~/components/userTabs/FollowingTab";
 import LiveAside from "~/components/cards/LiveAside";
 import { ScrollShadow, Divider } from "@nextui-org/react";
 
