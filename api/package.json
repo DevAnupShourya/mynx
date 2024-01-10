@@ -1,10 +1,9 @@
 {
-  "name": "Mynx_backend",
+  "name": "mynx_api",
   "version": "1.0.0",
   "description": "",
-  "main": "app.ts",
+  "main": "./build/server.js",
   "scripts": {
-    "debug": "cross-env NODE_OPTIONS=\"--inspect\" npx nodemon",
     "server": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
