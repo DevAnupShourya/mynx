@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken/';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-// ? Importing JWT TOken From config
 import { JWT_SECRET } from '~/v1/config/Variables';
 import User from '~/v1/models/User.model';
 
 import { responseError, responseWarn } from '~/v1/utils/apiResponseMsg';
 
-// ? Custom interface that extends the Request type with User
+// ? Custom interface that extends the Request type with userId
 interface AuthenticatedRequest extends Request {
     userId?: String;
 }

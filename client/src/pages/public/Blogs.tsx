@@ -1,4 +1,4 @@
-import { BlogCard } from "~/components/components.barrel";
+import BlogCard from "~/components/cards/BlogCard";
 
 function Blogs() {
   return (

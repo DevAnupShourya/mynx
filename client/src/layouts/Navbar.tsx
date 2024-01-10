@@ -12,9 +12,9 @@ import {
   Button,
 } from "@nextui-org/react";
 
-import Logo from "~/components/Logo/Logo";
-import NavLink from "~/components/Links/NavLink";
-import { MenuLinks } from "~/utils/data/data.barrel";
+import Logo from "~/components/logo/Logo";
+import NavLink from "~/components/links/NavLink";
+import { NavbarLinks } from "~/utils/raw_data/Navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -24,7 +24,6 @@ export default function Navbar() {
       shouldHideOnScroll
       isBordered
       className="bg-main-text-default py-2"
-      // border-b dark:border-white light:border-black
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
@@ -41,14 +40,13 @@ export default function Navbar() {
         }}
         className="bg-main-text-main w-full h-full py-10 grid place-items-center"
       >
-        {MenuLinks.map((item) => {
+        {NavbarLinks.map((item) => {
           return (
             <NavbarMenuItem key={item.name}>
               <NavLink
                 icon={item.icon}
                 name={item.name}
                 url={item.href}
-                withName={true}
               />
             </NavbarMenuItem>
           );
@@ -65,7 +63,7 @@ export default function Navbar() {
         <Logo />
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {MenuLinks.map((item) => {
+        {NavbarLinks.map((item) => {
           return (
             <NavbarItem key={item.name}>
               <NavLink icon={item.icon} name={item.name} url={item.href} />

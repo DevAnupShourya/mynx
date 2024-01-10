@@ -21,7 +21,7 @@ import {
   Skeleton,
 } from "@nextui-org/react";
 
-import { UserNotFound } from "~/components/components.barrel";
+import UserNotFound from "~/components/loading_error_pages/UserNotFound";
 
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
@@ -105,44 +105,42 @@ function UserProfilePage() {
     setFollowBtnState(false);
   }
 
-  useEffect(() => {
-    async function findUserByUsername() {
-      try {
-        if (!cookies["secret_text"]) {
-          console.warn("No Token Found!");
-        } else {
-          const data = await getUserByUsername(
-            username!,
-            cookies["secret_text"] as string
-          );
+  async function findUserByUsername() {
+    try {
+      if (!cookies["secret_text"]) {
+        console.warn("No Token Found!");
+      } else {
+        const data = await getUserByUsername(
+          username!,
+          cookies["secret_text"] as string
+        );
 
-          if (data.responseData.length === 0) {
-            setUserSearchStatus(false);
-          } else {
-            const foundUser = data.responseData.userFromDB;
-            setUserData({
-              isFollowThisUser: data.responseData.isFollowedByMe,
-              admin: userState.mail === foundUser.email,
-              avatarImgSrc: foundUser.avatarURL,
-              bio: foundUser.bio,
-              country: foundUser.country,
-              coverImgSrc: foundUser.coverURL,
-              followers: foundUser.followers.length,
-              following: foundUser.following.length,
-              gender: foundUser.gender,
-              joining: foundUser.createdAt,
-              name: foundUser.name,
-              posts: foundUser.posts.length,
-              username: foundUser.username,
-              id: foundUser._id,
-            });
-            setUserSearchStatus(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching User:", error);
+        const foundUser = data.responseData.userFromDB;
+        setUserData({
+          isFollowThisUser: data.responseData.isFollowedByMe,
+          admin: userState.mail === foundUser.email,
+          avatarImgSrc: foundUser.avatarURL,
+          bio: foundUser.bio,
+          country: foundUser.country,
+          coverImgSrc: foundUser.coverURL,
+          followers: foundUser.followers.length,
+          following: foundUser.following.length,
+          gender: foundUser.gender,
+          joining: foundUser.createdAt,
+          name: foundUser.name,
+          posts: foundUser.posts.length,
+          username: foundUser.username,
+          id: foundUser._id,
+        });
+        setUserSearchStatus(true);
       }
+    } catch (error) {
+      setUserSearchStatus(false);
+      console.error("Error fetching User:", error);
     }
+  }
+
+  useEffect(() => {
     findUserByUsername();
     // eslint-disable-next-line
   }, []);
@@ -379,12 +377,12 @@ function UserProfilePage() {
                     });
                   }}
                 >
-                  Vixets
+                  Posts
                 </Button>
                 <Button
                   size="sm"
                   variant={
-                    pathname === `/${userData.username}/vixsnaps`
+                    pathname === `/${userData.username}/followers`
                       ? "shadow"
                       : "light"
                   }
@@ -392,17 +390,17 @@ function UserProfilePage() {
                   fullWidth
                   radius="none"
                   onClick={() => {
-                    navigate(`/${userData.username}/vixsnaps`, {
+                    navigate(`/${userData.username}/followers`, {
                       preventScrollReset: false,
                     });
                   }}
                 >
-                  Vixsnap
+                  Followers
                 </Button>
                 <Button
                   size="sm"
                   variant={
-                    pathname === `/${userData.username}/vixdeos`
+                    pathname === `/${userData.username}/following`
                       ? "shadow"
                       : "light"
                   }
@@ -410,17 +408,17 @@ function UserProfilePage() {
                   fullWidth
                   radius="none"
                   onClick={() => {
-                    navigate(`/${userData.username}/vixdeos`, {
+                    navigate(`/${userData.username}/following`, {
                       preventScrollReset: false,
                     });
                   }}
                 >
-                  Vixdeo
+                  Following
                 </Button>
                 <Button
                   size="sm"
                   variant={
-                    pathname === `/${userData.username}/engagements`
+                    pathname === `/${userData.username}/activity`
                       ? "shadow"
                       : "light"
                   }
@@ -428,12 +426,12 @@ function UserProfilePage() {
                   fullWidth
                   radius="none"
                   onClick={() => {
-                    navigate(`/${userData.username}/engagements`, {
+                    navigate(`/${userData.username}/activity`, {
                       preventScrollReset: false,
                     });
                   }}
                 >
-                  Engagement
+                  Activity
                 </Button>
               </div>
             </ScrollShadow>

@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
+import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
-import themeReducer from '~/redux/theme/ThemeSlice';
-import userReducer from '~/redux/user/userSlice';
+
+import themeReducer from '~/redux/slices/theme';
+import userReducer from '~/redux/slices/user';
 
 const reducers = combineReducers({
     theme: themeReducer,
@@ -14,6 +15,7 @@ const reducers = combineReducers({
 const persistConfig = {
     key: 'Mynx',
     storage,
+    // ? Saving only theme in local storage
     whitelist: ['theme']
 };
 

@@ -13,7 +13,7 @@ interface AuthenticatedRequest extends Request {
 // ? Creating a Post
 export const createPost = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const author = req.userId
+        const author = req.userId;
         const postData = req.body;
 
         // ? Validating the user object against the schema
@@ -58,7 +58,6 @@ export const getAllPosts = async (req: AuthenticatedRequest, res: Response) => {
         });
     } catch (error: any) {
         responseError(res, 500, error.message, null);
-
     }
 };
 
@@ -81,7 +80,6 @@ export const getPostByPostId = async (req: AuthenticatedRequest, res: Response) 
         return responseInfo(res, 200, "Post Retrieved Successfully", post);
     } catch (error: any) {
         responseError(res, 500, error.message, null);
-
     }
 };
 
@@ -118,7 +116,6 @@ export const getAllPostsOfCurrentUser = async (req: AuthenticatedRequest, res: R
         }
     } catch (error: any) {
         responseError(res, 500, error.message, null);
-
     }
 }
 
@@ -153,8 +150,59 @@ export const updatePostByPostId = async (req: AuthenticatedRequest, res: Respons
 
     } catch (error: any) {
         responseError(res, 500, error.message, null);
-
     }
+};
+
+// ? Updating a Vixpoll Post by its PostId
+export const updatePollPostByPostId = async (req: AuthenticatedRequest, res: Response) => {
+    const pollSupporterId = req.userId!;
+    const ithToPlus = parseInt(req.query.ithToPlus as string);
+    const postId = req.params.postId as string;
+
+    // ? Check if ithToPlus is available or not
+    if (ithToPlus !== 0 && ithToPlus !== 1 && ithToPlus !== 2 && ithToPlus !== 3) {
+        return responseWarn(res, 400, "Missing ithToPlus query!", null);
+    }
+
+    // ? Check if postId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+        return responseWarn(res, 400, "Invalid PostId", null);
+    }
+
+    try {
+        const postToUpdate = await Post.findById(postId);
+
+        if (!postToUpdate) {
+            return responseWarn(res, 404, "No Post Available", null);
+        }
+
+        if (postToUpdate.postType !== 'Vixpoll') {
+            return responseWarn(res, 404, "This post is not Vixpoll type post!", null);
+        }
+
+        const newPollOptions = postToUpdate.pollOptions;
+        // ? Check if the user has already supported any option
+        if (newPollOptions.some(option => option.pollSupporters.includes(pollSupporterId))) {
+            return responseWarn(res, 403, "Already supported another option by you!", null);
+        }
+
+        // ? Check if the user has already supported the current option
+        if (newPollOptions[ithToPlus].pollSupporters.includes(pollSupporterId)) {
+            return responseWarn(res, 403, "Already Done by you!", null);
+        }
+
+        newPollOptions[ithToPlus].pollSupporters.push(pollSupporterId);
+
+        const updatedPost = await Post.findByIdAndUpdate(
+            postToUpdate._id,
+            { $set: { pollOptions: newPollOptions } },
+            { new: true, returnOriginal: false }
+        );
+        return responseInfo(res, 200, "Post Updated Successfully", updatedPost);
+    } catch (error: any) {
+        responseError(res, 500, error.message, null);
+    }
+
 };
 
 // ? Getting all Posts of Given Username
@@ -229,10 +277,10 @@ export const deletePostByPostId = async (req: AuthenticatedRequest, res: Respons
 
     } catch (error: any) {
         responseError(res, 500, error.message, null);
-
     }
 }
 
+// ? Like A Post By its Id
 export const likePostById = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const postId = req.params.postId;
@@ -256,19 +304,18 @@ export const likePostById = async (req: AuthenticatedRequest, res: Response) => 
         if (userLiked) {
             post.likes = post.likes.filter((postLikedUserId) => !postLikedUserId.equals(userIdToLike));
             await post.save();
-            const totalLikes = post.likes.length;
-            return responseWarn(res, 200, "Post Unliked successfully", { totalLikes });
+            const totalLikesArr = post.likes;
+            return responseInfo(res, 200, "Post Unliked successfully", { totalLikesArr });
         }
 
         // ? Add the user's ID to the likes array
         post.likes.push(userIdToLike);
         // ? Save the updated post
         await post.save();
-        const totalLikes = post.likes.length;
+        const totalLikesArr = post.likes;
+        return responseInfo(res, 200, "Post liked successfully", { totalLikesArr });
 
-        return responseWarn(res, 200, "Post liked successfully", { totalLikes });
     } catch (error: any) {
         responseError(res, 500, error.message, null);
-
     }
 }

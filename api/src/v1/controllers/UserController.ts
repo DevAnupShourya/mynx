@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { userSignUpSchema, userLoginSchema, userUpdateSchema } from '~/v1/types/Joi.schemas';
 
 import { responseError, responseInfo, responseWarn } from '~/v1/utils/apiResponseMsg';
 import createSecretToken from '~/v1/utils/secretToken';
 import User from '~/v1/models/User.model';
+import Post from '../models/Post.model';
 
 interface AuthenticatedRequest extends Request {
     userId?: mongoose.Types.ObjectId;
@@ -22,7 +23,7 @@ export const signupUser = async (req: Request, res: Response) => {
         const userAvailable = await User.findOne({ email: userData.email })
 
         if (userAvailable) {
-            responseInfo(res, 403, "Email Already used!", null);
+            responseWarn(res, 403, "Email Already used!", null);
         } else {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(userData.password, salt);
@@ -37,6 +38,7 @@ export const signupUser = async (req: Request, res: Response) => {
             responseInfo(res, 202, "User Created Successfully!", { newUserData, token: tokenGenerated });
         }
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, null);
     }
 }
@@ -54,7 +56,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
         if (userAvailable === null) {
             // ? User Not Available
-            responseInfo(res, 404, "No User Found", null);
+            responseWarn(res, 404, "No User Found", null);
         } else {
             // ? User Available then compare passwords
             const passwordComparison = await bcrypt.compare(userCredentialsFiltered.password, userAvailable.password);
@@ -64,10 +66,11 @@ export const loginUser = async (req: Request, res: Response) => {
                 const tokenGenerated = createSecretToken(userAvailable._id.toString());
                 responseInfo(res, 202, "User Found!", { userAvailable, token: tokenGenerated });
             } else {
-                responseInfo(res, 403, "Wrong Credentials!!", null);
+                responseWarn(res, 403, "Wrong Credentials!!", null);
             }
         }
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, null);
     }
 }
@@ -80,9 +83,10 @@ export const getCurrentUserInfo = async (req: AuthenticatedRequest, res: Respons
         if (userInfo) {
             responseInfo(res, 200, "User Found!", { userInfo });
         } else {
-            responseInfo(res, 403, "User not found!!", null);
+            responseWarn(res, 403, "User not found!!", null);
         }
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, null);
     }
 };
@@ -94,11 +98,12 @@ export const usernameAvailabilityStatus = async (req: Request, res: Response) =>
         const usernamesArray = usernames.map(user => user.username);
 
         if (usernamesArray.includes(usernameToCheck)) {
-            responseInfo(res, 200, "Can Not Use This Username!", { canUseQuery: false });
+            responseWarn(res, 200, "Can Not Use This Username!", { canUseQuery: false });
         } else {
             responseInfo(res, 200, "Feel Free to use This username.", { canUseQuery: true });
         }
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, null);
     }
 }
@@ -115,9 +120,10 @@ export const getUserById = async (req: Request, res: Response) => {
         if (user) {
             return responseInfo(res, 200, "User Found!", { user });
         } else {
-            return responseError(res, 404, "No user Found", null);
+            return responseWarn(res, 404, "No user Found", null);
         }
     } catch (error: any) {
+        console.log(error)
         return responseError(res, 500, error.message, null);
     }
 }
@@ -130,9 +136,10 @@ export const getUserByUsername = async (req: AuthenticatedRequest, res: Response
         if (userFromDB) {
             responseInfo(res, 200, "Found this User : ", { userFromDB, isFollowedByMe: userFromDB.followers.includes(req.userId!) });
         } else {
-            responseInfo(res, 200, "No User Found with this Username!", userFromDB);
+            responseWarn(res, 200, "No User Found with this Username!", userFromDB);
         }
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, null);
     }
 }
@@ -144,8 +151,9 @@ export const updateUserInfo = async (req: AuthenticatedRequest, res: Response) =
         const dataToUpdateFiltered = await userUpdateSchema.validateAsync(dataToUpdate);
         const userProfile = await User.findById(req.userId);
 
-        // ? Both should be hashed password
+        // ? Both should be hashed password if password not changed by user
         if (userProfile?.password !== dataToUpdateFiltered.password) {
+            // ? generating new password hash
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(dataToUpdateFiltered.password, salt);
             const userToEdit = await User.findByIdAndUpdate(req.userId, { ...dataToUpdateFiltered, password: hashedPassword }, { new: true });
@@ -155,6 +163,7 @@ export const updateUserInfo = async (req: AuthenticatedRequest, res: Response) =
             responseInfo(res, 200, `${userToEdit?.name}'s Values Updated.`, { userToEdit });
         }
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, error);
     }
 }
@@ -186,6 +195,7 @@ export const getAllUsers = async (req: AuthenticatedRequest, res: Response) => {
             allUsers,
         });
     } catch (error: any) {
+        console.log(error)
         responseError(res, 500, error.message, null);
     }
 }
@@ -194,16 +204,25 @@ export const deleteUserById = async (req: AuthenticatedRequest, res: Response) =
     try {
         const userToDelete = req.userId;
 
+        if (!mongoose.Types.ObjectId.isValid(userToDelete!)) {
+            return responseWarn(res, 404, 'Invalid User ID to delete!', null);
+        }
+
+        const userToBeDeleted = await User.findById(userToDelete);
+        
+        if (!userToBeDeleted) {
+            return responseWarn(res, 404, 'User not found', null);
+        }
+
         if (userToDelete === req.userId) {
-            const deletedUser = await User.deleteOne({ _id: userToDelete });
+            await User.deleteOne({ _id: userToDelete });
+            const deletedPosts = await Post.deleteMany({ author: userToDelete });
 
-            if (deletedUser.deletedCount !== 1) {
-                return responseError(res, 404, 'User not found', null);
-            }
-
-            return responseInfo(res, 200, `Your Account Deleted Successfully`, null);
+            console.log(`'${userToDelete}' Account and '${deletedPosts.deletedCount}' Posts Deleted Successfully`);
+            return responseInfo(res, 200, `Your Account and ${deletedPosts.deletedCount} posts Deleted Successfully`, null);
         }
     } catch (error: any) {
+        console.log(error)
         return responseError(res, 500, error.message, null);
     }
 };
@@ -214,7 +233,7 @@ export const followOrUnfollowUserById = async (req: AuthenticatedRequest, res: R
         const followerId = new mongoose.Types.ObjectId(req.params.userId);
 
         if (!mongoose.Types.ObjectId.isValid(followerId)) {
-            return responseError(res, 404, 'Invalid User to follow Id!', null);
+            return responseWarn(res, 404, 'Invalid User to follow Id!', null);
         }
 
         // ? Check if the user to follow exists
@@ -222,10 +241,10 @@ export const followOrUnfollowUserById = async (req: AuthenticatedRequest, res: R
         const followingUser = await User.findById(followingId);
 
         if (!gettingFollowedUser) {
-            return responseError(res, 404, 'User to follow not found', null);
+            return responseWarn(res, 404, 'User to follow not found', null);
         }
         if (!followingUser) {
-            return responseError(res, 404, 'User Who is Following not found', null);
+            return responseWarn(res, 404, 'User Who is Following not found', null);
         }
 
         // ? Check if the user is already being followed
@@ -249,6 +268,7 @@ export const followOrUnfollowUserById = async (req: AuthenticatedRequest, res: R
             return responseInfo(res, 200, `${followingUser?.username} followed ${gettingFollowedUser.username} Successfully.`, { following: true });
         }
     } catch (error: any) {
+        console.log(error)
         return responseError(res, 500, error.message, null);
     }
 };

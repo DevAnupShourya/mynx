@@ -1,8 +1,7 @@
-// ? Packages
 import express from 'express';
 const userRoute = express.Router();
 
-// ? Controller
+// ? Controllers
 import {
     signupUser,
     loginUser,
@@ -19,7 +18,7 @@ import {
 // ? Middleware
 import userVerification from '~/v1/middleware/userVerification';
 
-// * Main Route : http://127.0.0.1:3300/v1/users/ 
+// * Root Route : .../v1/users/*
 userRoute.post('/signup', signupUser);
 userRoute.post('/login', loginUser);
 userRoute.get('/u/:userId', userVerification, getUserById);

@@ -18,12 +18,12 @@ import { MdMail } from "react-icons/md";
 
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
-import { updateUserData } from "~/redux/user/userSlice";
-import { Toast } from "~/components/components.barrel";
+import { updateUserData } from "~/redux/slices/user";
+import Toast from "~/components/custom_toast/Toast";
 import { toast as reactToast } from "react-toastify";
 
 // ? Services
-import { Auth } from "~/services/services.barrel";
+import { authenticateUser } from "~/services/Users/User.services";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ export default function Login() {
     e.preventDefault();
     setFormSubmitStatus(true);
     try {
-      const resFromServer = await Auth.authenticateUser(formData);
+      const resFromServer = await authenticateUser(formData);
 
       setCookie("secret_text", resFromServer?.data.responseData.token, {
         path: "/",
@@ -66,6 +66,7 @@ export default function Login() {
           name: "",
           userImg: "",
           username: "",
+          userId: "",
         })
       );
 
@@ -74,10 +75,11 @@ export default function Login() {
       dispatch(
         updateUserData({
           authStatus: "authenticated",
-          mail: resFromServer.data.responseData.userAvailable.email,
-          name: resFromServer.data.responseData.userAvailable.name,
-          userImg: resFromServer.data.responseData.userAvailable.avatarURL,
-          username: resFromServer.data.responseData.userAvailable.username,
+          mail: resFromServer?.data.responseData.userAvailable.email,
+          name: resFromServer?.data.responseData.userAvailable.name,
+          userImg: resFromServer?.data.responseData.userAvailable.avatarURL,
+          username: resFromServer?.data.responseData.userAvailable.username,
+          userId: resFromServer?.data.responseData.userAvailable._id,
         })
       );
 

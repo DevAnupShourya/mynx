@@ -1,7 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
-import bcrypt from 'bcrypt';
-
-import Post from '~/v1/models/Post.model';
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema({
     name: {
@@ -53,12 +50,6 @@ const userSchema = new Schema({
 },
     { timestamps: true }
 )
-
-userSchema.pre('deleteOne', async function (this: Document, next) {
-    await Post.deleteMany({ author: this._id });
-    console.log('Deleted all Posts of this user also')
-    next();
-});
 
 const User = mongoose.model('user', userSchema);
 

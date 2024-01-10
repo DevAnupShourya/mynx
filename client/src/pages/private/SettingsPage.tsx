@@ -4,20 +4,22 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
-import { updateUserData } from "~/redux/user/userSlice";
+import { updateUserData } from "~/redux/slices/user";
 
-import { Toast } from "~/components/components.barrel";
+import Toast from "~/components/custom_toast/Toast";
+import AccountDeleteCard from "~/components/cards/AccountDeleteCard";
 
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
 
-import { getCurrentUser } from "~/services/Auth/Authentication.services";
-import { updateUserDataService } from "~/services/Users/User.services";
-import { UpdateUserProfileInterface } from "~/types/types.barrel";
 import {
-  PageTitle,
-  AvatarInput,
-  CoverImgInput,
-} from "~/components/components.barrel";
+  getCurrentUser,
+  updateUserDataService,
+} from "~/services/Users/User.services";
+
+import PageTitle from "~/components/title/PageTitle";
+import UserAvatarInput from "~/components/file_inputs/UserAvatarInput";
+import UserCoverInput from "~/components/file_inputs/UserCoverInput";
+import { UpdateUserProfileInterface } from "~/types/user.types";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -93,6 +95,7 @@ export default function SettingsPage() {
             name: updatedUserData.responseData.userToEdit.name,
             userImg: updatedUserData.responseData.userToEdit.avatarURL,
             username: updatedUserData.responseData.userToEdit.username,
+            userId: updatedUserData.responseData.userToEdit._id,
           })
         );
 
@@ -235,13 +238,13 @@ export default function SettingsPage() {
             />
           </div>
           <div className="my-1">
-            <AvatarInput
+            <UserAvatarInput
               formData={userProfileData}
               setFormData={setUserProfileData}
             />
           </div>
           <div className="my-1">
-            <CoverImgInput
+            <UserCoverInput
               formData={userProfileData}
               setFormData={setUserProfileData}
             />
@@ -257,6 +260,8 @@ export default function SettingsPage() {
           </Button>
         </form>
       </section>
+      <Divider className="my-4" />
+      <AccountDeleteCard />
     </>
   );
 }

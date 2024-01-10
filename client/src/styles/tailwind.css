@@ -36,7 +36,4 @@ body {
   .bg-def {
     @apply bg-light-default dark:bg-dark-default text-light-default  dark:text-dark-default;
   }
-  .f-row {
-    @apply flex flex-row justify-center items-center;
-  }
 }

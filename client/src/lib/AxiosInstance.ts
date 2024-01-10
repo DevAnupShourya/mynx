@@ -5,9 +5,4 @@ const axiosInstance = axios.create({
     baseURL: API_URL
 });
 
-// const axiosProtectedInstance = axios.create({
-//     baseURL: API_URL,
-//     headers: {'Authorization': `Bearer ${cookieValue}`}
-// });
-
 export default axiosInstance;

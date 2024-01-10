@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Link as LinkBtn } from "@nextui-org/react";
-import { FooterItems } from "~/utils/data/data.barrel";
+import { FooterCols } from "~/utils/raw_data/Navigation";
 
 export default function Footer() {
   return (
@@ -11,7 +11,7 @@ export default function Footer() {
             Company
           </h2>
           <ul className="font-medium">
-            {FooterItems.CompanyItems.map((item, index) => {
+            {FooterCols.CompanyItems.map((item, index) => {
               return (
                 <li className="mb-4" key={index}>
                   <LinkBtn
@@ -32,7 +32,7 @@ export default function Footer() {
             Help center
           </h2>
           <ul className="font-medium">
-            {FooterItems.Help_center.map((item, index) => {
+            {FooterCols.Help_center.map((item, index) => {
               return (
                 <li className="mb-4" key={index}>
                   <LinkBtn
@@ -55,7 +55,7 @@ export default function Footer() {
             Legal
           </h2>
           <ul className="font-medium">
-            {FooterItems.Legal.map((item, index) => {
+            {FooterCols.Legal.map((item, index) => {
               return (
                 <li className="mb-4" key={index}>
                   <LinkBtn
@@ -76,7 +76,7 @@ export default function Footer() {
             Download
           </h2>
           <ul className="font-medium">
-            {FooterItems.Download.map((item, index) => {
+            {FooterCols.Download.map((item, index) => {
               return (
                 <li className="mb-4" key={index}>
                   <LinkBtn
@@ -97,7 +97,7 @@ export default function Footer() {
       </div>
       <div className="py-6 pl-10 text-left">
         <span className="text-sm">
-          &copy; 2023{" "}
+          &copy; 2024{" "}
           <LinkBtn as={Link} href="/">
             Mynx
           </LinkBtn>

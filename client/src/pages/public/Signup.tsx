@@ -20,19 +20,22 @@ import { IoMdEyeOff, IoMdEye } from "react-icons/io";
 import { BiSolidRename } from "react-icons/bi";
 import { BsFillFileEarmarkRichtextFill } from "react-icons/bs";
 
-import { AvatarInput, CoverImgInput } from "~/components/components.barrel";
-import { FormDataInterface } from "~/types/types.barrel";
-import { Countries } from "~/utils/data/data.barrel";
+import UserAvatarInput from "~/components/file_inputs/UserAvatarInput";
+import UserCoverInput from "~/components/file_inputs/UserCoverInput";
+import { FormDataInterface } from "~/types/user.types";
+import Countries from "~/utils/raw_data/Countries";
 
 // ? Services
-import { Auth } from "~/services/services.barrel";
+import {
+  checkUsernameAvailability,
+  createUser,
+} from "~/services/Users/User.services";
 
 // ? Redux
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
-import { updateUserData } from "~/redux/user/userSlice";
+import { updateUserData } from "~/redux/slices/user";
 
-import { Toast } from "~/components/components.barrel";
-import { toast as reactToast } from "react-toastify";
+import Toast from "~/components/custom_toast/Toast";
 
 function Signup() {
   const navigate = useNavigate();
@@ -70,7 +73,7 @@ function Signup() {
     e.preventDefault();
     setFormSubmitStatus(true);
     try {
-      const usernamesResponse = await Auth.checkUsernameAvailability(
+      const usernamesResponse = await checkUsernameAvailability(
         formData.username
       );
 
@@ -81,16 +84,7 @@ function Signup() {
       } else if (usernamesResponse === 403) {
         Toast.error("Sorry ! This username is not available to use.");
       } else {
-        console.log(formData)
-        const resFromServer = await Auth.createUser(formData);
-        reactToast.loading("Please Wait!! Creating your account....", {
-          toastId: "signup_form_waiting_1",
-        });
-
-        reactToast.done("signup_form_waiting_1");
-        reactToast.loading("Almost Done Creating your account.....", {
-          toastId: "signup_form_waiting_2",
-        });
+        const resFromServer = await createUser(formData);
 
         setCookie("secret_text", resFromServer?.data.responseData.token, {
           path: "/",
@@ -104,17 +98,17 @@ function Signup() {
             name: "",
             userImg: "",
             username: "",
+            userId: "",
           })
         );
-        reactToast.done("signup_form_waiting_2");
         Toast.info("Successfully Created Your Account!");
 
         navigate("/", { replace: true });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      Toast.error(`Error : ${error.response.data.message}`);
-      console.error("Error :", error.response.data.message);
+      Toast.error(`Error  While Creating Account: ${error.response.data.message}`);
+      console.error("Error While Creating Account :", error.response.data.message);
     }
 
     setFormSubmitStatus(false);
@@ -221,8 +215,8 @@ function Signup() {
               variant="bordered"
             />
 
-            <AvatarInput formData={formData} setFormData={setFormData} />
-            <CoverImgInput formData={formData} setFormData={setFormData} />
+            <UserAvatarInput formData={formData} setFormData={setFormData} />
+            <UserCoverInput formData={formData} setFormData={setFormData} />
 
             <Textarea
               name="bio"
