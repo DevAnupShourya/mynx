@@ -12,7 +12,7 @@ The project is currently in the alpha stage of development. This means that it h
 - The project may be unstable and may crash or behave unexpectedly.
 
 ## Target Completion Date ⏱
-I expect to complete the project by Dec 2023.
+I expect to add all features of the project by end of Jan 2024.
 
 ## Feedback and Suggestions 💥
 I would appreciate any feedback or suggestions you have for the project. Please feel free to submit a pull request or issue on GitHub.
@@ -63,13 +63,13 @@ Chirp - Where Voices Unite is built using the MERN stack (MongoDB, Express.js, R
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com:DevAnupShourya/Mynx.git
+   git clone https://github.com:DevAnupShourya/mynx.git
    ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd frontend || cd backend
+    cd api || cd client
     ```
 3. Install dependencies:
 
