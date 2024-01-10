@@ -1,6 +1,7 @@
 import { Tooltip, Link } from "@nextui-org/react";
-import { IconType } from "react-icons";
 import { useLocation, Link as RouterLink } from "react-router-dom";
+
+import { IconType } from "react-icons";
 
 interface nav_item {
   icon: IconType;

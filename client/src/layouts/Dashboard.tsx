@@ -1,24 +1,26 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { TopbarPrivate, BottomBarPrivate } from "~/layouts/layout.barrel";
-import {
-  ChatsPage,
-  FeedPage,
-  FollowerPage,
-  NewPostPage,
-  NotFoundPrivate,
-  NotificationsPage,
-  SettingsPage,
-  TrendingPage,
-  UserProfilePage,
-} from "~/pages/private/private.pages.barrel";
-import {
-  VixsnapsContainer,
-  VixetsContainer,
-  VixdeoContainer,
-  EngagementContainer,
-  ProfileEditModal
-} from "~/components/components.barrel";
+import BottomBarPrivate from "~/layouts/BottomBarPrivate";
+import TopbarPrivate from "~/layouts/TopbarPrivate";
+
+import ChatsPage from "~/pages/private/ChatsPage";
+import FeedPage from "~/pages/private/FeedPage";
+import UserProfilePage from "~/pages/private/UserProfilePage";
+import NewPostPage from "~/pages/private/NewPostPage";
+import FriendsPage from "~/pages/private/FriendsPage";
+import FollowerPage from "~/pages/private/FollowerPage";
+import FollowingPage from "~/pages/private/FollowingPage";
+import NotificationsPage from "~/pages/private/NotificationsPage";
+import SettingsPage from "~/pages/private/SettingsPage";
+import TrendingPage from "~/pages/private/TrendingPage";
+import NotFoundPrivate from "~/pages/private/NotFoundPrivate";
+import Contact from "~/pages/public/Contact";
+
+import ActivityTab from "~/components/UserTabs/ActivityTab";
+import PostsTab from "~/components/UserTabs/PostsTab";
+import FollowersTab from "~/components/UserTabs/FollowersTab";
+import FollowingTab from "~/components/UserTabs/FollowingTab";
+import LiveAside from "~/components/cards/LiveAside";
 import { ScrollShadow, Divider } from "@nextui-org/react";
 
 export default function Dashboard() {
@@ -34,27 +36,30 @@ export default function Dashboard() {
             hideScrollBar
             className="w-full h-full flex flex-row justify-between"
           >
-            <main className="max-md:w-full w-2/3 h-full my-2">
+            <main className="max-md:w-full w-2/3 h-auto my-2">
               <Routes>
                 <Route path="/" element={<FeedPage />} />
                 <Route path="/:username/" element={<UserProfilePage />}>
-                  <Route index element={<VixetsContainer />} />
-                  <Route path="vixsnaps" element={<VixsnapsContainer />} />
-                  <Route path="vixdeos" element={<VixdeoContainer />} />
-                  <Route path="engagements" element={<EngagementContainer />} />
-                  <Route path="edit" element={<ProfileEditModal />} />
+                  <Route index element={<PostsTab />} />
+                  <Route path="followers" element={<FollowersTab />} />
+                  <Route path="following" element={<FollowingTab />} />
+                  <Route path="activity" element={<ActivityTab />} />
                 </Route>
                 <Route path="/new" element={<NewPostPage />} />
                 <Route path="/chats" element={<ChatsPage />} />
-                <Route path="/follower" element={<FollowerPage />} />
+                <Route path="/friends" element={<FriendsPage />}>
+                  <Route index element={<FollowerPage />} />
+                  <Route path="following" element={<FollowingPage />} />
+                </Route>
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/trending" element={<TrendingPage />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route element={<NotFoundPrivate />} />
               </Routes>
             </main>
-            <aside className="max-md:hidden w-1/3 h-full px-5">
-              {/* <TrendingCard /> */}
+            <aside className="max-md:hidden w-1/3 h-auto px-5">
+              <LiveAside />
             </aside>
           </ScrollShadow>
         </section>

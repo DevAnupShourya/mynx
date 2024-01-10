@@ -1,4 +1,4 @@
-import { About_Page_Data } from "~/utils/data/data.barrel";
+import { AboutPageCardsData } from "~/utils/raw_data/PagesData";
 
 export default function About() {
   return (
@@ -16,7 +16,7 @@ export default function About() {
       </div>
       <div className="mx-auto mt-16 sm:mt-20 lg:mt-24 lg:max-w-4xl">
         <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
-          {About_Page_Data.map((feature) => (
+          {AboutPageCardsData.map((feature) => (
             <div
               key={feature.name}
               className="relative px-20 py-4 rounded-lg shadow-2xl"

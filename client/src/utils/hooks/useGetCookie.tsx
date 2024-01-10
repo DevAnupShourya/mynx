@@ -1,8 +1,6 @@
 import { useCookies } from "react-cookie";
 
-function useGetCookie() : string | undefined {
+export default function useGetCookie(): string | null {
   const [cookies] = useCookies();
-  return cookies["secret_text"] as string;
+  return cookies["secret_text"] ? (cookies["secret_text"] as string) : null;
 }
-
-export default useGetCookie;

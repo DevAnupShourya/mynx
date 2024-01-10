@@ -1,72 +1,93 @@
-import { PostCard , PageTitle } from "~/components/components.barrel";
+import { useEffect, useState } from "react";
+import { Button, Chip } from "@nextui-org/react";
 
-const postData = [
-  {
-    author: "Joe Rogan",
-    username: "Joe_Rogan",
-    time: "1 hour",
-    avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026704a",
-    comments: "114",
-    views: "114K",
-    postURL: "/Joe_Rogan/a8978dsa8s7add32s15",
-    text: "Just had a great conversation with an amazing guest on the podcast!",
-    images: ["", ""],
-  },
-  {
-    author: "Elon Musk",
-    username: "Elon_Musk",
-    time: "2 hours",
-    avatarUrl: "https://i.pravatar.cc/150?u=b5e4db0a0c3445a98bd",
-    comments: "205",
-    views: "205K",
-    postURL: "/Elon_Musk/c53b7s9a8d4e321sa21",
-    text: "Working on some exciting projects. Stay tuned!",
-    images: ["", ""],
-  },
-  {
-    author: "Bill Gates",
-    username: "Bill_Gates",
-    time: "3 hours",
-    avatarUrl: "https://i.pravatar.cc/150?u=de3cb54b7a9a0a6310c",
-    comments: "89",
-    views: "89K",
-    postURL: "/Bill_Gates/98sa7d4f5a321sa33",
-    text: "Reflecting on the latest advancements in technology and their impact on society.",
-    images: ["", "", "", "", "", ""],
-  },
-  {
-    author: "Mark Zuckerberg",
-    username: "Mark_Zuckerberg",
-    time: "4 hours",
-    avatarUrl: "https://i.pravatar.cc/150?u=9a8sd79e432s1f3e2a",
-    comments: "150",
-    views: "150K",
-    postURL: "/Mark_Zuckerberg/2a89s7d8a7s4d32",
-    text: "Excited about the future of social media and its role in connecting people around the world.",
-    images: ["", "", "", "", ""],
-  },
-  {
-    author: "Satya Nadella",
-    username: "Satya_Nadella",
-    time: "5 hours",
-    avatarUrl: "https://i.pravatar.cc/150?u=1s3d2f1e6a8s7d9a8",
-    comments: "120",
-    views: "120K",
-    postURL: "/Satya_Nadella/123s4d5f6a7s8d9",
-    text: "Empowering every person and every organization on the planet to achieve more.",
-    images: [""],
-  },
-];
+import PageTitle from "~/components/title/PageTitle";
+import PostCard from "~/components/cards/PostCard";
+
+import axiosInstance from "~/lib/AxiosInstance";
+import useGetCookie from "~/utils/hooks/useGetCookie";
+
+import { AllPostsResponseType } from "~/types/post.types";
 
 export default function FeedPage() {
+  const [AllPosts, setAllPosts] = useState<AllPostsResponseType | null>(null);
+  const token = useGetCookie();
+  const [pageNo, setPageNo] = useState<number>(1);
+ 
+  const getAllPosts = async (page: number) => {
+    try {
+      const response = await axiosInstance.get(`/posts?page=${page}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setAllPosts(() => ({
+        currentPage: response.data.responseData.currentPage,
+        hasNextPage: response.data.responseData.hasNextPage,
+        hasPrevPage: response.data.responseData.hasPrevPage,
+        limit: response.data.responseData.limit,
+        nextPage: response.data.responseData.nextPage,
+        totalPages: response.data.responseData.totalPages,
+        postsArray: [
+          ...response.data.responseData.allPosts,
+        ],
+      }));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error Getting Posts: ", error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    getAllPosts(pageNo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNo]);
+
+  const handleLoadMoreBtn = () => {
+    if (AllPosts?.hasNextPage) {
+      setPageNo(pageNo + 1);
+    } else {
+      console.log("No More Pages");
+    }
+  };
+
   return (
-    <>
-      <PageTitle title="Feed"/>
-      <section className="w-full h-full flex flex-wrap gap-5">
-        {postData.map((post) => {
-          return <PostCard {...post} />;
-        })}
-      </section>
-    </>
+    <div>
+      <PageTitle title="Feed" />
+      {AllPosts ? (
+        <section className="w-full h-full flex flex-col flex-nowrap gap-1">
+          {AllPosts.postsArray.map((post) => {
+            return <PostCard {...post} key={post._id} />;
+          })}
+          {AllPosts.hasNextPage ? (
+            <Button
+              onClick={handleLoadMoreBtn}
+              variant="flat"
+              color="primary"
+              className="my-4 w-1/2 mx-auto"
+            >
+              Load More
+            </Button>
+          ) : (
+            <Chip
+              size="lg"
+              color="danger"
+              variant="flat"
+              className="my-4 mx-auto"
+            >
+              Yay! Looks Like Thats All We Have
+            </Chip>
+          )}
+        </section>
+      ) : (
+        <div className="w-full h-1/2 grid place-items-center">
+          <Chip size="lg" color="danger" variant="flat">
+            Sorry! There is No Posts to show. Please Refresh the Page!
+          </Chip>
+        </div>
+      )}
+    </div>
   );
 }

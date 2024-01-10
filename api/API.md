@@ -213,7 +213,7 @@ API responses are returned in JSON format.
 - **Parameters**:
   - `post_id` (string, required): The unique identifier of the post.
 
-#### `POST /posts/like/:postId`
+#### `PATCH /posts/like/:postId`
 
 - **Description**: Like or unlike post.
 - **Method**: POST

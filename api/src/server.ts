@@ -46,7 +46,7 @@ app.use('/v1/posts/', postRoute);
 app.get('*', (_, res: Response) => {
     res.status(200).send({
         status: 404,
-        message: 'Resource Not Found',
+        message: 'Route Not Found',
         documentation: 'https://api.Mynx.com/docs'
     });
 });

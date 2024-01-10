@@ -3,13 +3,13 @@ import ReactDOM from "react-dom/client";
 
 import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "react-redux";
-import reduxStore from "~/redux/redux.store.ts";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 
 const persistor = persistStore(reduxStore);
 
-import App from "./App.tsx";
+import App from "~/App";
+import reduxStore from "~/redux/redux.store.ts";
 import { Spinner } from "@nextui-org/spinner";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

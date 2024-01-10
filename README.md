@@ -131,6 +131,5 @@ If you have any questions or need assistance, feel free to contact us or join ou
 Happy Mynxing !
 
 ### Features to Implement 🧠
-- [ ] : `'/new'` page
-- [ ] : `'/'` page
-- [ ] : `'/trending'` page
+- [ ] : `'/chats'` page
+- [ ] : `'/notification'` page

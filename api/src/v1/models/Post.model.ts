@@ -24,10 +24,11 @@ const postSchema = new Schema({
                     type: String,
                     required: true,
                 },
-                pollCount: {
-                    type: Number,
-                    default: 0,
-                },
+                pollSupporters: [{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    default: []
+                }],
             },
         ],
         default: null

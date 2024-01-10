@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import { Footer, Navbar } from "~/layouts/layout.barrel";
-import { NotFound } from "~/components/components.barrel";
-import {
-  Home,
-  About,
-  Contact,
-  Blogs,
-  Login,
-  Signup,
-} from "~/pages/public/public.pages.barrel";
 import { Divider } from "@nextui-org/react";
+
+import Footer from "~/layouts/Footer";
+import Navbar from "~/layouts/Navbar";
+import NotFound from "~/components/loading_error_pages/NotFound";
+import Home from "~/pages/public/Home";
+import Blogs from "~/pages/public/Blogs";
+import About from "~/pages/public/About";
+import Contact from "~/pages/public/Contact";
+import Login from "~/pages/public/Login";
+import Signup from "~/pages/public/Signup";
+
 
 export default function Landing() {
   return (

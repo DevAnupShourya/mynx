@@ -3,6 +3,7 @@ import { CookiesProvider } from "react-cookie";
 import { Spinner } from "@nextui-org/react";
 import { ToastContainer } from "react-toastify";
 
+// ? Global Tailwind CSS Style
 import "~/styles/output.css";
 
 import useOnlineStatus from "~/utils/hooks/useOnlineStatus";
@@ -12,31 +13,32 @@ import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
 import Landing from "~/layouts/Landing";
 import Dashboard from "~/layouts/Dashboard";
-import {
-  UnderMaintenance,
-  NoInternet,
-} from "~/pages/public/public.pages.barrel";
-import { CloseBtn } from "~/components/components.barrel";
+import UnderMaintenance from "~/pages/public/UnderMaintenance";
+import NoInternet from "~/pages/public/NoInternet";
+import CloseBtn from "~/components/custom_toast/CloseBtn";
 
 function App() {
   // ? Redux States
-  const theme = useAppSelector((state) => state.theme.mode);
+  const themeState = useAppSelector((state) => state.theme.mode);
   const userState = useAppSelector((state) => state.user);
 
+  // ? For that user is connected with Internet or not
   const isUserOnline = useOnlineStatus();
+  // ? For that server is running or not
   const apiStatus = useApiStatus();
+  // ? For checking the authentication status or user every time 
   const checkAuth = useCheckUserAuth();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-  // if (isUserOnline) {
-  if (true) {
+
+  if (isUserOnline) {
     if (apiStatus) {
       return (
         <section
           aria-label="App"
-          className={`${theme} transition-colors ease-soft-spring`}
+          className={`${themeState} transition-colors ease-soft-spring`}
         >
           <ToastContainer
             position="bottom-left"
@@ -48,7 +50,7 @@ function App() {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme={theme}
+            theme={themeState}
             closeButton={CloseBtn}
             limit={4}
           />

@@ -1,7 +1,7 @@
 import useGetCookie from "~/utils/hooks/useGetCookie";
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
-import { updateUserData } from "~/redux/user/userSlice";
-import { getCurrentUser } from "~/services/Auth/Authentication.services";
+import { updateUserData } from "~/redux/slices/user";
+import { getCurrentUser } from "~/services/Users/User.services";
 
 function useCheckUserAuth() {
   const dispatch = useAppDispatch();
@@ -25,6 +25,7 @@ function useCheckUserAuth() {
             name: userDataFromServer.name,
             userImg: userDataFromServer.avatarURL,
             username: userDataFromServer.username,
+            userId : userDataFromServer._id
           })
         );
       }

@@ -1,11 +1,6 @@
-import { AiOutlineVideoCameraAdd } from "react-icons/ai";
-import { RiUserSettingsLine } from "react-icons/ri";
-import { HiOutlineLogout } from "react-icons/hi";
-import { GiHelp } from "react-icons/gi";
-import { MdOutlineWidgets } from "react-icons/md";
-
-import { ThemeSwitcher } from "~/components/components.barrel";
-
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Dropdown,
   DropdownItem,
@@ -18,17 +13,21 @@ import {
   SelectItem,
   Button,
 } from "@nextui-org/react";
-import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
 
-// ? Redux
-import { updateUserData } from "~/redux/user/userSlice";
+import { updateUserData } from "~/redux/slices/user";
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
-import { useState } from "react";
+
+import ThemeSwitcher from "~/components/switch/ThemeSwitcher";
+import Toast from "~/components/custom_toast/Toast";
+
+import { AiOutlineVideoCameraAdd } from "react-icons/ai";
+import { RiUserSettingsLine } from "react-icons/ri";
+import { HiOutlineLogout } from "react-icons/hi";
+import { GiHelp } from "react-icons/gi";
+import { MdOutlineWidgets } from "react-icons/md";
 
 export default function ProfileDropdown() {
   const navigation = useNavigate();
-  // ? Redux State
   const theme = useAppSelector((state) => state.theme.mode);
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -49,12 +48,15 @@ export default function ProfileDropdown() {
           name: "",
           userImg: "",
           username: "",
+          userId: "",
         })
       );
 
       navigation("/", { replace: true });
-    } catch (error) {
-      console.error("Error signing out:", error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      Toast.warning(error.message);
+      console.error("Error Logging Out: ", error.message);
     }
     setLogoutBtnStatus(false);
   };

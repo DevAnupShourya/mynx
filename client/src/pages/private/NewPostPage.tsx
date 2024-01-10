@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -8,21 +9,28 @@ import {
   Avatar,
   Chip,
 } from "@nextui-org/react";
-import { useState } from "react";
 
 import { SiMonkeytype } from "react-icons/si";
 
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
-import {
-  Vixdeo_Varient,
-  Vixet_Varient,
-  Vixogs_Varient,
-  Vixpoll_Varient,
-  Vixsnap_Varient,
-  Vixlive_Varient,
-  PageTitle,
-} from "~/components/components.barrel";
+import Vixet_Variant from "~/components/posts_forms/Vixet_Variant";
+import Vixdeo_Variant from "~/components/posts_forms/Vixdeo_Variant";
+import Vixlive_Variant from "~/components/posts_forms/Vixlive_Variant";
+import Vixogs_Variant from "~/components/posts_forms/Vixogs_Variant";
+import Vixpoll_Variant from "~/components/posts_forms/Vixpoll_Variant";
+import Vixsnap_Variant from "~/components/posts_forms/Vixsnap_Variant";
+import PageTitle from "~/components/title/PageTitle";
+
+
+const variantsMap = {
+  Vixet: <Vixet_Variant />,
+  Vixdeo: <Vixdeo_Variant />,
+  Vixsnap: <Vixsnap_Variant />,
+  Vixogs: <Vixogs_Variant />,
+  Vixlive: <Vixlive_Variant />,
+  Vixpoll: <Vixpoll_Variant />,
+} as { [key: string]: JSX.Element };
 
 const PostVariantsList = [
   {
@@ -53,15 +61,6 @@ const PostVariantsList = [
     details: "Clear and concise for quick community surveys.",
   },
 ];
-
-const variantsMap = {
-  Vixet: <Vixet_Varient />,
-  Vixdeo: <Vixdeo_Varient />,
-  Vixsnap: <Vixsnap_Varient />,
-  Vixogs: <Vixogs_Varient />,
-  Vixlive: <Vixlive_Varient />,
-  Vixpoll: <Vixpoll_Varient />,
-} as { [key: string]: JSX.Element };
 
 export default function NewPostPage() {
   const userState = useAppSelector((state) => state.user);
