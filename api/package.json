@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "./build/server.js",
-  "scripts": {
+  "scripts": {  
     "server": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
