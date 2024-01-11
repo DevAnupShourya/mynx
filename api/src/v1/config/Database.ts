@@ -6,7 +6,7 @@ const DatabaseURL = `${process.env.MONGODB_URL}`;
 
 export default async function DatabaseConnection() {
     try {
-        console.log(`🚀 Trying to Establish Database Connection.... ${DatabaseURL} 🚀`)
+        console.log(`🚀 Trying to Establish Database Connection.... 🚀`)
         await mongoose.connect(DatabaseURL);
         console.warn("✔ Database Connection Established Successfully ✔")
     } catch (error) {
