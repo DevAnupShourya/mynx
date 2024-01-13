@@ -25,7 +25,7 @@ import { ScrollShadow, Divider } from "@nextui-org/react";
 
 export default function Dashboard() {
   return (
-    <section className={`w-screen h-screen flex flex-col bg-main-text-default`}>
+    <section data-testid="Dashboard" className={`w-screen h-screen flex flex-col bg-main-text-default`}>
       <BrowserRouter>
         <main className="bg-main-text-main w-full h-auto fixed top-0 left-0 backdrop-blur-md bg-opacity-75 dark:bg-opacity-50 z-50">
           <TopbarPrivate />

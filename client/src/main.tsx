@@ -38,8 +38,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   </React.StrictMode>
 );
 
-// declare const window: any;
-// if (window.Cypress) {
-//   window.store = reduxStore;
-//   console.log( window.store)
-// }
+// ? For Redux testing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare const window: any;
+if (window.Cypress && import.meta.env.DEV) {
+  window.store = reduxStore;
+}

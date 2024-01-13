@@ -122,6 +122,7 @@ export default function Login() {
             isRequired={true}
             onChange={handleInputCapture}
             variant="bordered"
+            data-testid="email-input"
           />
           <br />
           <Input
@@ -148,6 +149,7 @@ export default function Login() {
             value={formData.password}
             onChange={handleInputCapture}
             isRequired={true}
+            data-testid="password-input"
           />
           <div className="flex py-2 px-1 justify-between">
             <Checkbox
@@ -163,7 +165,7 @@ export default function Login() {
           </div>
         </CardBody>
         <CardFooter className="flex flex-row justify-end gap-4">
-          <Button color="primary" type="submit" isLoading={formSubmitStatus}>
+          <Button color="primary" type="submit" isLoading={formSubmitStatus} data-testid="submit-btn">
             Proceed
           </Button>
         </CardFooter>

@@ -26,7 +26,7 @@ function App() {
   const isUserOnline = useOnlineStatus();
   // ? For that server is running or not
   const apiStatus = useApiStatus();
-  // ? For checking the authentication status or user every time 
+  // ? For checking the authentication status or user every time
   const checkAuth = useCheckUserAuth();
 
   useEffect(() => {
@@ -56,6 +56,7 @@ function App() {
           />
           {userState.authStatus === "loading" && (
             <Spinner
+              data-testid="Loading"
               label="Loading Please Wait"
               color="primary"
               labelColor="primary"

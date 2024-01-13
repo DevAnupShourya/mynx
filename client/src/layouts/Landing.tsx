@@ -11,11 +11,10 @@ import Contact from "~/pages/public/Contact";
 import Login from "~/pages/public/Login";
 import Signup from "~/pages/public/Signup";
 
-
 export default function Landing() {
   return (
     <section
-      aria-label="Landing Page Container"
+      data-testid="Landing"
       className={`w-screen min-h-screen bg-main-text-default overflow-x-hidden`}
     >
       <BrowserRouter>

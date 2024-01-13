@@ -802,10 +802,6 @@ video {
   margin: 0px;
 }
 
-.m-36{
-  margin: 9rem;
-}
-
 .mx-0{
   margin-left: 0px;
   margin-right: 0px;
@@ -899,11 +895,6 @@ video {
 .my-\[calc\(\(theme\(spacing\.7\)-theme\(spacing\.5\)\)\/2\)\]{
   margin-top: calc((1.75rem - 1.25rem) / 2);
   margin-bottom: calc((1.75rem - 1.25rem) / 2);
-}
-
-.my-36{
-  margin-top: 9rem;
-  margin-bottom: 9rem;
 }
 
 .-mr-2{
@@ -1461,10 +1452,6 @@ video {
 
 .min-w-\[200px\]{
   min-width: 200px;
-}
-
-.min-w-\[500px\]{
-  min-width: 500px;
 }
 
 .min-w-full{
@@ -2831,11 +2818,6 @@ video {
 .py-8{
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-
-.py-36{
-  padding-top: 9rem;
-  padding-bottom: 9rem;
 }
 
 .\!pb-0{
@@ -7381,20 +7363,6 @@ body {
     bottom: -2rem;
   }
 
-  .max-md\:m-24{
-    margin: 6rem;
-  }
-
-  .max-md\:my-28{
-    margin-top: 7rem;
-    margin-bottom: 7rem;
-  }
-
-  .max-md\:my-24{
-    margin-top: 6rem;
-    margin-bottom: 6rem;
-  }
-
   .max-md\:hidden{
     display: none;
   }
@@ -7424,11 +7392,6 @@ body {
     padding-right: 2.5rem;
   }
 
-  .max-md\:py-24{
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-
   .max-md\:py-16{
     padding-top: 4rem;
     padding-bottom: 4rem;
@@ -7445,17 +7408,8 @@ body {
     display: none;
   }
 
-  .max-sm\:min-w-\[320px\]{
-    min-width: 320px;
-  }
-
   .max-sm\:gap-5{
     gap: 1.25rem;
-  }
-
-  .max-sm\:bg-red-200{
-    --tw-bg-opacity: 1;
-    background-color: rgb(254 202 202 / var(--tw-bg-opacity));
   }
 
   .max-sm\:px-2{
