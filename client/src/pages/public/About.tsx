@@ -2,7 +2,7 @@ import { AboutPageCardsData } from "~/utils/raw_data/PagesData";
 
 export default function About() {
   return (
-    <div className="w-11/12 m-36 max-md:m-24">
+    <div className="w-11/12">
       <div className="mx-auto max-w-3xl lg:text-center">
         <h1 className="mt-2 text-5xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
           About Me

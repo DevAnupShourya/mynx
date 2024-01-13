@@ -2,7 +2,7 @@ import { Input, Textarea, Button } from "@nextui-org/react";
 
 export default function Contact() {
   return (
-    <div className="w-11/12 m-36 max-md:m-24">
+    <div className="w-11/12">
       
     <div className="p-8 lg:p-16 mx-auto max-w-screen-md rounded-lg shadow-2xl">
       <p className="mb-4 text-center text-5xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">

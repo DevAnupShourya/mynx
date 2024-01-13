@@ -21,7 +21,7 @@ export default function Landing() {
       <BrowserRouter>
         <Navbar />
         <Divider />
-        <main className="grid place-items-center">
+        <main className="grid place-items-center py-24 max-md:py-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

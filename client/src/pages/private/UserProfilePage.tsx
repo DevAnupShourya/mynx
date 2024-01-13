@@ -360,7 +360,7 @@ function UserProfilePage() {
           </CardBody>
         </Card>
         <Card className="bg-main-text-main my-5">
-          <CardBody>
+          <CardBody className="px-0">
             <ScrollShadow className="w-full h-full">
               <div className="flex flex-row justify-around items-center w-full">
                 <Button

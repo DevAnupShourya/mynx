@@ -25,7 +25,7 @@ export default function useApiStatus() {
     return () => {
       checkApiStatus();
     };
-  });
+  }, []);
 
   return apiStatus;
 }

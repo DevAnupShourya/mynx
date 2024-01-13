@@ -2,7 +2,7 @@ import BlogCard from "~/components/cards/BlogCard";
 
 function Blogs() {
   return (
-    <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+    <div className="mx-auto max-w-screen-xl lg:py-16 lg:px-6">
       <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
         <p className="mb-4 text-5xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
           Our Blog

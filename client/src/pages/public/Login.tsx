@@ -101,7 +101,7 @@ export default function Login() {
       <Card
         radius="sm"
         shadow="lg"
-        className="bg-main-text-main m-36 max-md:m-24 max-sm:min-w-[320px] min-w-[500px]"
+        className="bg-main-text-main" 
       >
         <CardHeader className="justify-center">
           <h1 className="text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
