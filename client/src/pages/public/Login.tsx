@@ -51,7 +51,7 @@ export default function Login() {
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setFormSubmitStatus(true);
-    try {
+    try { 
       const resFromServer = await authenticateUser(formData);
 
       setCookie("secret_text", resFromServer?.data.responseData.token, {

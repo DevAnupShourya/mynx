@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { User, Link, Spinner } from "@nextui-org/react";
 
 import useGetCookie from "~/utils/hooks/useGetCookie";
 import { getUserByUID } from "~/services/Users/User.services";
 import Toast from "~/components/custom_toast/Toast";
 
-function ProfilePreview({ userId }: { userId: string }) {
+function ProfilePreview({
+  userId,
+  endContent,
+}: {
+  userId: string;
+  endContent?: React.ReactNode;
+}) {
   const token = useGetCookie();
 
   const [loading, setLoading] = useState(false);
@@ -19,7 +26,7 @@ function ProfilePreview({ userId }: { userId: string }) {
     setLoading(true);
     try {
       const res = await getUserByUID(userId, token!);
-      
+
       setUserDetails({
         avatarURL: res?.user.avatarURL,
         username: res?.user.username,
@@ -44,19 +51,22 @@ function ProfilePreview({ userId }: { userId: string }) {
       <Spinner color="danger" size="sm" />
     </div>
   ) : (
-    <User
-      name={userDetails.name}
-      description={
-        <Link href={`/${userDetails.username}`} size="lg">
-          @{userDetails.username}
-        </Link>
-      }
-      avatarProps={{
-        src: userDetails.avatarURL,
-        size: "lg",
-      }}
-      className=" justify-start"
-    />
+    <div className="flex justify-between items-center">
+      <User
+        name={userDetails.name}
+        description={
+          <Link as={RouterLink} to={`/${userDetails.username}`} size="lg">
+            @{userDetails.username}
+          </Link>
+        }
+        avatarProps={{
+          src: userDetails.avatarURL,
+          size: "sm",
+        }}
+        className=" justify-start"
+      />
+      {endContent && <div>{endContent}</div>}
+    </div>
   );
 }
 

@@ -40,8 +40,8 @@ function FollowingPage() {
           <h1>Following No one Yet</h1>
         )}
         {followingList.length > 0 &&
-          followingList.map((following) => {
-            return <ProfilePreview userId={following} key={following} />;
+          followingList.map((followingUseId) => {
+            return <ProfilePreview userId={followingUseId} key={followingUseId} />;
           })}
       </section>
     </>

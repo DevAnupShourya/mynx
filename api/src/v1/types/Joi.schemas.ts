@@ -58,7 +58,7 @@ const vixogsSchema = Joi.object({
 // * Title & Poll Options Array with {pollName:string, pollSupporters:number}
 const vixpollSchema = Joi.object({
     title: Joi.string().required(),
-    pollOptions: Joi.array().items(Joi.object({ pollName: Joi.string().required(), pollSupporters: Joi.array().default([])})).min(2).max(4).required(),
+    pollOptions: Joi.array().items(Joi.object({ pollName: Joi.string().required(), pollSupporters: Joi.array().default([]) })).min(2).max(4).required(),
 });
 
 // * Title & LiveVideoStreamUrl
@@ -93,4 +93,19 @@ export const postCreateSchema = Joi.object({
 }).when('.postType', {
     is: 'Vixlive',
     then: vixliveSchema,
+})
+
+
+const createGroupValidation = Joi.object({
+    groupName: Joi.string().min(5).max(55).trim(),
+    groupDescription: Joi.string().min(11).max(110).trim(),
+    participants: Joi.array().min(2).max(11)
+});
+
+export const chatCreateValidation = Joi.object({
+    isGroup: Joi.boolean().default(false),
+    participants: Joi.array().min(2).max(2)
+}).when('.isGroup', {
+    is: true,
+    then: createGroupValidation
 })

@@ -13,7 +13,7 @@ import reduxStore from "~/redux/redux.store.ts";
 import { Spinner } from "@nextui-org/spinner";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <>
     <Provider store={reduxStore}>
       <NextUIProvider>
         <PersistGate
@@ -35,7 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </PersistGate>
       </NextUIProvider>
     </Provider>
-  </React.StrictMode>
+  </>
 );
 
 // ? For Redux testing

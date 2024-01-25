@@ -180,7 +180,7 @@ export const getAllUsers = async (req: AuthenticatedRequest, res: Response) => {
         const nextPage = hasNextPage ? page + 1 : null;
 
         const allUsers = await User.find({})
-            .select('-_id -password -updatedAt')
+            .select('-password -updatedAt')
             .skip((page - 1) * limit)
             .limit(limit)
             .sort({ createdAt: -1 }); // * Sorting by createdAt in descending order (newer posts comes first)

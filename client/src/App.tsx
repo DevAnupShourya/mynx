@@ -33,8 +33,9 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  if (isUserOnline) {
-    if (apiStatus) {
+  // ? Not checking if in development phase
+  if (import.meta.env.DEV ? true : isUserOnline) {
+    if (import.meta.env.DEV ? true : apiStatus) {
       return (
         <section
           aria-label="App"

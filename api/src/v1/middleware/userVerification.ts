@@ -35,7 +35,7 @@ const userVerification = async (req: AuthenticatedRequest, res: Response, next: 
             }
         }
     } catch (error : any) {
-        responseError(res, 403, `Error : ${error}`, null);
+        responseError(res, 403, `@userVerification : ${error}`, null);
     }
 }
 

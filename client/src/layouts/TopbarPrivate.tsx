@@ -1,4 +1,4 @@
-import { Button, Badge } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
 import ProfileDropDown from "~/components/profile/ProfileDropDown";
@@ -12,19 +12,17 @@ export default function NavbarPrivate() {
       <Logo />
       <div className="flex flex-row justify-between items-center gap-4">
         <div className="flex flex-row justify-center items-center gap-2">
-          <Badge content="90" shape="circle" color="secondary" size="sm">
-            <Button
-              radius="full"
-              isIconOnly
-              aria-label="more than 99 notifications"
-              variant="ghost"
-              as={Link}
-              to="/notifications"
-              color="secondary"
-            >
-              <IoNotificationsOutline />
-            </Button>
-          </Badge>
+          <Button
+            radius="full"
+            isIconOnly
+            aria-label="more than 99 notifications"
+            variant="ghost"
+            as={Link}
+            to="/notifications"
+            color="secondary"
+          >
+            <IoNotificationsOutline />
+          </Button>
         </div>
         <ProfileDropDown />
       </div>
