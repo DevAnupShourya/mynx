@@ -20,7 +20,7 @@ const io = new Server(server, {
 import Socket_Events from '~/v1/types/Socket.io'
 import socketMiddleware from "~/v1/utils/socketMiddleware";
 
-io.on(Socket_Events.socket_connect, (socket: Socket) => {
+io.on(Socket_Events.SOCKET_CONNECT, (socket: Socket) => {
     // ? Protection Middleware
     io.use((socket, next) => {
         const token = socket.handshake.headers.authorization ? socket.handshake.headers.authorization.replace('Bearer ', '') : null;
@@ -28,33 +28,37 @@ io.on(Socket_Events.socket_connect, (socket: Socket) => {
         socketMiddleware(token, next)
     });
 
-    // console.log(`new connection : ${socket.id}`)
-    socket.on(Socket_Events.join_personal_chat, (chatRoomId: string) => {
-        // console.log('User Joined room : %s', chatRoomId);
-        socket.join(chatRoomId)
+    console.log(`new connection : ${socket.id}`)
+    socket.on(Socket_Events.JOIN_CHAT, (chatRoomId: string) => {
+        console.log('User Joined room : %s', chatRoomId);
+        socket.join(chatRoomId);
+        console.log(`User online in ${chatRoomId}.`)
+        socket.in(chatRoomId).emit(Socket_Events.USER_ONLINE, chatRoomId);
     });
 
-    socket.on(Socket_Events.leave_personal_chat, (chatRoomId: string) => {
-        // console.log('User Leaved room : %s', chatRoomId);
+    socket.on(Socket_Events.LEAVE_CHAT, (chatRoomId: string) => {
+        console.log('User Leaved room : %s', chatRoomId);
         socket.leave(chatRoomId);
     });
 
-    socket.on(Socket_Events.send_message_personal_chat, (data: { chatRoomId: string, message: string }) => {
-        // console.log(`Received Messages in ${data.chatRoomId}.`)
-        socket.in(data.chatRoomId).emit(Socket_Events.receive_message_personal_chat, data.message);
+    socket.on(Socket_Events.MESSAGE_SEND, (data: { chatRoomId: string, message: string }) => {
+        console.log(`Received Messages in ${data.chatRoomId}.`)
+        socket.in(data.chatRoomId).emit(Socket_Events.MESSAGE_RECEIVE, data.message);
     });
 
-    socket.on(Socket_Events.personal_chat_typing, (chatRoomId: string) => {
-        // console.log(`Typing in ${chatRoomId}.`)
-        io.in(chatRoomId).emit(Socket_Events.personal_chat_typing, chatRoomId);
+    socket.on(Socket_Events.TYPING_START, (chatRoomId: string) => {
+        console.log(`Typing Started in ${chatRoomId}.`)
+        socket.in(chatRoomId).emit(Socket_Events.TYPING_START, chatRoomId);
     });
 
-    socket.on(Socket_Events.personal_chat_online, (chatRoomId: string) => {
-        // console.log(`Online in ${chatRoomId}.`)
-        io.in(chatRoomId).emit(Socket_Events.personal_chat_online, chatRoomId);
+    socket.on(Socket_Events.TYPING_STOP, (chatRoomId: string) => {
+        console.log(`Typing Stopped in ${chatRoomId}.`)
+        socket.in(chatRoomId).emit(Socket_Events.TYPING_STOP, chatRoomId);
     });
 
-    socket.on(Socket_Events.socket_disconnect, function () {
+    socket.on(Socket_Events.SOCKET_DISCONNECT, (chatRoomId: string) => {
+        console.log(`User offline in ${chatRoomId}.`)
+        socket.in(chatRoomId).emit(Socket_Events.USER_OFFLINE, chatRoomId);
         console.log(`disconnected : ${socket.id}`);
     })
 });

@@ -95,17 +95,15 @@ export const postCreateSchema = Joi.object({
     then: vixliveSchema,
 })
 
-
-const createGroupValidation = Joi.object({
-    groupName: Joi.string().min(5).max(55).trim(),
-    groupDescription: Joi.string().min(11).max(110).trim(),
+export const createGroupValidation = Joi.object({
+    groupName: Joi.string().min(3).max(25).trim(),
+    groupDescription: Joi.string().min(5).max(50).trim(),
     participants: Joi.array().min(2).max(11)
 });
 
-export const chatCreateValidation = Joi.object({
-    isGroup: Joi.boolean().default(false),
-    participants: Joi.array().min(2).max(2)
-}).when('.isGroup', {
-    is: true,
-    then: createGroupValidation
-})
+export const createMessageValidation = Joi.object({
+    text: Joi.string().min(1).max(50).trim(),
+    files: Joi.array().max(4),
+    chatId: Joi.string().required(),
+});
+

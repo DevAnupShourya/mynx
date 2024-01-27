@@ -1,14 +1,16 @@
 const Socket_Events = {
-    socket_connect: 'connection',
-    socket_disconnect: 'disconnect',
-    socket_error_connect: 'connect_error',
-    socket_error_failed: 'connect_failed',
-    join_personal_chat: 'chat:personal',
-    leave_personal_chat: 'chat:personal:leave',
-    send_message_personal_chat: 'chat:personal:message:send',
-    receive_message_personal_chat: 'chat:personal:message:receive',
-    personal_chat_typing: 'chat:personal:typing',
-    personal_chat_online: 'chat:personal:online',
+    SOCKET_CONNECT: 'connection',
+    SOCKET_DISCONNECT: 'disconnect',
+    SOCKET_ERROR_CONNECT: 'connect_error',
+    SOCKET_ERROR_FAILED: 'connect_failed',
+    JOIN_CHAT : 'chat:join',
+    LEAVE_CHAT : 'chat:leave',
+    MESSAGE_RECEIVE : 'chat:message:receive',
+    MESSAGE_SEND : 'chat:message:send',
+    TYPING_START : 'chat:typing:start',
+    TYPING_STOP : 'chat:typing:stop',
+    USER_ONLINE : 'chat:online',
+    USER_OFFLINE : 'chat:offline',
 }
 
 export default Socket_Events;

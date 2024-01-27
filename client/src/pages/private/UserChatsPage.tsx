@@ -153,7 +153,7 @@ function UserChatsPage() {
     } catch (error: any) {
       setIsChatLoading(false);
       Toast.error(error.response.data.message);
-      console.error(`@handleGettingMessages : ${error.response.data.message}`);
+      console.error(`@handleGettingMessages : ${error}`);
     }
     setIsChatMessagesLoading(false);
   };
@@ -161,7 +161,6 @@ function UserChatsPage() {
   // ? This will try to connect to socket after getting chatDetails
   useEffect(() => {
     console.log("Trying ro Connect With Socket.....");
-    // ws://127.0.0.1:3300
     socketRef.current = io(SOCKET_URL.replace("v1", ""), {
       extraHeaders: {
         Authorization: `Bearer ${token}`,
@@ -174,13 +173,13 @@ function UserChatsPage() {
       console.log("Connected With Socket.");
       setChatMetaStates({ ...chatMetaStates, isCurrentUserOnline: true });
 
-      socket.emit(Socket_Events.join_personal_chat, chatDetails.chatId);
-      socket.on(Socket_Events.receive_message_personal_chat, (data) => {
+      socket.emit(Socket_Events.JOIN_CHAT, chatDetails.chatId);
+      socket.on(Socket_Events.MESSAGE_RECEIVE, (data) => {
         if (!data) return;
         handleGettingMessages();
       });
 
-      socket.on(Socket_Events.personal_chat_typing, (chatRoomId: string) => {
+      socket.on(Socket_Events.TYPING_START, (chatRoomId: string) => {
         if (!chatRoomId) return;
         if (chatRoomId === chatDetails.chatId) {
           setChatMetaStates({
@@ -189,7 +188,29 @@ function UserChatsPage() {
           });
         }
       });
-      socket.on(Socket_Events.personal_chat_online, (chatRoomId: string) => {
+
+      socket.on(Socket_Events.TYPING_STOP, (chatRoomId: string) => {
+        if (!chatRoomId) return;
+        if (chatRoomId === chatDetails.chatId) {
+          setChatMetaStates({
+            ...chatMetaStates,
+            isChattingWithUserTyping: false,
+          });
+        }
+      });
+
+      socket.on(Socket_Events.USER_OFFLINE, (chatRoomId: string) => {
+        if (!chatRoomId) return;
+        if (chatRoomId === chatDetails.chatId) {
+          setChatMetaStates({
+            ...chatMetaStates,
+            isChattingWithUserOnline: false,
+          });
+        }
+      });
+
+      socket.on(Socket_Events.USER_ONLINE, (chatRoomId: string) => {
+        console.log('on : USER_ONLINE')
         if (!chatRoomId) return;
         if (chatRoomId === chatDetails.chatId) {
           setChatMetaStates({
@@ -199,30 +220,41 @@ function UserChatsPage() {
         }
       });
 
+      socket.on(Socket_Events.USER_OFFLINE, (chatRoomId: string) => {
+        console.log('on : USER_OFFLINE')
+        if (!chatRoomId) return;
+        if (chatRoomId === chatDetails.chatId) {
+          setChatMetaStates({
+            ...chatMetaStates,
+            isChattingWithUserOnline: false,
+          });
+        }
+      });
+
       // ? Will Only run when chatDetails will be updated after every message sending
       handleGettingMessages();
     });
 
-    socket.on(Socket_Events.socket_error_connect, (err: Error) => {
+    socket.on(Socket_Events.SOCKET_ERROR_CONNECT, (err: Error) => {
       Toast.error(err.message);
       console.error(`Socket Connection error : ${err}`);
     });
 
-    socket.on(Socket_Events.socket_error_failed, (err: Error) => {
+    socket.on(Socket_Events.SOCKET_ERROR_FAILED, (err: Error) => {
       Toast.error(err.message);
       console.error(`Socket Failed Error : ${err}`);
     });
 
-    socket.on(Socket_Events.socket_disconnect, (err: Error) => {
+    socket.on(Socket_Events.SOCKET_DISCONNECT, (err: Error) => {
       Toast.error(err.message);
       console.error(`Socket Disconnect Error : ${err}`);
     });
 
     return () => {
       if (socketRef.current) {
+        setChatMetaStates({ ...chatMetaStates, isCurrentUserOnline: false });
         socketRef.current.off();
       }
-      setChatMetaStates({ ...chatMetaStates, isCurrentUserOnline: false });
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -248,7 +280,7 @@ function UserChatsPage() {
         ).toLocaleTimeString(),
       });
 
-      socketRef.current.emit(Socket_Events.send_message_personal_chat, {
+      socketRef.current.emit(Socket_Events.MESSAGE_SEND, {
         chatRoomId: chatDetails.chatId,
         message: messageData._id,
       });
@@ -259,30 +291,30 @@ function UserChatsPage() {
   };
 
   useEffect(() => {
+    let typingTimeout: NodeJS.Timeout;
     if (socketRef.current) {
       if (chatMetaStates.isCurrentUserTyping) {
-        socketRef.current.emit(
-          Socket_Events.personal_chat_typing,
-          chatDetails.chatId
-        );
+        socketRef.current.emit(Socket_Events.TYPING_START, chatDetails.chatId);
       }
-      if (chatMetaStates.isCurrentUserOnline) {
-        socketRef.current.emit(
-          Socket_Events.personal_chat_online,
-          chatDetails.chatId
-        );
-      }
-
     }
 
-    if (chatMetaStates.isChattingWithUserTyping) {
-      setTimeout(() => {
+    if (chatMetaStates.isCurrentUserTyping) {
+      typingTimeout = setTimeout(() => {
         setChatMetaStates({
           ...chatMetaStates,
-          isChattingWithUserTyping: false,
+          isCurrentUserTyping: false,
         });
+
+        if (socketRef.current) {
+          socketRef.current.emit(Socket_Events.TYPING_STOP, chatDetails.chatId);
+        }
       }, 2000);
     }
+
+
+    return () => {
+      clearTimeout(typingTimeout);
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMetaStates]);
@@ -460,10 +492,12 @@ function UserChatsPage() {
                   setChatFormData({ text: e.target.value });
                 }}
                 onKeyUp={() => {
-                  setChatMetaStates({
-                    ...chatMetaStates,
-                    isCurrentUserTyping: true,
-                  });
+                  if (!chatMetaStates.isCurrentUserTyping) {
+                    setChatMetaStates({
+                      ...chatMetaStates,
+                      isCurrentUserTyping: true,
+                    });
+                  }
                 }}
                 description={
                   <span>
