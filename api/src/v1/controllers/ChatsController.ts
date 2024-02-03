@@ -6,6 +6,7 @@ import { responseError, responseInfo, responseWarn } from '~/v1/utils/apiRespons
 import Chat from '~/v1/models/Chat.model';
 import User from '~/v1/models/User.model';
 import ChatMessage from '~/v1/models/ChatMessage.model';
+import { group } from 'console';
 
 interface AuthenticatedRequest extends Request {
     userId?: mongoose.Types.ObjectId;
@@ -46,7 +47,7 @@ export const createOrGetPersonalChat = async (req: AuthenticatedRequest, res: Re
         }
 
         // Check if having chat with self or not
-        if (new mongoose.Types.ObjectId(chatInitiator) === new mongoose.Types.ObjectId(chatWithId)) {
+        if (chatInitiator?.toString() === chatWithId.toString()) {
             return responseWarn(res, 403, 'You cannot chat with yourself!', null);
         }
 
@@ -111,10 +112,9 @@ export const createGroupChat = async (req: AuthenticatedRequest, res: Response) 
 
         const filteredGroupData = await createGroupValidation.validateAsync(groupData);
         const groupChat = await Chat.create({
+            ...filteredGroupData,
             isGroup: true,
-            groupName: filteredGroupData.groupName,
-            groupDescription: filteredGroupData.groupDescription,
-            participants: filteredGroupData.participants,
+            participants: [...filteredGroupData.participants, groupAdmin],
             admin: groupAdmin
         })
 
@@ -148,13 +148,15 @@ export const getGroupChat = async (req: AuthenticatedRequest, res: Response) => 
 
         const groupChat = await Chat.findOne({
             isGroup: true,
-            participants: {
-                $eq: groupParticipant
-            }
+            _id: groupId
         });
 
         if (!groupChat) {
             return responseWarn(res, 404, 'The Group with this ID not found!', null);
+        }
+
+        if (!(groupChat?.participants.includes(new mongoose.Types.ObjectId(groupParticipant)))) {
+            return responseWarn(res, 404, 'You are not member of this group!', null);
         }
 
         return responseInfo(res, 200, 'Group Found', groupChat);
@@ -354,6 +356,51 @@ export const joinGroupChat = async (req: AuthenticatedRequest, res: Response) =>
     }
 };
 
+export const removeMemberByAdmin = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const adminShouldBe = req.userId;
+        const groupId = req.params.groupId;
+        const userIdToRemove = req.params.userId;
+
+        if (!mongoose.Types.ObjectId.isValid(groupId)) {
+            return responseWarn(res, 404, 'The Group ID is Invalid!', null);
+        }
+        if (!mongoose.Types.ObjectId.isValid(userIdToRemove)) {
+            return responseWarn(res, 404, 'The User ID is Invalid!', null);
+        }
+
+        const groupById = await Chat.findById(groupId);
+        if (!groupById) {
+            return responseWarn(res, 404, "No Group Found with this Group Id", null);
+        }
+        const userById = await User.findById(userIdToRemove);
+        if (!userById) {
+            return responseWarn(res, 404, "No User Found with this User Id", null);
+        }
+
+        if (!(groupById.admin?.equals(adminShouldBe!))) {
+            return responseWarn(res, 403, "You are not admin of this group", null);
+        }
+
+        if (!(groupById.participants.includes(new mongoose.Types.ObjectId(userIdToRemove)))) {
+            return responseWarn(res, 403, "User is not in this group", null);
+        }
+
+        const oldParticipants = groupById.participants.filter((userId) =>
+            userId.toString() !== userById._id.toString()
+        );
+
+        const updatedGroupDetails = await Chat.findByIdAndUpdate(groupById._id, {
+            participants: oldParticipants
+        }, { new: true });
+
+        return responseInfo(res, 200, `You Removed ${userById.name} from ${groupById.groupName}`, updatedGroupDetails);
+    } catch (error: any) {
+        console.error(error)
+        responseError(res, 500, error.message, null);
+    }
+};
+
 export const leaveGroupChat = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userIdWantToJoin = req.userId;
@@ -368,7 +415,7 @@ export const leaveGroupChat = async (req: AuthenticatedRequest, res: Response) =
             return responseWarn(res, 403, "No Group Found with this Group Id", null);
         }
 
-        const oldParticipants = groupById.participants.filter((userId) => userId != new mongoose.Types.ObjectId(userIdWantToJoin));
+        const oldParticipants = groupById.participants.filter((userId) => userId !== new mongoose.Types.ObjectId(userIdWantToJoin));
 
         const updatedGroupDetails = await Chat.findByIdAndUpdate(groupById._id, {
             participants: oldParticipants
@@ -392,6 +439,10 @@ export const createNewMessage = async (req: AuthenticatedRequest, res: Response)
             sender: senderId
         });
 
+        await Chat.findByIdAndUpdate(filteredMessageData.chatId, {
+            lastMessage: newMessage._id
+        })
+
         return responseInfo(res, 202, 'New Message', newMessage);
     } catch (error: any) {
         console.error(error)
@@ -413,10 +464,32 @@ export const getAllMessagesByChatId = async (req: AuthenticatedRequest, res: Res
             return responseWarn(res, 404, 'This Chat Does Not Exist!', null);
         }
 
-        const allMessagesData = await ChatMessage.find({ chatId: chatId })
-            .sort({ createdAt: -1 });
+        const allMessagesData = await ChatMessage.find({ chatId: chatId });
 
         return responseInfo(res, 200, `Messages`, allMessagesData);
+    } catch (error: any) {
+        console.error(error)
+        responseError(res, 500, error.message, null);
+    }
+};
+export const getAllMessagesIdListByChatId = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { chatId } = req.params;
+        // ? Check if valid Mongoose Id or not
+        if (!mongoose.Types.ObjectId.isValid(chatId)) {
+            return responseWarn(res, 403, 'The Chat ID is Invalid!', null);
+        }
+
+        // ? Check if Chat exists or not
+        const chatData = await Chat.findById(chatId);
+        if (!chatData) {
+            return responseWarn(res, 404, 'This Chat Does Not Exist!', null);
+        }
+
+        const allMessagesIdList = await ChatMessage.find({ chatId: chatId })
+            .select('-text -sender -files -chatId -createdAt -updatedAt -__v');
+
+        return responseInfo(res, 200, `Message Ids`, allMessagesIdList);
     } catch (error: any) {
         console.error(error)
         responseError(res, 500, error.message, null);

@@ -96,13 +96,13 @@ export default function VixdeoUpload() {
 
   const handlePostSubmission = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitBtnLoadingStatus(true);
     if (postData.tags.length === 0) {
       Toast.warning("Add one tag in your description At least");
     } else {
       if (postData.videos?.length === 0) {
         Toast.warning("Add Your Video Please!");
       } else {
+        setSubmitBtnLoadingStatus(true);
         try {
           const res = await uploadPosts(postData, token!);
           Toast.success(res?.data.message);
@@ -117,8 +117,8 @@ export default function VixdeoUpload() {
             error.response.data.message
           );
         }
+        setSubmitBtnLoadingStatus(false);
       }
-      setSubmitBtnLoadingStatus(false);
     }
   };
   return (

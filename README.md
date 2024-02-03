@@ -138,4 +138,4 @@ Happy Mynxing !
 - [ ] : Add Token in Axios Instance to skip retrieving cookies every time.
 - [ ] : Upgrade Axios API Calls by less drilling.
 - [ ] : Add more helpful comments.
-- [ ] : Redirect User to /login when trying to access protected routes.
+- [ ] : Redirect User to /login when trying to access protected routes and not logged in.

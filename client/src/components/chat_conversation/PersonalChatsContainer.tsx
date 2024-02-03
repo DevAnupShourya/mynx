@@ -46,7 +46,6 @@ function PersonalChatsContainer({
     </div>
   );
 }
-export default PersonalChatsContainer;
 
 interface MessageProps {
   id: string;
@@ -107,3 +106,5 @@ function OneToOneMessage(messagesData: MessageProps) {
     </div>
   );
 }
+
+export default PersonalChatsContainer;

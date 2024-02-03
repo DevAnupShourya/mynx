@@ -12,6 +12,10 @@ export interface ChattingWithUserDataInterface {
 
 export interface MessageFormInterface {
     text: string,
+    files: {
+        url: string,
+        name: string,
+    }[],
 }
 
 export interface MessageInterface {
@@ -32,10 +36,23 @@ export interface MessagesListResponseInterface {
     _id: string;
 }
 
-export interface ChatMetadataInterface {
-    isCurrentUserOnline: boolean,
-    isCurrentUserTyping: boolean,
-    isChattingWithUserOnline: boolean,
-    isChattingWithUserTyping: boolean,
-}
+export type PersonalChatDataListType = {
+    chatId: string;
+    lastChattedDate: Date;
+    lasMessageId: string;
+    chattingWithUserId: string;
+}[]
+export type GroupChatDataListType = {
+    chatId: string;
+    lasMessageId: string;
+    groupName: string;
+    groupImage: string;
+    lastChattedDate: Date;
+    members?: string[];
+}[]
 
+export type GroupFormType = {
+    groupImage: string;
+    groupDescription: string;
+    groupName: string;
+}

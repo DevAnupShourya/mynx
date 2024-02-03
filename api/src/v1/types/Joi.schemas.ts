@@ -97,7 +97,8 @@ export const postCreateSchema = Joi.object({
 
 export const createGroupValidation = Joi.object({
     groupName: Joi.string().min(3).max(25).trim(),
-    groupDescription: Joi.string().min(5).max(50).trim(),
+    groupImage: Joi.string().optional().allow(''),
+    groupDescription: Joi.string().min(5).max(100).trim(),
     participants: Joi.array().min(2).max(11)
 });
 

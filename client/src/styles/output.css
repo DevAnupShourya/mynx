@@ -3107,6 +3107,10 @@ video {
   font-weight: 800;
 }
 
+.font-extralight{
+  font-weight: 200;
+}
+
 .font-light{
   font-weight: 300;
 }
@@ -7467,12 +7471,6 @@ body {
   }
 }
 
-@media not all and (min-width: 1024px){
-  .max-lg\:flex-wrap{
-    flex-wrap: wrap;
-  }
-}
-
 @media not all and (min-width: 768px){
   .max-md\:-bottom-8{
     bottom: -2rem;
@@ -7520,10 +7518,6 @@ body {
 
   .max-md\:flex-col{
     flex-direction: column;
-  }
-
-  .max-md\:flex-wrap{
-    flex-wrap: wrap;
   }
 
   .max-md\:gap-3{

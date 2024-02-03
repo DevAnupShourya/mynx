@@ -8,6 +8,7 @@ import { Server, Socket } from "socket.io";
 // ? Declarations
 const app: Application = express();
 const server = createServer(app);
+
 const io = new Server(server, {
     pingTimeout: 10000,
     cors: {
@@ -17,53 +18,53 @@ const io = new Server(server, {
     }
 });
 
-import Socket_Events from '~/v1/types/Socket.io'
 import socketMiddleware from "~/v1/utils/socketMiddleware";
+import Socket_Events from "./v1/types/Socket.io";
 
 io.on(Socket_Events.SOCKET_CONNECT, (socket: Socket) => {
     // ? Protection Middleware
     io.use((socket, next) => {
         const token = socket.handshake.headers.authorization ? socket.handshake.headers.authorization.replace('Bearer ', '') : null;
         // ? Validate all incoming sockets
-        socketMiddleware(token, next)
+        socketMiddleware(token, next);
     });
-
-    console.log(`new connection : ${socket.id}`)
+    // console.log(`new connection : ${socket.id}`)
+    socket.on(Socket_Events.USER_ONLINE, (chatRoomId: string) => {
+        // console.log('User online in room : %s', chatRoomId);
+        socket.in(chatRoomId).emit(Socket_Events.USER_ONLINE, chatRoomId)
+    });
+    socket.on(Socket_Events.USER_OFFLINE, (chatRoomId: string) => {
+        // console.log('User offline in room : %s', chatRoomId);
+        socket.in(chatRoomId).emit(Socket_Events.USER_OFFLINE, chatRoomId)
+    });
     socket.on(Socket_Events.JOIN_CHAT, (chatRoomId: string) => {
-        console.log('User Joined room : %s', chatRoomId);
+        // console.log('User Joined room : %s', chatRoomId);
         socket.join(chatRoomId);
-        console.log(`User online in ${chatRoomId}.`)
-        socket.in(chatRoomId).emit(Socket_Events.USER_ONLINE, chatRoomId);
     });
-
     socket.on(Socket_Events.LEAVE_CHAT, (chatRoomId: string) => {
-        console.log('User Leaved room : %s', chatRoomId);
+        // console.log('User Left room : %s', chatRoomId);
         socket.leave(chatRoomId);
     });
-
-    socket.on(Socket_Events.MESSAGE_SEND, (data: { chatRoomId: string, message: string }) => {
-        console.log(`Received Messages in ${data.chatRoomId}.`)
-        socket.in(data.chatRoomId).emit(Socket_Events.MESSAGE_RECEIVE, data.message);
+    socket.on(Socket_Events.MESSAGE_SEND, (data: { chatRoomId: string, messageId: string }) => {
+        // console.log(`Received Messages ${data.chatRoomId}.`);
+        socket.in(data.chatRoomId).emit(Socket_Events.MESSAGE_RECEIVE, data);
     });
-
-    socket.on(Socket_Events.TYPING_START, (chatRoomId: string) => {
-        console.log(`Typing Started in ${chatRoomId}.`)
-        socket.in(chatRoomId).emit(Socket_Events.TYPING_START, chatRoomId);
+    socket.on(Socket_Events.USER_TYPING_START, (chatRoomId: string) => {
+        // console.log('User TYPING START in room : %s', chatRoomId);
+        socket.in(chatRoomId).emit(Socket_Events.USER_TYPING_START, chatRoomId)
     });
-
-    socket.on(Socket_Events.TYPING_STOP, (chatRoomId: string) => {
-        console.log(`Typing Stopped in ${chatRoomId}.`)
-        socket.in(chatRoomId).emit(Socket_Events.TYPING_STOP, chatRoomId);
+    socket.on(Socket_Events.USER_TYPING_STOP, (chatRoomId: string) => {
+        // console.log('User TYPING Stopped in room : %s', chatRoomId);
+        socket.in(chatRoomId).emit(Socket_Events.USER_TYPING_STOP, chatRoomId)
     });
-
     socket.on(Socket_Events.SOCKET_DISCONNECT, (chatRoomId: string) => {
-        console.log(`User offline in ${chatRoomId}.`)
-        socket.in(chatRoomId).emit(Socket_Events.USER_OFFLINE, chatRoomId);
-        console.log(`disconnected : ${socket.id}`);
+        // console.log(`User offline in ${chatRoomId}.`)
+        socket.leave(chatRoomId);
+        // console.log(`disconnected : ${socket.id}`);
     })
 });
 
-// ? Middleware function
+
 app.use(helmet.xssFilter());
 
 app.use(express.json({ limit: '1mb' }));

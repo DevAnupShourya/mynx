@@ -8,6 +8,7 @@ import ProfilePreview from "~/components/profile/ProfilePreview";
 
 import { LuBadgePlus } from "react-icons/lu";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
+import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
 function ProfilesListWithState({
   groupMembersId,
@@ -16,6 +17,7 @@ function ProfilesListWithState({
   groupMembersId: string[];
   setGroupMembersId: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
+  const currentUserId = useAppSelector((state) => state.user.userId);
   const [usersIdList, setUsersIdList] = useState<string[]>([]);
   const [pageMeta, setPageMeta] = useState({
     currentPage: 0,
@@ -47,6 +49,10 @@ function ProfilesListWithState({
 
       setUsersIdList([]);
       response.data.responseData.allUsers.map((userData: { _id: string }) => {
+        // ? skipping current user
+        if (userData._id === currentUserId) {
+          return;
+        }
         setUsersIdList((pre) => [...pre, userData._id]);
       });
 
@@ -67,6 +73,11 @@ function ProfilesListWithState({
         {usersIdList && usersIdList.length === 0 && (
           <h1>No Users to search.</h1>
         )}
+        {usersIdList.length > 0 && (
+          <h1 className="text-center font-bold text-warning text-lg">
+            {groupMembersId.length} Users Selected
+          </h1>
+        )}
         {usersIdList.length > 0 &&
           usersIdList.map((userId) => {
             return (
@@ -80,6 +91,7 @@ function ProfilesListWithState({
                   color="warning"
                   isIconOnly
                   title="Chat With This User"
+                  isDisabled={groupMembersId.includes(userId)}
                   onClick={() => {
                     setGroupMembersId((previousMembers) => [
                       ...previousMembers,

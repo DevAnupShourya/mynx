@@ -5,6 +5,7 @@ import ChatProfilePreview from "~/components/profile/ChatProfilePreview";
 import { getPersonalChatsList } from "~/services/Chats/Chats.services";
 import useGetCookie from "~/utils/hooks/useGetCookie";
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
+import { PersonalChatDataListType } from "~/types/chat.types";
 
 function ChatWithUsersListChatsPage() {
   const userState = useAppSelector((state) => state.user);
@@ -13,22 +14,15 @@ function ChatWithUsersListChatsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isNoUsersToChat, setIsNoUsersToChat] = useState(false);
 
-  const [chatsList, setChatsList] = useState<
-    {
-      chatId: string;
-      lastChattedDate: Date;
-      lasMessageId: string;
-      chattingWithUserId: string;
-    }[]
-  >([]);
+  const [chatsList, setChatsList] = useState<PersonalChatDataListType>([]);
 
   const handleGettingPersonalChatsList = async () => {
     setIsLoading(true);
     try {
-      const { data } = await getPersonalChatsList(token!);
-      setIsNoUsersToChat(data.responseData.length < 1);
+      const messagesList = await getPersonalChatsList(token!);
+      setIsNoUsersToChat(messagesList.length < 1);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data.responseData.map((chat: any) => {
+      messagesList.map((chat: any) => {
         setChatsList((pre) => [
           ...pre,
           {
@@ -44,7 +38,10 @@ function ChatWithUsersListChatsPage() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       Toast.error(error.response.data.message);
-      console.error("Error Getting Posts: ", error.response.data.message);
+      console.error(
+        "@handleGettingPersonalChatsList : ",
+        error.response.data.message
+      );
     }
     setIsLoading(false);
   };
@@ -58,25 +55,27 @@ function ChatWithUsersListChatsPage() {
     <>
       {isLoading && <Loading label="Chats" />}
       {!isLoading && (
-        <section className="w-full h-auto flex flex-col gap-2">
+        <>
           {isNoUsersToChat ? (
             <h1 className="text-danger text-lg text-center animate-pulse">
               Find Users and start chatting
             </h1>
           ) : (
-            chatsList.map((data) => {
-              return (
-                <ChatProfilePreview
-                  key={data.chatId}
-                  lasMessageId={data.lasMessageId}
-                  chattingWithUserId={data.chattingWithUserId}
-                  lastChatDate={new Date(data.lastChattedDate).toDateString()}
-                  isGroup={false}
-                />
-              );
-            })
+            <section className="w-full h-auto flex flex-col gap-2">
+              {chatsList.map((data) => {
+                return (
+                  <ChatProfilePreview
+                    key={data.chatId}
+                    isGroup={false}
+                    lasMessageId={data.lasMessageId}
+                    chattingWithUserId={data.chattingWithUserId[0]}
+                    lastChatDate={new Date(data.lastChattedDate).toDateString()}
+                  />
+                );
+              })}
+            </section>
           )}
-        </section>
+        </>
       )}
     </>
   );

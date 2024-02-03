@@ -138,10 +138,10 @@ export default function VixetUpload() {
 
   const handlePostSubmission = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitBtnLoadingStatus(true);
     if (postData.tags.length === 0) {
       Toast.warning("Add one tag in your Title At least");
     } else {
+      setSubmitBtnLoadingStatus(true);
       try {
         const res = await uploadPosts(postData, token!);
         Toast.success(res?.data.message);

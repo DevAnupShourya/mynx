@@ -97,7 +97,6 @@ export default function VixsnapUpload() {
   }
 
   const handlePostSubmission = async (e: FormEvent) => {
-    setSubmitBtnLoadingStatus(true);
     e.preventDefault();
     if (postData.tags.length === 0) {
       Toast.warning("Add one tag in your Title At least");
@@ -107,6 +106,7 @@ export default function VixsnapUpload() {
           `Sorry! Images More Than ${MAX_IMAGES_ALLOWED} not Allowed!`
         );
       } else {
+        setSubmitBtnLoadingStatus(true);
         try {
           const res = await uploadPosts(postData, token!);
           console.log(postData);
@@ -122,8 +122,8 @@ export default function VixsnapUpload() {
             error.response.data.message
           );
         }
+        setSubmitBtnLoadingStatus(false);
       }
-      setSubmitBtnLoadingStatus(false);
     }
   };
   return (

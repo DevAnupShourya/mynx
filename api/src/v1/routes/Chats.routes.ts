@@ -18,7 +18,9 @@ import {
     deleteMessageById,
     updateMessageById,
     createNewMessage,
-    getAllMessagesByChatId
+    getAllMessagesByChatId,
+    getAllMessagesIdListByChatId,
+    removeMemberByAdmin
 } from '~/v1/controllers/ChatsController';
 
 
@@ -44,12 +46,15 @@ chatsRoute.route('/g/:groupId/:userId')
 
 // ? Used By Group Member
 chatsRoute.post('/g/join/:groupId', userVerification, joinGroupChat); // * Join A Group by current User
-chatsRoute.post('/g/join/:groupId', userVerification, leaveGroupChat); // * Leave from Group by current User
+chatsRoute.post('/g/leave/:groupId', userVerification, leaveGroupChat); // * Leave from Group by current User
+
+chatsRoute.delete('/g/admin/:groupId/removeUser/:userId', userVerification, removeMemberByAdmin); // * Remove a member from a Group
 
 chatsRoute.post('/m', userVerification, createNewMessage); // * Create a new Message in DB
 
 // ? /all/m/:chatId?page=1
-chatsRoute.get('/all/m/:chatId', userVerification, getAllMessagesByChatId); // * Create a new Message in DB : 
+chatsRoute.get('/all/m/:chatId', userVerification, getAllMessagesByChatId); // * Get all messages of certain Chat Id
+chatsRoute.get('/all/id/:chatId', userVerification, getAllMessagesIdListByChatId); // * Get all messages Id of certain Chat Id 
 
 chatsRoute.route('/m/:messageId')
     .get(userVerification, getMessageById) // * Get One Message by it's Id

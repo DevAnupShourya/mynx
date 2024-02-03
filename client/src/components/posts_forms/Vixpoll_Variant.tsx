@@ -40,11 +40,11 @@ export default function VixpollUpload() {
   });
 
   const handlePostSubmission = async (e: FormEvent) => {
-    setSubmitBtnLoadingStatus(true);
     e.preventDefault();
     if (postData.tags.length === 0) {
       Toast.warning("Add one tag in your Title At least");
     } else {
+      setSubmitBtnLoadingStatus(true);
       try {
         const res = await uploadPosts(postData, token!);
         Toast.success(res?.data.message);

@@ -6,6 +6,10 @@ const chatSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    groupImage: {
+        type: String,
+        default: '',
+    },
     groupName: {
         type: String,
         default: '',
@@ -14,12 +18,12 @@ const chatSchema = new Schema({
         type: String,
         default: ''
     },
-    lastMessage: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "ChatMessage",
-        }
-    ],
+    lastMessage:
+    {
+        type: Schema.Types.ObjectId,
+        ref: "ChatMessage",
+    }
+    ,
     participants: [
         {
             type: Schema.Types.ObjectId,

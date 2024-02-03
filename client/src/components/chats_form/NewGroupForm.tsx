@@ -8,6 +8,7 @@ import {
   ModalHeader,
   ModalBody,
   useDisclosure,
+  Textarea,
 } from "@nextui-org/react";
 import { useRef, useState } from "react";
 import { TiUserAddOutline } from "react-icons/ti";
@@ -19,52 +20,87 @@ import ProfilePreview from "~/components/profile/ProfilePreview";
 
 import { LuBadgeMinus } from "react-icons/lu";
 import { RiImageEditFill } from "react-icons/ri";
+import { GroupFormType } from "~/types/chat.types";
+import { createGroupChat } from "~/services/Chats/Chats.services";
+import useGetCookie from "~/utils/hooks/useGetCookie";
+import { useNavigate } from "react-router-dom";
 
 function NewGroupForm({ closeFn }: { closeFn: () => void }) {
+  const navigate = useNavigate();
   const themeState = useAppSelector((state) => state.theme.mode);
+  const token = useGetCookie();
+
   const groupImageInputRef = useRef<HTMLInputElement | null>(null);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [groupMembersId, setGroupMembersId] = useState<string[]>([]);
 
   const [isSubmitBtnLoading, setIsSubmitBtnLoading] = useState(false);
-  const [inputErrorMsg, setInputErrorMsg] = useState("");
-  const [groupData, setGroupData] = useState<{
-    groupImage: string;
-    groupName: string;
-    groupMembers: string[];
-  }>({
+  const [nameErrorMsg, setNameErrorMsg] = useState("");
+  const [descErrorMsg, setDescErrorMsg] = useState("");
+
+  const [groupFormData, setGroupFormData] = useState<GroupFormType>({
     groupImage: "https://avatars.githubusercontent.com/u/40372425?v=1",
     groupName: "",
-    groupMembers: [],
+    groupDescription: "",
   });
 
   async function handleGroupCreation() {
     setIsSubmitBtnLoading(true);
-    setInputErrorMsg("");
+    setNameErrorMsg("");
+    setDescErrorMsg("");
+
+    //  ? mutating from child component
+    setGroupFormData((prevGroupData) => ({
+      ...prevGroupData,
+      participants: groupMembersId,
+    }));
+
+    // ? validating group name
+    if (groupFormData.groupName === "" || groupFormData.groupName === " ") {
+      setNameErrorMsg("Enter Group Name!!");
+      setIsSubmitBtnLoading(false);
+      return;
+    }
+
+    if (
+      groupFormData.groupDescription === "" ||
+      groupFormData.groupDescription === " "
+    ) {
+      setDescErrorMsg("Enter Group Description!!");
+      setIsSubmitBtnLoading(false);
+      return;
+    }
+
+    // ? validating group participants array
+    if (
+      groupMembersId.length === 0 ||
+      groupMembersId.length < 2 ||
+      groupMembersId.length > 11
+    ) {
+      window.alert(
+        "Minimum 2 and maximum 11 members required to create a group!"
+      );
+      setIsSubmitBtnLoading(false);
+      return;
+    }
+
     try {
-      if (groupData.groupName === "") {
-        setInputErrorMsg("Enter Group Name");
-      } else {
-        setGroupData((prevGroupData) => ({
-          ...prevGroupData,
-          groupMembers: groupMembersId,
-        }));
-
-        if (groupData.groupMembers.length < 2) {
-          Toast.warning("At least 2 Members required to create a group!");
-        }
-        console.log(groupData);
-
-        setIsSubmitBtnLoading(false);
-      }
+      const groupResponse = await createGroupChat(
+        groupFormData,
+        groupMembersId,
+        token!
+      );
+      // ? closing modal and redirecting user to the group
+      closeFn();
+      Toast.success(`Group Created Successfully.`);
+      navigate(`/chats/groups/${groupResponse._id}`);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      Toast.error(`Error : ${error.response.data.message}`);
+      Toast.error(`${error.response.data.message}`);
       console.error("Error :", error.response.data.message);
     }
     setIsSubmitBtnLoading(false);
-    closeFn();
   }
 
   function handleGroupImageChange() {
@@ -73,8 +109,8 @@ function NewGroupForm({ closeFn }: { closeFn: () => void }) {
       const reader = new FileReader();
 
       reader.onload = (event) => {
-        setGroupData({
-          ...groupData,
+        setGroupFormData({
+          ...groupFormData,
           groupImage: event.target?.result as string,
         });
       };
@@ -98,6 +134,7 @@ function NewGroupForm({ closeFn }: { closeFn: () => void }) {
           onClick={() => {
             groupImageInputRef.current?.click();
           }}
+          title="Add Group Image"
         >
           <RiImageEditFill className="text-lg" />
           <input
@@ -111,18 +148,34 @@ function NewGroupForm({ closeFn }: { closeFn: () => void }) {
         </Button>
       </div>
       <div className="w-1/4 h-auto my-4 mx-auto grid place-items-center">
-        <Image className="rounded-full" src={groupData.groupImage} />
+        <Image className="rounded-full" src={groupFormData.groupImage} />
       </div>
       <Input
         size="lg"
         type="text"
         label="Group Name"
         variant="faded"
-        value={groupData.groupName}
+        value={groupFormData.groupName}
         onChange={(e) => {
-          setGroupData({ ...groupData, groupName: e.target.value });
+          setGroupFormData({ ...groupFormData, groupName: e.target.value });
         }}
-        errorMessage={inputErrorMsg}
+        errorMessage={nameErrorMsg}
+        isRequired
+      />
+      <br />
+      <Textarea
+        size="lg"
+        type="text"
+        label="Group Description"
+        variant="faded"
+        value={groupFormData.groupDescription}
+        onChange={(e) => {
+          setGroupFormData({
+            ...groupFormData,
+            groupDescription: e.target.value,
+          });
+        }}
+        errorMessage={descErrorMsg}
         isRequired
       />
       <Divider className="my-2" />
@@ -130,7 +183,13 @@ function NewGroupForm({ closeFn }: { closeFn: () => void }) {
         <h4 className="capitalize text-lg">
           Group members | {groupMembersId.length} Added
         </h4>
-        <Button variant="bordered" color="warning" onPress={onOpen} isIconOnly>
+        <Button
+          variant="bordered"
+          color="warning"
+          onPress={onOpen}
+          isIconOnly
+          title="Add Group Members"
+        >
           <TiUserAddOutline className="text-lg" />
         </Button>
       </div>
@@ -170,6 +229,7 @@ function NewGroupForm({ closeFn }: { closeFn: () => void }) {
         fullWidth
         isLoading={isSubmitBtnLoading}
         onClick={handleGroupCreation}
+        isDisabled={groupMembersId.length < 2}
       >
         Create
       </Button>

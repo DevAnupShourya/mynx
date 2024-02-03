@@ -185,7 +185,7 @@ export const getAllUsers = async (req: AuthenticatedRequest, res: Response) => {
             .limit(limit)
             .sort({ createdAt: -1 }); // * Sorting by createdAt in descending order (newer posts comes first)
 
-        responseInfo(res, 200, "All Available Posts!", {
+        responseInfo(res, 200, "All Available Users!", {
             totalPages,
             hasNextPage,
             hasPrevPage,
