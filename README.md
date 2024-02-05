@@ -134,5 +134,5 @@ Happy Mynxing !
 #### Backend :
 - [ ] : Add MongoDB Aggregation Pipeline instead for search queries.
 - [ ] : Add RabbitMQ or Redis to enable fast chatting instead to direct saving into DB.
-#### Frontend :
+#### Frontend :`
 - [ ] : Redirect User to /login when trying to access protected routes and not logged in.
