@@ -36,7 +36,7 @@ import Loading from "~/components/loading_error_pages/Loading";
 import Toast from "~/components/custom_toast/Toast";
 
 import Socket_Events from "~/utils/raw_data/Socket.io";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 
 import {
   createMessage,
@@ -60,8 +60,6 @@ function UserChatsPage() {
   const { userId } = useParams();
 
   const { socket, isSocketOnline } = useSocket();
-
-  const token = useGetCookie();
 
   const navigate = useNavigate();
 
@@ -107,7 +105,7 @@ function UserChatsPage() {
         navigate("/chats");
         return;
       }
-      const personalChatData = await getPersonalChat(userId, token!);
+      const personalChatData = await getPersonalChat(userId);
       setChatDetails({
         chatId: personalChatData._id,
         started: new Date(personalChatData.createdAt).toDateString(),
@@ -194,8 +192,7 @@ function UserChatsPage() {
   const getChatMessagesId = async () => {
     try {
       const chatIdsList: { _id: string }[] = await getAllMessageIds(
-        chatDetails.chatId,
-        token!
+        chatDetails.chatId
       );
 
       chatIdsList.map((msg) =>
@@ -216,12 +213,11 @@ function UserChatsPage() {
     try {
       const messageData = await createMessage(
         chatFormData.text.trim(),
-        chatDetails.chatId,
-        token!
+        chatDetails.chatId
       );
 
       // ? Getting fresh details after every message
-      const personalChatResponse = await getPersonalChat(userId!, token!);
+      const personalChatResponse = await getPersonalChat(userId!);
       setChatDetails({
         chatId: personalChatResponse._id,
         started: new Date(personalChatResponse.createdAt).toDateString(),
@@ -337,14 +333,12 @@ function UserChatsPage() {
       <Card className="w-full h-full bg-main-text-main" radius="sm">
         <UserChatsHeader
           chattingWithUserId={userId || null}
-          token={token!}
           isChattingWithUserOnline={chatMeta.isChattingWithUserOnline}
           isChattingWithUserTyping={chatMeta.isChattingWithUserTyping}
         />
         <Divider />
         <UserChatsBody
           chatIdToGetMessagesOf={chatDetails.chatId}
-          token={token!}
           chatMessageIdList={chatMessageIdList}
           chatInitiated={chatDetails.started}
           chatLastUpdated={chatDetails.lastChanged}
@@ -460,13 +454,11 @@ export default UserChatsPage;
 
 function UserChatsBody({
   chatIdToGetMessagesOf,
-  token,
   chatInitiated,
   chatLastUpdated,
   chatMessageIdList,
 }: {
   chatIdToGetMessagesOf: string;
-  token: string | null;
   chatInitiated: string;
   chatLastUpdated: string;
   chatMessageIdList: string[];
@@ -480,7 +472,7 @@ function UserChatsBody({
     setIsChatMessagesLoading(true);
     try {
       const messagesListResponse: MessagesListResponseInterface[] =
-        await getAllMessages(chatIdToGetMessagesOf, token!);
+        await getAllMessages(chatIdToGetMessagesOf);
 
       messagesListResponse.map((currentMsg) => {
         setMessagesList((pre) => [
@@ -508,8 +500,7 @@ function UserChatsBody({
   const handleGetLastMessage = async () => {
     try {
       const lastMessageResponse = await getMessageById(
-        chatMessageIdList[chatMessageIdList.length - 1],
-        token!
+        chatMessageIdList[chatMessageIdList.length - 1]
       );
       setMessagesList((pre) => [
         ...pre,
@@ -576,12 +567,10 @@ function UserChatsBody({
 
 function UserChatsHeader({
   chattingWithUserId,
-  token,
   isChattingWithUserOnline,
   isChattingWithUserTyping,
 }: {
   chattingWithUserId: string | null;
-  token: string | null;
   isChattingWithUserOnline: boolean;
   isChattingWithUserTyping: boolean;
 }) {
@@ -596,7 +585,7 @@ function UserChatsHeader({
   const getChattingWithUserDetails = async () => {
     try {
       if (chattingWithUserId) {
-        const { user } = await getUserByUID(chattingWithUserId, token!);
+        const { user } = await getUserByUID(chattingWithUserId);
         setChattingWithUser({
           image: user.avatarURL,
           name: user.name,

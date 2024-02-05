@@ -5,21 +5,21 @@ import { useParams } from "react-router-dom";
 import PostCard from "~/components/cards/PostCard";
 import PageTitle from "~/components/title/PageTitle";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 
 import { AllPostsResponseType } from "~/types/post.types";
 import { getAllPostsByUsername } from "~/services/Users/User.services";
 
 function PostsTab() {
   const [AllPosts, setAllPosts] = useState<AllPostsResponseType | null>(null);
-  const token = useGetCookie();
+  
   const [pageNo, setPageNo] = useState<number>(1);
 
   const { username } = useParams();
 
   const getAllPosts = async (page: number) => {
     try {
-      const response = await getAllPostsByUsername(username! , token! , page)
+      const response = await getAllPostsByUsername(username!  , page)
 
       setAllPosts(() => ({
         currentPage: response?.data.responseData.currentPage,

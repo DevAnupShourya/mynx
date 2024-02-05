@@ -13,7 +13,8 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
+const cookie_name = import.meta.env.VITE_COOKIE_NAME as string;
 
 import { MdMail } from "react-icons/md";
 import { IoMdEyeOff, IoMdEye } from "react-icons/io";
@@ -58,8 +59,6 @@ function Signup() {
   const [formSubmitStatus, setFormSubmitStatus] = useState(false);
   const [passwordView, setPasswordView] = useState(false);
 
-  const [, setCookie] = useCookies(["secret_text"]);
-
   // ? Handlers
   const handleInputCapture = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -86,9 +85,9 @@ function Signup() {
       } else {
         const resFromServer = await createUser(formData);
 
-        setCookie("secret_text", resFromServer?.data.responseData.token, {
+        Cookies.set(cookie_name, resFromServer?.data.responseData.token, {
           path: "/",
-          maxAge: 28 * 24 * 60 * 60 * 1000,
+          expires: 28,
         });
 
         dispatch(

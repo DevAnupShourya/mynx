@@ -1,13 +1,15 @@
-import useGetCookie from "~/utils/hooks/useGetCookie";
+import Cookies from "js-cookie";
+
 import { useAppDispatch, useAppSelector } from "~/utils/hooks/redux.hooks";
 import { updateUserData } from "~/redux/slices/user";
 import { getCurrentUser } from "~/services/Users/User.services";
+const cookie_name = import.meta.env.VITE_COOKIE_NAME as string;
 
 function useCheckUserAuth() {
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state) => state.user);
-  const token = useGetCookie();
-
+  const token =  Cookies.get(cookie_name);
+  
   async function checkAuth() {
     try {
       if (!token) {
@@ -16,7 +18,7 @@ function useCheckUserAuth() {
           updateUserData({ ...userState, authStatus: "unauthenticated" })
         );
       } else {
-        const userDataFromServer = await getCurrentUser(token);
+        const userDataFromServer = await getCurrentUser();
         
         dispatch(
           updateUserData({

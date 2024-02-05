@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { getUserByUsername } from "~/services/Users/User.services";
 
 import Toast from "~/components/custom_toast/Toast";
 import ProfilePreview from "~/components/profile/ProfilePreview";
 
 function FollowingTab() {
-  const token = useGetCookie();
+  
   const [followingList, setFollowingList] = useState<string[]>([""]);
   const { username } = useParams();
 
   const getFollowingList = async () => {
     try {
-      const res = await getUserByUsername(username! , token!)
+      const res = await getUserByUsername(username! )
 
       setFollowingList(res.responseData.userFromDB.following);
 

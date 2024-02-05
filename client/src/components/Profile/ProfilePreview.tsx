@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { User, Link, Spinner } from "@nextui-org/react";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { getUserByUID } from "~/services/Users/User.services";
 import Toast from "~/components/custom_toast/Toast";
 
@@ -13,7 +13,7 @@ function ProfilePreview({
   userId: string;
   endContent?: React.ReactNode;
 }) {
-  const token = useGetCookie();
+  
 
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState<{
@@ -25,7 +25,7 @@ function ProfilePreview({
   const getUserDetails = async () => {
     setLoading(true);
     try {
-      const res = await getUserByUID(userId, token!);
+      const res = await getUserByUID(userId);
 
       setUserDetails({
         avatarURL: res?.user.avatarURL,

@@ -1,5 +1,5 @@
 import { useState, FormEvent, ChangeEvent } from "react";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import {
   Card,
   CardBody,
@@ -21,6 +21,7 @@ import { useAppDispatch } from "~/utils/hooks/redux.hooks";
 import { updateUserData } from "~/redux/slices/user";
 import Toast from "~/components/custom_toast/Toast";
 import { toast as reactToast } from "react-toastify";
+const cookie_name = import.meta.env.VITE_COOKIE_NAME as string;
 
 // ? Services
 import { authenticateUser } from "~/services/Users/User.services";
@@ -29,7 +30,6 @@ export default function Login() {
   const navigate = useNavigate();
   // ? Redux States
   const dispatch = useAppDispatch();
-  const [, setCookie] = useCookies(["secret_text"]);
 
   // ? States
   const [formData, setFormData] = useState({
@@ -51,12 +51,12 @@ export default function Login() {
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setFormSubmitStatus(true);
-    try { 
+    try {
       const resFromServer = await authenticateUser(formData);
 
-      setCookie("secret_text", resFromServer?.data.responseData.token, {
+      Cookies.set(cookie_name, resFromServer?.data.responseData.token, {
         path: "/",
-        maxAge: 28 * 24 * 60 * 60 * 1000,
+        expires: 28,
       });
 
       dispatch(
@@ -90,6 +90,7 @@ export default function Login() {
       Toast.success("Successfully Found Your Account");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      console.log(error)
       Toast.error(`Error : ${error.response.data.message}`);
       console.error("Error :", error.response.data.message);
     }
@@ -98,11 +99,7 @@ export default function Login() {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <Card
-        radius="sm"
-        shadow="lg"
-        className="bg-main-text-main" 
-      >
+      <Card radius="sm" shadow="lg" className="bg-main-text-main">
         <CardHeader className="justify-center">
           <h1 className="text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
             Login
@@ -165,7 +162,12 @@ export default function Login() {
           </div>
         </CardBody>
         <CardFooter className="flex flex-row justify-end gap-4">
-          <Button color="primary" type="submit" isLoading={formSubmitStatus} data-testid="submit-btn">
+          <Button
+            color="primary"
+            type="submit"
+            isLoading={formSubmitStatus}
+            data-testid="submit-btn"
+          >
             Proceed
           </Button>
         </CardFooter>

@@ -4,10 +4,10 @@ import Loading from "~/components/loading_error_pages/Loading";
 import ChatProfilePreview from "~/components/profile/ChatProfilePreview";
 import { getGroupChatsList } from "~/services/Chats/Chats.services";
 import { GroupChatDataListType } from "~/types/chat.types";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 
 function GroupsListChatsPage() {
-  const token = useGetCookie();
+  
 
   const [isLoading, setIsLoading] = useState(false);
   const [isNoGroupsToChat, setIsNoGroupsToChat] = useState(false);
@@ -16,7 +16,7 @@ function GroupsListChatsPage() {
   const handleGetGroupChatsList = async () => {
     setIsLoading(true);
     try {
-      const groupsList = await getGroupChatsList(token!);
+      const groupsList = await getGroupChatsList();
       if (groupsList.length < 1) {
         setIsNoGroupsToChat(true);
         setIsLoading(false);

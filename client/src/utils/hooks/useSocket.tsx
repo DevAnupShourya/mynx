@@ -1,15 +1,15 @@
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Socket, io } from "socket.io-client";
-
-import useGetCookie from "~/utils/hooks/useGetCookie";
 import Socket_Events from "~/utils/raw_data/Socket.io";
 
 const socketUrl = import.meta.env.VITE_API_URL;
+const cookie_name = import.meta.env.VITE_COOKIE_NAME as string;
 
 function useSocket() {
-  const token = useGetCookie();
   const [isSocketOnline, setIsSocketOnline] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const token = Cookies.get(cookie_name);
 
   useEffect(() => {
     const url = socketUrl.replace("v1", "");

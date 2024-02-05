@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axiosInstance from "~/lib/AxiosInstance";
+import { axiosInstance } from "~/lib/AxiosInstance";
 
 export default function useApiStatus() {
   const [apiStatus, setApiStatus] = useState(false);

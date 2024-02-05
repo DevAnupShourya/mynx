@@ -17,7 +17,7 @@ import { TbSend } from "react-icons/tb";
 import { ImBlog } from "react-icons/im";
 import { MdOutlineBrokenImage } from "react-icons/md";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { uploadPosts } from "~/services/Posts/Posts.services";
 
 import findTagsInText from "~/utils/functions/findTagsInText";
@@ -32,7 +32,7 @@ export default function VixogsUpload() {
 
   const navigate = useNavigate();
 
-  const token = useGetCookie();
+  
   const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
 
   const [postData, setPostData] = useState<PostDataInterface>({
@@ -100,7 +100,7 @@ export default function VixogsUpload() {
     } else {
       setSubmitBtnLoadingStatus(true);
       try {
-        const res = await uploadPosts(postData, token!);
+        const res = await uploadPosts(postData);
         Toast.success(res?.data.message);
 
         navigate("/", { replace: true });
@@ -137,6 +137,7 @@ export default function VixogsUpload() {
             labelPlacement="inside"
             placeholder="Nice Title of Your Blog post"
             isRequired={true}
+            description="You can add # (hashtags) also like #coding #science | Just press space if added"
             value={postData.title}
             onChange={(e) => {
               const foundTags = findTagsInText(postData.title as string);

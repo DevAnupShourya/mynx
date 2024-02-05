@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, Chip } from "@nextui-org/react";
 
+import {axiosInstanceAuth} from "~/lib/AxiosInstance";
 
-import axiosInstance from "~/lib/AxiosInstance";
-import useGetCookie from "~/utils/hooks/useGetCookie";
 import {
   AllPostsResponseType,
   OnePostResponseType,
@@ -15,15 +14,11 @@ export default function TrendingPage() {
   const [pageNo, setPageNo] = useState<number>(1);
   const [allTrendyPosts, setAllTrendyPosts] =
     useState<AllPostsResponseType | null>(null);
-  const token = useGetCookie();
+  
 
   const getAllPosts = async (page: number) => {
     try {
-      const response = await axiosInstance.get(`/posts?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstanceAuth.get(`/posts?page=${page}`);
 
       setAllTrendyPosts(() => ({
         currentPage: response.data.responseData.currentPage,

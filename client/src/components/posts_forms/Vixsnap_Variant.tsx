@@ -18,7 +18,7 @@ import { TbSend } from "react-icons/tb";
 import { FcPicture } from "react-icons/fc";
 import { MdOutlineBrokenImage } from "react-icons/md";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { uploadPosts } from "~/services/Posts/Posts.services";
 
 import Toast from "~/components/custom_toast/Toast";
@@ -30,7 +30,7 @@ export default function VixsnapUpload() {
   const MAX_IMAGES_SIZE_ALLOWED = 2;
   const navigate = useNavigate();
 
-  const token = useGetCookie();
+  
   const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
 
   const [postData, setPostData] = useState<PostDataInterface>({
@@ -108,8 +108,8 @@ export default function VixsnapUpload() {
       } else {
         setSubmitBtnLoadingStatus(true);
         try {
-          const res = await uploadPosts(postData, token!);
-          console.log(postData);
+          const res = await uploadPosts(postData);
+          
           Toast.success(res?.data.message);
 
           navigate("/", { replace: true });
@@ -145,8 +145,8 @@ export default function VixsnapUpload() {
             variant="underlined"
             label="Tags"
             name="title"
-            description="You can add # (hashtags) also like #coding #science"
             labelPlacement="inside"
+            description="You can add # (hashtags) also like #coding #science | Just press space if added"
             placeholder="#vibing"
             isRequired={true}
             onChange={(e) => {

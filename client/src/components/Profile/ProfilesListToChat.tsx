@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Pagination } from "@nextui-org/react";
 
-import axiosInstance from "~/lib/AxiosInstance";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+import { axiosInstanceAuth } from "~/lib/AxiosInstance";
 
 import ProfilePreview from "~/components/profile/ProfilePreview";
 
@@ -20,15 +19,10 @@ function ProfilesListToChat({ closeFn }: { closeFn: () => void }) {
     totalPages: 0,
   });
   const [pageNo, setPageNo] = useState<number>(1);
-  const token = useGetCookie();
 
   const getAllUsers = async (page: number) => {
     try {
-      const response = await axiosInstance.get(`/users?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstanceAuth.get(`/users?page=${page}`);
 
       setPageMeta({
         currentPage: response.data.responseData.currentPage,

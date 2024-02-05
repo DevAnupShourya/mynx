@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
+const cookie_name = import.meta.env.VITE_COOKIE_NAME as string;
+
 import { Link, useNavigate } from "react-router-dom";
 import {
   Dropdown,
@@ -34,13 +36,10 @@ export default function ProfileDropdown() {
 
   const [logoutBtnStatus, setLogoutBtnStatus] = useState(false);
 
-  const [, , removeCookie] = useCookies(["secret_text"]);
-
   const handleLogout = async () => {
     setLogoutBtnStatus(true);
     try {
-      removeCookie("secret_text", { path: "/" });
-
+      Cookies.remove(cookie_name);
       dispatch(
         updateUserData({
           authStatus: "unauthenticated",

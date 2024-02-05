@@ -16,13 +16,13 @@ import {
   getGroupChat,
   removeUserByAdmin,
 } from "~/services/Chats/Chats.services";
-import useGetCookie from "~/utils/hooks/useGetCookie";
-import Toast from "../custom_toast/Toast";
 
+import Toast from "../custom_toast/Toast";
+ 
 function ChatGroupDetails({ groupId }: { groupId: string }) {
   const theme = useAppSelector((state) => state.theme.mode);
   const currentUserId = useAppSelector((state) => state.user.userId);
-  const token = useGetCookie();
+  
 
   const [groupDetails, setGroupDetails] = useState({
     image: "",
@@ -34,7 +34,7 @@ function ChatGroupDetails({ groupId }: { groupId: string }) {
 
   const getGroupDetails = async () => {
     try {
-      const groupChatData = await getGroupChat(groupId!, token!);
+      const groupChatData = await getGroupChat(groupId!);
       setGroupDetails({
         name: groupChatData.groupName,
         image: groupChatData.groupImage,
@@ -60,8 +60,7 @@ function ChatGroupDetails({ groupId }: { groupId: string }) {
     try {
       const removedResponse = await removeUserByAdmin(
         groupId,
-        userIdToRemove,
-        token!
+        userIdToRemove
       );
       Toast.success(removedResponse.message);
       setGroupDetails({

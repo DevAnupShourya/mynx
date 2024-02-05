@@ -17,14 +17,14 @@ import {
 import userVerification from '~/v1/middleware/userVerification';
 
 // * Root Route : .../v1/posts/*
-postsRoute.post('/', userVerification, createPost);
-postsRoute.patch('/:postId', userVerification, updatePostByPostId);
+postsRoute.route('/').post(userVerification, createPost)
+    .get(userVerification, getAllPosts);
+postsRoute.route('/:postId').patch(userVerification, updatePostByPostId)
+    .delete(userVerification, deletePostByPostId);
 postsRoute.patch('/poll/:postId', userVerification, updatePollPostByPostId);
-postsRoute.delete('/:postId', userVerification, deletePostByPostId);
-postsRoute.get('/', userVerification, getAllPosts);
 postsRoute.get('/p/:postId', userVerification, getPostByPostId);
 postsRoute.get('/self', userVerification, getAllPostsOfCurrentUser);
 postsRoute.get('/username', userVerification, getAllPostsByUsername);
-postsRoute.patch('/like/:postId', userVerification, likePostById); 
+postsRoute.patch('/like/:postId', userVerification, likePostById);
 
 export default postsRoute;

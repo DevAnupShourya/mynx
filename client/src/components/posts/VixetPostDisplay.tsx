@@ -23,7 +23,7 @@ function VixetPostDisplay({
 
   return (
     <div>
-      <h1 className="text-lg font-bold">
+      <h1 className="text-lg font-bold" style={{textOverflow : 'ellipsis'}}>
         {truncatedTitle}
         {title.length > 255 && (
           <Button

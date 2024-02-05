@@ -25,9 +25,10 @@ userRoute.get('/u/:userId', userVerification, getUserById);
 userRoute.get('/username', userVerification, getUserByUsername);
 userRoute.get('/username-status', usernameAvailabilityStatus);
 userRoute.get('/info', userVerification, getCurrentUserInfo);
-userRoute.patch('/', userVerification, updateUserInfo);
-userRoute.get('/', userVerification, getAllUsers);
-userRoute.delete('/', userVerification, deleteUserById);
 userRoute.put('/follow/:userId', userVerification, followOrUnfollowUserById);
+userRoute.route('/')
+    .patch(userVerification, updateUserInfo)
+    .get(userVerification, getAllUsers)
+    .delete(userVerification, deleteUserById);
 
 export default userRoute;

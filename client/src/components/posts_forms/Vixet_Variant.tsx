@@ -16,7 +16,7 @@ import { TbSend } from "react-icons/tb";
 import { FcEditImage } from "react-icons/fc";
 import { MdOutlineGifBox, MdOutlineBrokenImage } from "react-icons/md";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { uploadPosts } from "~/services/Posts/Posts.services";
 
 import findTagsInText from "~/utils/functions/findTagsInText";
@@ -33,7 +33,7 @@ export default function VixetUpload() {
   const MAX_VIDEOS_SIZE_ALLOWED = 10;
   const navigate = useNavigate();
 
-  const token = useGetCookie();
+  
   const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
 
   const [postData, setPostData] = useState<PostDataInterface>({
@@ -143,7 +143,7 @@ export default function VixetUpload() {
     } else {
       setSubmitBtnLoadingStatus(true);
       try {
-        const res = await uploadPosts(postData, token!);
+        const res = await uploadPosts(postData);
         Toast.success(res?.data.message);
 
         navigate("/", { replace: true });
@@ -178,7 +178,7 @@ export default function VixetUpload() {
             variant="underlined"
             label="Title"
             name="title"
-            description="You can add # (hashtags) also like #coding #science"
+            description="You can add # (hashtags) also like #coding #science | Just press space if added"
             labelPlacement="inside"
             placeholder="What's up!!"
             min={5}

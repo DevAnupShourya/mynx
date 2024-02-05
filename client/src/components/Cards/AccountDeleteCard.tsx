@@ -9,16 +9,14 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
+const cookie = import.meta.env.VITE_COOKIE_NAME as string;
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
 import Toast from "~/components/custom_toast/Toast";
 import { deleteUser } from "~/services/Users/User.services";
 
 function AccountDeleteCard() {
-  const [, , removeCookie] = useCookies();
   const navigate = useNavigate();
-  const token = useGetCookie();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [isReqProcessing, setIsReqProcessing] = useState(false);
@@ -26,8 +24,8 @@ function AccountDeleteCard() {
   const deleteAccount = async () => {
     setIsReqProcessing(true);
     try {
-      const response = await deleteUser(token!);
-      removeCookie("secret_text");
+      const response = await deleteUser();
+      Cookies.remove(cookie);
       Toast.success(response?.data.message);
 
       navigate("/", { replace: true });

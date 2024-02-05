@@ -1,6 +1,5 @@
 import { Button, Divider, Input, Textarea } from "@nextui-org/react";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "~/utils/hooks/redux.hooks";
@@ -23,11 +22,7 @@ import { UpdateUserProfileInterface } from "~/types/user.types";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-
   const dispatch = useAppDispatch();
-
-  const [cookies] = useCookies();
-  const tokenValue = cookies["secret_text"] as string;
 
   const [profileUpdateBtnLoadingStatus, setProfileUpdateBtnLoadingStatus] =
     useState(false);
@@ -81,10 +76,7 @@ export default function SettingsPage() {
     } else {
       try {
         setProfileUpdateBtnLoadingStatus(true);
-        const updatedUserData = await updateUserDataService(
-          tokenValue,
-          userProfileData
-        );
+        const updatedUserData = await updateUserDataService(userProfileData);
 
         Toast.success(updatedUserData.message);
 
@@ -114,7 +106,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userDataFromServer = await getCurrentUser(tokenValue);
+        const userDataFromServer = await getCurrentUser();
 
         setUserProfileData({
           username: userDataFromServer.username,

@@ -3,14 +3,14 @@ import Toast from "~/components/custom_toast/Toast";
 import Loading from "~/components/loading_error_pages/Loading";
 import ChatProfilePreview from "~/components/profile/ChatProfilePreview";
 import { getPersonalChatsList } from "~/services/Chats/Chats.services";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
 import { PersonalChatDataListType } from "~/types/chat.types";
 
 function ChatWithUsersListChatsPage() {
   const userState = useAppSelector((state) => state.user);
 
-  const token = useGetCookie();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [isNoUsersToChat, setIsNoUsersToChat] = useState(false);
 
@@ -19,7 +19,7 @@ function ChatWithUsersListChatsPage() {
   const handleGettingPersonalChatsList = async () => {
     setIsLoading(true);
     try {
-      const messagesList = await getPersonalChatsList(token!);
+      const messagesList = await getPersonalChatsList();
       setIsNoUsersToChat(messagesList.length < 1);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messagesList.map((chat: any) => {

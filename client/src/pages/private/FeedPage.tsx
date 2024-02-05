@@ -4,23 +4,18 @@ import { Button, Chip } from "@nextui-org/react";
 import PageTitle from "~/components/title/PageTitle";
 import PostCard from "~/components/cards/PostCard";
 
-import axiosInstance from "~/lib/AxiosInstance";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+import {axiosInstanceAuth} from "~/lib/AxiosInstance";
 
 import { AllPostsResponseType } from "~/types/post.types";
 
 export default function FeedPage() {
   const [AllPosts, setAllPosts] = useState<AllPostsResponseType | null>(null);
-  const token = useGetCookie();
+  
   const [pageNo, setPageNo] = useState<number>(1);
  
   const getAllPosts = async (page: number) => {
     try {
-      const response = await axiosInstance.get(`/posts?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstanceAuth.get(`/posts?page=${page}`);
 
       setAllPosts(() => ({
         currentPage: response.data.responseData.currentPage,

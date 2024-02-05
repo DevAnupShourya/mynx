@@ -4,7 +4,7 @@ import { Avatar, AvatarGroup } from "@nextui-org/react";
 
 import Toast from "~/components/custom_toast/Toast";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import Loading from "~/components/loading_error_pages/Loading";
 
 import { getUserByUID } from "~/services/Users/User.services";
@@ -25,7 +25,7 @@ function ChatProfilePreview({
   isGroup: boolean;
   members?: string[];
 }) {
-  const token = useGetCookie();
+  
 
   const [isLoading, setIsLoading] = useState(true);
   const [chatDetails, setChatDetails] = useState({
@@ -38,16 +38,16 @@ function ChatProfilePreview({
   const handleGettingChatDetails = async () => {
     try {
       if (isGroup) {
-        const groupData = await getGroupChat(chatId!, token!);
-        const messageData = await getMessageById(lasMessageId, token!);
+        const groupData = await getGroupChat(chatId!);
+        const messageData = await getMessageById(lasMessageId);
         setChatDetails({
           lastMessage: messageData.text,
           image: groupData.groupImage,
           name: groupData.groupName,
         });
       } else {
-        const userData = await getUserByUID(chattingWithUserId!, token!);
-        const messageData = await getMessageById(lasMessageId, token!);
+        const userData = await getUserByUID(chattingWithUserId!);
+        const messageData = await getMessageById(lasMessageId);
         setChatDetails({
           image: userData.user.avatarURL,
           name: userData.user.name,
@@ -70,7 +70,7 @@ function ChatProfilePreview({
     try {
       if (isGroup) {
         const avatarPromises = members?.map(async (memberId) => {
-          const member = await getUserByUID(memberId, token!);
+          const member = await getUserByUID(memberId);
           return member.user.avatarURL;
         });
 

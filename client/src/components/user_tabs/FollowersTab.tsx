@@ -5,16 +5,16 @@ import Toast from "~/components/custom_toast/Toast";
 import ProfilePreview from "~/components/profile/ProfilePreview";
 
 import { getUserByUsername } from "~/services/Users/User.services";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 
 function FollowersTab() {
-  const token = useGetCookie();
+  
   const [followersList, setFollowersList] = useState<string[]>([""]);
   const { username } = useParams();
 
   const getFollowersList = async () => {
     try {
-      const res = await getUserByUsername(username! , token!)
+      const res = await getUserByUsername(username! )
       
       setFollowersList(res.responseData.userFromDB.followers);
 

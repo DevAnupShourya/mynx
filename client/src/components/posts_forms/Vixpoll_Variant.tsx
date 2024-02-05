@@ -14,7 +14,7 @@ import {
 import { TbPlus, TbSend, TbMinus } from "react-icons/tb";
 import { MdOutlinePoll } from "react-icons/md";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { uploadPosts } from "~/services/Posts/Posts.services";
 import Toast from "~/components/custom_toast/Toast";
 
@@ -24,7 +24,7 @@ import { PostDataInterface } from "~/types/post.types";
 export default function VixpollUpload() {
   const navigate = useNavigate();
 
-  const token = useGetCookie();
+  
   const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
 
   const [postData, setPostData] = useState<PostDataInterface>({
@@ -46,7 +46,7 @@ export default function VixpollUpload() {
     } else {
       setSubmitBtnLoadingStatus(true);
       try {
-        const res = await uploadPosts(postData, token!);
+        const res = await uploadPosts(postData);
         Toast.success(res?.data.message);
 
         navigate("/trending", { replace: true });
@@ -82,6 +82,7 @@ export default function VixpollUpload() {
             label="Poll Title"
             name="title"
             labelPlacement="inside"
+            description="You can add # (hashtags) also like #coding #science | Just press space if added"
             placeholder="A Title that describes your Poll options"
             isRequired={true}
             value={postData.title}

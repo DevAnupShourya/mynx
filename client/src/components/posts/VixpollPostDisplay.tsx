@@ -1,7 +1,7 @@
 import { Button } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 
 import Toast from "~/components/custom_toast/Toast";
 import { updateVixpollPostById } from "~/services/Posts/Posts.services";
@@ -16,7 +16,7 @@ function VixetPostDisplay({
   id: string;
   pollOptions: { pollName: string; pollSupporters: string[] }[];
 }) {
-  const token = useGetCookie();
+  
 
   // ? For Updating Poll Values
   const [pollOptionsState, setPollOptionsState] = useState<
@@ -32,7 +32,7 @@ function VixetPostDisplay({
 
   const handleUpdatePost = async (ithToPlus: number) => {
     try {
-      const response = await updateVixpollPostById(ithToPlus, id, token!);
+      const response = await updateVixpollPostById(ithToPlus, id);
       Toast.success(response?.data.responseData.message);
       // ? Mutating the new poll version
       setPollOptionsState(response?.data.responseData.pollOptions);
@@ -85,6 +85,7 @@ function VixetPostDisplay({
               startContent={<h2>{poll.pollName}</h2>}
               endContent={<h3>{percentage.toFixed(2)}%</h3>}
               className="justify-between"
+              style={{textOverflow : 'ellipsis'}}
               onClick={() => {
                 handleUpdatePost(index);
               }}

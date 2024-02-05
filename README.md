@@ -135,7 +135,4 @@ Happy Mynxing !
 - [ ] : Add MongoDB Aggregation Pipeline instead for search queries.
 - [ ] : Add RabbitMQ or Redis to enable fast chatting instead to direct saving into DB.
 #### Frontend :
-- [ ] : Add Token in Axios Instance to skip retrieving cookies every time.
-- [ ] : Upgrade Axios API Calls by less drilling.
-- [ ] : Add more helpful comments.
 - [ ] : Redirect User to /login when trying to access protected routes and not logged in.

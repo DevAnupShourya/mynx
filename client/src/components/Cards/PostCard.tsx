@@ -16,8 +16,6 @@ import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
-
 import { OnePostResponseType } from "~/types/post.types";
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
@@ -33,7 +31,6 @@ import { likePostById } from "~/services/Posts/Posts.services";
 
 function PostCard(postDetails: OnePostResponseType) {
   const userState = useAppSelector((state) => state.user);
-  const token = useGetCookie(); 
 
   // ? Post Loading State
   const [fetchingStatus, setFetchingStatus] = useState<boolean | null>(null);
@@ -66,7 +63,7 @@ function PostCard(postDetails: OnePostResponseType) {
   const getAuthorDetails = async () => {
     setFetchingStatus(true);
     try {
-      const response = await getUserByUID(postDetails.author, token!);
+      const response = await getUserByUID(postDetails.author);
 
       setAuthorDetails({
         avatarUrl: response.user.avatarURL,
@@ -84,7 +81,7 @@ function PostCard(postDetails: OnePostResponseType) {
 
   const handlePostLikeBtn = async () => {
     try {
-      const response = await likePostById(postData._id, token!);
+      const response = await likePostById(postData._id);
 
       if (response?.status === 200) {
         setIsPostLiked(!isPostLiked);

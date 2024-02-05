@@ -13,7 +13,7 @@ import {
   Chip,
 } from "@nextui-org/react";
 
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { toast } from "react-toastify";
 import { uploadPosts } from "~/services/Posts/Posts.services";
 
@@ -32,7 +32,7 @@ export default function VixdeoUpload() {
   const MAX_VIDEO_SIZE_ALLOWED = 100;
   const navigate = useNavigate();
 
-  const token = useGetCookie();
+  
   const [submitBtnLoadingStatus, setSubmitBtnLoadingStatus] = useState(false);
 
   const [postData, setPostData] = useState<PostDataInterface>({
@@ -104,7 +104,7 @@ export default function VixdeoUpload() {
       } else {
         setSubmitBtnLoadingStatus(true);
         try {
-          const res = await uploadPosts(postData, token!);
+          const res = await uploadPosts(postData);
           Toast.success(res?.data.message);
 
           navigate("/", { replace: true });
@@ -156,6 +156,7 @@ export default function VixdeoUpload() {
             name="description"
             labelPlacement="inside"
             placeholder="Tell viewers more about your video"
+            description="You can add # (hashtags) also like #coding #science | Just press space if added"
             min={5}
             max={100}
             isRequired={true}

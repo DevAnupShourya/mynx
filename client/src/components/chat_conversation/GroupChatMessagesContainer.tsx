@@ -13,7 +13,7 @@ import ImageCollageGrid from "~/components/image_views/ImageCollageGrid";
 import { getUserByUID } from "~/services/Users/User.services";
 
 import { useAppSelector } from "~/utils/hooks/redux.hooks";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import Toast from "../custom_toast/Toast";
 import { Link } from "react-router-dom";
 
@@ -63,7 +63,7 @@ function GroupChatMessagesContainer({
 
 function OneToOneMessage(messagesData: MessageProps) {
   const formattedTime = new Date(messagesData.timestamp).toLocaleTimeString();
-  const token = useGetCookie();
+  
   const [senderDetails, setSenderDetails] = useState({
     name: "",
     username: "",
@@ -72,7 +72,7 @@ function OneToOneMessage(messagesData: MessageProps) {
 
   const getSenderDetails = async () => {
     try {
-      const senderData = await getUserByUID(messagesData.senderId, token!);
+      const senderData = await getUserByUID(messagesData.senderId);
       setSenderDetails({
         imageUrl: senderData.user.avatarURL,
         username: senderData.user.username,

@@ -22,13 +22,12 @@ import { LuBadgeMinus } from "react-icons/lu";
 import { RiImageEditFill } from "react-icons/ri";
 import { GroupFormType } from "~/types/chat.types";
 import { createGroupChat } from "~/services/Chats/Chats.services";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import { useNavigate } from "react-router-dom";
 
 function NewGroupForm({ closeFn }: { closeFn: () => void }) {
   const navigate = useNavigate();
   const themeState = useAppSelector((state) => state.theme.mode);
-  const token = useGetCookie();
 
   const groupImageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -88,8 +87,7 @@ function NewGroupForm({ closeFn }: { closeFn: () => void }) {
     try {
       const groupResponse = await createGroupChat(
         groupFormData,
-        groupMembersId,
-        token!
+        groupMembersId
       );
       // ? closing modal and redirecting user to the group
       closeFn();

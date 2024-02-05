@@ -25,7 +25,7 @@ import { CgDetailsLess } from "react-icons/cg";
 
 import GroupChatMessagesContainer from "~/components/chat_conversation/GroupChatMessagesContainer";
 import ChatGroupDetails from "~/components/chat_conversation/ChatGroupDetails";
-import useGetCookie from "~/utils/hooks/useGetCookie";
+
 import {
   MessageFormInterface,
   MessageInterface,
@@ -49,11 +49,7 @@ import useSocket from "~/utils/hooks/useSocket";
 function GroupChatsPage() {
   // ? Chatting with userid
   const { groupId } = useParams();
-
   const { socket, isSocketOnline } = useSocket();
-
-  const token = useGetCookie();
-
   const navigate = useNavigate();
 
   const MAX_IMAGES_ALLOWED = 1;
@@ -88,7 +84,7 @@ function GroupChatsPage() {
         navigate("/chats/groups");
         return;
       }
-      const groupChatData = await getGroupChat(groupId, token!);
+      const groupChatData = await getGroupChat(groupId);
       setGroupChatDetails({
         chatId: groupChatData._id,
         groupName: groupChatData.groupName,
@@ -146,8 +142,7 @@ function GroupChatsPage() {
   const getChatMessagesId = async () => {
     try {
       const chatIdsList: { _id: string }[] = await getAllMessageIds(
-        groupChatDetails.chatId,
-        token!
+        groupChatDetails.chatId
       );
 
       chatIdsList.map((msg) =>
@@ -168,12 +163,11 @@ function GroupChatsPage() {
     try {
       const messageData = await createMessage(
         chatFormData.text.trim(),
-        groupChatDetails.chatId,
-        token!
+        groupChatDetails.chatId
       );
 
       // ? Getting fresh details after every message
-      const groupChatData = await getGroupChat(groupId!, token!);
+      const groupChatData = await getGroupChat(groupId!);
       setGroupChatDetails({
         chatId: groupChatData._id,
         groupName: groupChatData.groupName,
@@ -265,7 +259,6 @@ function GroupChatsPage() {
         <Divider />
         <GroupChatsBody
           chatIdToGetMessagesOf={groupChatDetails.chatId}
-          token={token!}
           chatMessageIdList={chatMessageIdList}
           chatInitiated={groupChatDetails.started}
           chatLastUpdated={groupChatDetails.lastChanged}
@@ -459,13 +452,11 @@ function GroupChatsHeader({
 
 function GroupChatsBody({
   chatIdToGetMessagesOf,
-  token,
   chatInitiated,
   chatLastUpdated,
   chatMessageIdList,
 }: {
   chatIdToGetMessagesOf: string;
-  token: string | null;
   chatInitiated: string;
   chatLastUpdated: string;
   chatMessageIdList: string[];
@@ -478,7 +469,7 @@ function GroupChatsBody({
     setIsChatMessagesLoading(true);
     try {
       const messagesListResponse: MessagesListResponseInterface[] =
-        await getAllMessages(chatIdToGetMessagesOf, token!);
+        await getAllMessages(chatIdToGetMessagesOf);
 
       messagesListResponse.map((currentMsg) => {
         setMessagesList((pre) => [
@@ -506,8 +497,7 @@ function GroupChatsBody({
   const handleGetLastMessage = async () => {
     try {
       const lastMessageResponse = await getMessageById(
-        chatMessageIdList[chatMessageIdList.length - 1],
-        token!
+        chatMessageIdList[chatMessageIdList.length - 1]
       );
       setMessagesList((pre) => [
         ...pre,

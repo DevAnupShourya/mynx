@@ -6,8 +6,6 @@ import {
   useParams,
   Outlet,
 } from "react-router-dom";
-import { useCookies } from "react-cookie";
-
 import {
   Avatar,
   Card,
@@ -62,7 +60,6 @@ function UserProfilePage() {
   const { pathname } = useLocation();
 
   const userState = useAppSelector((state) => state.user);
-  const [cookies] = useCookies();
 
   const [userSearchStatus, setUserSearchStatus] = useState<null | true | false>(
     null
@@ -89,10 +86,7 @@ function UserProfilePage() {
   async function followOrUnfollowUserById() {
     setFollowBtnState(true);
     try {
-      const data = await followUserById(
-        userData.id,
-        cookies["secret_text"] as string
-      );
+      const data = await followUserById(userData.id);
       setUserData({
         ...userData,
         isFollowThisUser: data.responseData.following,
@@ -107,33 +101,26 @@ function UserProfilePage() {
 
   async function findUserByUsername() {
     try {
-      if (!cookies["secret_text"]) {
-        console.warn("No Token Found!");
-      } else {
-        const data = await getUserByUsername(
-          username!,
-          cookies["secret_text"] as string
-        );
+      const data = await getUserByUsername(username!);
 
-        const foundUser = data.responseData.userFromDB;
-        setUserData({
-          isFollowThisUser: data.responseData.isFollowedByMe,
-          admin: userState.mail === foundUser.email,
-          avatarImgSrc: foundUser.avatarURL,
-          bio: foundUser.bio,
-          country: foundUser.country,
-          coverImgSrc: foundUser.coverURL,
-          followers: foundUser.followers.length,
-          following: foundUser.following.length,
-          gender: foundUser.gender,
-          joining: foundUser.createdAt,
-          name: foundUser.name,
-          posts: foundUser.posts.length,
-          username: foundUser.username,
-          id: foundUser._id,
-        });
-        setUserSearchStatus(true);
-      }
+      const foundUser = data.responseData.userFromDB;
+      setUserData({
+        isFollowThisUser: data.responseData.isFollowedByMe,
+        admin: userState.mail === foundUser.email,
+        avatarImgSrc: foundUser.avatarURL,
+        bio: foundUser.bio,
+        country: foundUser.country,
+        coverImgSrc: foundUser.coverURL,
+        followers: foundUser.followers.length,
+        following: foundUser.following.length,
+        gender: foundUser.gender,
+        joining: foundUser.createdAt,
+        name: foundUser.name,
+        posts: foundUser.posts.length,
+        username: foundUser.username,
+        id: foundUser._id,
+      });
+      setUserSearchStatus(true);
     } catch (error) {
       setUserSearchStatus(false);
       console.error("Error fetching User:", error);
@@ -325,7 +312,7 @@ function UserProfilePage() {
                 color="danger"
                 size="sm"
                 as={Link}
-                to={`/chats?u=${userData.id}`}
+                to={`/chats/${userData.id}`}
               >
                 Chat
               </Button>

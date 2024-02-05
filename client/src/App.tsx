@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { CookiesProvider } from "react-cookie";
 import { Spinner } from "@nextui-org/react";
 import { ToastContainer } from "react-toastify";
 
@@ -65,11 +64,7 @@ function App() {
             />
           )}
           {userState.authStatus === "unauthenticated" && <Landing />}
-          {userState.authStatus === "authenticated" && (
-            <CookiesProvider>
-              <Dashboard />
-            </CookiesProvider>
-          )}
+          {userState.authStatus === "authenticated" && <Dashboard />}
         </section>
       );
     } else {
