@@ -90,7 +90,6 @@ export default function Login() {
       Toast.success("Successfully Found Your Account");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log(error)
       Toast.error(`Error : ${error.response.data.message}`);
       console.error("Error :", error.response.data.message);
     }

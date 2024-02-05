@@ -1613,18 +1613,6 @@ video {
   max-width: 20rem;
 }
 
-.max-w-9{
-  max-width: 2.25rem;
-}
-
-.max-w-0{
-  max-width: 0px;
-}
-
-.max-w-0\.5{
-  max-width: 0.125rem;
-}
-
 .flex-1{
   flex: 1 1 0%;
 }
