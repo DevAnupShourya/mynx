@@ -17,10 +17,9 @@ const io = new Server(server, {
         credentials: true,
     }
 });
-// TODO backend server not having url /chats
 
 import socketMiddleware from "~/v1/utils/socketMiddleware";
-import Socket_Events from "./v1/types/Socket.io";
+import Socket_Events from "~/v1/types/Socket.io";
 
 io.on(Socket_Events.SOCKET_CONNECT, (socket: Socket) => {
     // ? Protection Middleware
