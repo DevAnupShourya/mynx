@@ -9,10 +9,11 @@ import { Server, Socket } from "socket.io";
 const app: Application = express();
 const server = createServer(app);
 
+import { FRONTEND_URL } from '~/v1/config/Variables';
 const io = new Server(server, {
     pingTimeout: 10000,
     cors: {
-        origin: 'http://localhost:5173',
+        origin: `${FRONTEND_URL}`,
         methods: ["GET", "POST"],
         credentials: true,
     }
