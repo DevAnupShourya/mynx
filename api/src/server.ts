@@ -17,6 +17,7 @@ const io = new Server(server, {
         credentials: true,
     }
 });
+// TODO backend server not having url /chats
 
 import socketMiddleware from "~/v1/utils/socketMiddleware";
 import Socket_Events from "./v1/types/Socket.io";
@@ -99,10 +100,10 @@ app.use('/v1/chats/', chatsRoute);
 
 
 app.get('*', (_, res: Response) => {
-    res.status(200).send({
+    res.status(404).send({
         status: 404,
         message: 'Route Not Found',
-        documentation: 'https://api.Mynx.com/docs'
+        documentation: 'https://api.mynx.com/docs'
     });
 });
 
