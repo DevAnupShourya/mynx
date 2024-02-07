@@ -12,7 +12,7 @@ The project is currently in the alpha stage of development. This means that it h
 - The project may be unstable and may crash or behave unexpectedly.
 
 ## Target Completion Date ⏱
-I expect to add all features of the project by end of Jan 2024.
+The basic version of this project is done.
 
 ## Feedback and Suggestions 💥
 I would appreciate any feedback or suggestions you have for the project. Please feel free to submit a pull request or issue on GitHub.
@@ -26,13 +26,13 @@ Welcome to Mynx: World in Pixels, the ultimate social media platform designed to
 
 - **Posts :** Users can share their thoughts, ideas, and updates with the community.
 
-- **Interactions:** Users can like, comment, and reply to chirps, promoting engagement and discussion.
+- **Interactions:** Users can like, comment, and reply to posts, promoting engagement and discussion.
 
-- **Follow System:** Users can follow each other to stay connected and receive updates from their favorite chirpers.
+- **Follow System:** Users can follow each other to stay connected and receive updates from their favorite users.
 
-- **Notifications:** Users receive notifications for interactions on their chirps and updates from followed users.
+- **Notifications:** Users receive notifications for interactions on their activity and updates from followed users.
 
-- **Search and Discovery:** Users can search for specific chirps or discover new content based on their interests.
+- **Search and Discovery:** Users can search for specific posts or discover new content based on their interests.
 
 - **Live:** Users can go live online to thier community and share insights of their lifes.
 
@@ -40,7 +40,7 @@ Welcome to Mynx: World in Pixels, the ultimate social media platform designed to
 
 ## Tech Stack 🧠
 
-Chirp - Where Voices Unite is built using the MERN stack (MongoDB, Express.js, React.js, Node.js) to ensure a modern and efficient web application.
+Mynx  is built using the MERN stack (MongoDB, Express.js, React.js, Node.js) to ensure a modern and efficient web application.
 - **Backend**
     - Node.js
     - Express
@@ -56,7 +56,7 @@ Chirp - Where Voices Unite is built using the MERN stack (MongoDB, Express.js, R
     - Mocha (Backend)
 - **Deployment**
     - Vercel
-    - Heroku
+    - Render
 
 ## Installation ℹ
 
@@ -132,7 +132,9 @@ Happy Mynxing !
 
 ### Features to Implement 🧠
 #### Backend :
+- [ ] : Add tests
 - [ ] : Add MongoDB Aggregation Pipeline instead for search queries.
 - [ ] : Add RabbitMQ or Redis to enable fast chatting instead to direct saving into DB.
 #### Frontend :`
+- [ ] : Add tests
 - [ ] : Redirect User to /login when trying to access protected routes and not logged in.
