@@ -12,9 +12,9 @@ function UnderMaintenance() {
             Under Maintenance
           </h1>
           <p className="mt-4">
-            We're currently performing maintenance.
+            We're are using free servers which gets down automatically.
             <br />
-            Please check back later..
+            Please come back after 1 minute
           </p>
         </div>
       </div>
