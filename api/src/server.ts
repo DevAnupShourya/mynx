@@ -111,5 +111,3 @@ import { API_PORT_NO } from '~/v1/config/Variables';
 server.listen(API_PORT_NO, () => {
     console.log(`⚡️ API Listening on : http://127.0.0.1:${API_PORT_NO} ⚡️`);
 });
-
-module.exports = server;
