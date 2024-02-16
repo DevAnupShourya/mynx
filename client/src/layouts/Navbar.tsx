@@ -15,9 +15,11 @@ import {
 import Logo from "~/components/logo/Logo";
 import NavLink from "~/components/links/NavLink";
 import { NavbarLinks } from "~/utils/raw_data/Navigation";
+import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const themeState = useAppSelector((state) => state.theme.mode);
 
   return (
     <Nav
@@ -38,16 +40,12 @@ export default function Navbar() {
         onClick={() => {
           setIsMenuOpen(false);
         }}
-        className="bg-main-text-main w-full h-full py-10 grid place-items-center"
+        className={`${themeState} w-full h-full py-10 grid place-items-center`}
       >
         {NavbarLinks.map((item) => {
           return (
             <NavbarMenuItem key={item.name}>
-              <NavLink
-                icon={item.icon}
-                name={item.name}
-                url={item.href}
-              />
+              <NavLink icon={item.icon} name={item.name} url={item.href} />
             </NavbarMenuItem>
           );
         })}
