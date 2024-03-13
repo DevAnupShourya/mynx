@@ -98,7 +98,7 @@ export default function Login() {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <Card radius="sm" shadow="lg" className="bg-main-text-main">
+      <Card radius="sm" shadow="lg" className="bg-main-text-main min-w-[50vw]">
         <CardHeader className="justify-center">
           <h1 className="text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main">
             Login

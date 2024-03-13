@@ -329,7 +329,7 @@ function UserChatsPage() {
       </h1>
     </div>
   ) : (
-    <div className="w-full h-full">
+    <div className="w-full min-h-[80vh]">
       <Card className="w-full h-full bg-main-text-main" radius="sm">
         <UserChatsHeader
           chattingWithUserId={userId || null}

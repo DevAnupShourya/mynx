@@ -9,7 +9,7 @@ import { useAppSelector } from "~/utils/hooks/redux.hooks";
 function FollowingPage() {
   const userState = useAppSelector((state) => state.user);
 
-  const [followingList, setFollowingList] = useState<string[]>([""]);
+  const [followingList, setFollowingList] = useState<string[]>([]);
 
   const getFollowingList = async () => {
     try {

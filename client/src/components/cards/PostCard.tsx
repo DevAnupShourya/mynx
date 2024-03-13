@@ -131,7 +131,7 @@ function PostCard(postDetails: OnePostResponseType) {
             <div className="">
               <Link
                 as={NavLink}
-                color="foreground"
+                color="primary"
                 to={`/${authorDetails.username}`}
                 className="text-sm font-semibold leading-none"
               >

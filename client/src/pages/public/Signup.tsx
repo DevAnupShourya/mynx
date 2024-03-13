@@ -120,7 +120,7 @@ function Signup() {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <Card radius="lg" shadow="lg" className="bg-main-text-main">
+      <Card radius="lg" shadow="lg" className="bg-main-text-main min-w-[50vw]">
         <CardHeader className="flex-col justify-center">
           <h1 className="text-center text-2xl font-bold tracking-widest capitalize text-light-main dark:text-dark-main my-3">
             Create Account
@@ -131,7 +131,7 @@ function Signup() {
           </p>
         </CardHeader>
         <Divider />
-        <CardBody className="gap-4">
+        <CardBody className="gap-4 grid md:grid-cols-2">
           <Input
             name="name"
             autoFocus

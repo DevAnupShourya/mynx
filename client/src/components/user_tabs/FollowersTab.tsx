@@ -9,7 +9,7 @@ import { getUserByUsername } from "~/services/Users/User.services";
 
 function FollowersTab() {
   
-  const [followersList, setFollowersList] = useState<string[]>([""]);
+  const [followersList, setFollowersList] = useState<string[]>([]);
   const { username } = useParams();
 
   const getFollowersList = async () => {

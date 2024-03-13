@@ -46,8 +46,8 @@ function UserAvatarInput({
   }
 
   return (
-    <>
-      <p>Avatar Image</p>
+    <div>
+      <p className="my-2">Avatar Image</p>
       <div className="flex flex-row gap-2 items-center">
         <Avatar
           showFallback
@@ -78,8 +78,8 @@ function UserAvatarInput({
           onChange={handleAvatarChange}
         />
       </div>
-      <p className="text-sm text-default-400">Less than 1MB</p>
-    </>
+      <p className="text-sm text-default-400 my-1">Less than 1MB</p>
+    </div>
   );
 }
 

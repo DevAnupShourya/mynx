@@ -1,89 +1,27 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
-import {
-  Navbar as Nav,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-  Button,
-} from "@nextui-org/react";
+import {Button} from "@nextui-org/react";
 
 import Logo from "~/components/logo/Logo";
-import NavLink from "~/components/links/NavLink";
-import { NavbarLinks } from "~/utils/raw_data/Navigation";
-import { useAppSelector } from "~/utils/hooks/redux.hooks";
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const themeState = useAppSelector((state) => state.theme.mode);
-
   return (
-    <Nav
-      shouldHideOnScroll
-      isBordered
-      className="bg-main-text-default py-2"
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-    >
-      {/* Nav Mobile */}
-      <NavbarContent className="sm:hidden" justify="start">
-        <NavbarMenuToggle
-          className="text-light-main dark:text-dark-main"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        />
-      </NavbarContent>
-      <NavbarMenu
-        onClick={() => {
-          setIsMenuOpen(false);
-        }}
-        className={`${themeState} w-full h-full py-10 grid place-items-center`}
-      >
-        {NavbarLinks.map((item) => {
-          return (
-            <NavbarMenuItem key={item.name}>
-              <NavLink icon={item.icon} name={item.name} url={item.href} />
-            </NavbarMenuItem>
-          );
-        })}
-      </NavbarMenu>
-      <NavbarContent className="sm:hidden" justify="start">
-        <NavbarBrand>
-          <Logo />
-        </NavbarBrand>
-      </NavbarContent>
-
-      {/* Nav Desktop */}
-      <NavbarBrand className="max-sm:hidden">
-        <Logo />
-      </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        {NavbarLinks.map((item) => {
-          return (
-            <NavbarItem key={item.name}>
-              <NavLink icon={item.icon} name={item.name} url={item.href} />
-            </NavbarItem>
-          );
-        })}
-      </NavbarContent>
-
-      <NavbarContent justify="end">
+    <nav className="px-[6vw] py-[2vh] flex flex-row flex-nowrap justify-between items-center">
+      <Logo />
+      <div>
         <Button
           as={Link}
           to="/login"
           variant="light"
           color="primary"
-          className="max-sm:hidden"
+          size="sm"
         >
           Login
         </Button>
-        <Button as={Link} to="/signup" variant="shadow" color="secondary">
+        <Button as={Link} to="/signup" variant="shadow" color="secondary" className="ml-5">
           Create Account
         </Button>
-      </NavbarContent>
-    </Nav>
+      </div>
+    </nav>
   );
 }

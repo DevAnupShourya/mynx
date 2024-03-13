@@ -5,12 +5,12 @@ export default function Home() {
   return (
     <main
       id="hero"
-      className="w-11/12 h-auto grid place-items-center max-sm:text-center"
+      className="w-full grid place-items-center max-sm:text-center overflow-x-hidden"
     >
       <p className="text-xl font-bold capitalize">
         the ultimate social media platform.
       </p>
-      <h1 className="text-6xl max-md:text-4xl font-bold capitalize my-14">
+      <h1 className="text-6xl max-md:text-3xl font-bold capitalize my-14 text-pretty leading-snug">
         <span
           id="logo"
           className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-green-600 to-secondary"
@@ -32,7 +32,7 @@ export default function Home() {
         Explore
       </Button>
       <Divider className="my-10" />
-      <div className="w-full flex flex-row max-md:flex-col justify-center items-center">
+      <div className="w-1/2 max-md:w-11/12 flex flex-row max-md:flex-col justify-center items-center">
         <div className="w-1/3  text-center">
           <h2 className="text-bold text-xl my-2">105M+</h2>
           <p className="text-xs ">Users</p>

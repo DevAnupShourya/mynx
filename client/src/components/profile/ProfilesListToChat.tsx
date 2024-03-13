@@ -8,7 +8,7 @@ import ProfilePreview from "~/components/profile/ProfilePreview";
 
 import { RiChatNewLine } from "react-icons/ri";
 
-function ProfilesListToChat({ closeFn }: { closeFn: () => void }) {
+function ProfilesListToChat({ closeFn }: { closeFn?: () => void }) {
   const [usersIdList, setUsersIdList] = useState<string[]>([]);
   const [pageMeta, setPageMeta] = useState({
     currentPage: 0,
@@ -65,7 +65,7 @@ function ProfilesListToChat({ closeFn }: { closeFn: () => void }) {
                 <ProfilePreview userId={userId} />
                 <Button
                   variant="flat"
-                  color="danger"
+                  color="success"
                   isIconOnly
                   title="Chat With This User"
                   as={Link}

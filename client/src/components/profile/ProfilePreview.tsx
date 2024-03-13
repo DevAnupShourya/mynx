@@ -36,7 +36,7 @@ function ProfilePreview({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       Toast.error(error.response.data.message);
-      console.error("Error Getting User Data : ", error.response.data.message);
+      console.error("Error Getting User Data : ", error);
     }
     setLoading(false);
   };

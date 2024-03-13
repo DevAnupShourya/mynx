@@ -25,7 +25,9 @@ import { MdOutlineGroups2 } from "react-icons/md";
 
 export default function ChatsPage() {
   const location = useLocation();
-  const isInConversation = /^\/chats\/(?!groups$)[^/]+(?:$|\/)/.test(location.pathname);
+  const isInConversation = /^\/chats\/(?!groups$)[^/]+(?:$|\/)/.test(
+    location.pathname
+  );
 
   const {
     isOpen: isOpenUser,
@@ -131,10 +133,17 @@ export default function ChatsPage() {
           }
         />
       )}
-      <div className="w-full h-full">
+      <div className="w-full h-auto">
         <Outlet />
       </div>
-
+      {!isInConversation && (
+        <div className="my-5">
+          <h1 className="text-lg">Find All Users here</h1>
+          <div>
+            <ProfilesListToChat />
+          </div>
+        </div>
+      )}
       <Modal
         isOpen={isOpenUser}
         onOpenChange={onOpenChangeUser}

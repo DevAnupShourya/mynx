@@ -9,7 +9,7 @@ import { useAppSelector } from "~/utils/hooks/redux.hooks";
 export default function FollowerPage() {
   const userState = useAppSelector((state) => state.user);
 
-  const [followersList, setFollowersList] = useState<string[]>([""]);
+  const [followersList, setFollowersList] = useState<string[]>([]);
 
   const getFollowersList = async () => {
     try {

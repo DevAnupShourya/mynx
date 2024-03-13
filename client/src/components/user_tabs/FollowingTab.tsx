@@ -9,7 +9,7 @@ import ProfilePreview from "~/components/profile/ProfilePreview";
 
 function FollowingTab() {
   
-  const [followingList, setFollowingList] = useState<string[]>([""]);
+  const [followingList, setFollowingList] = useState<string[]>([]);
   const { username } = useParams();
 
   const getFollowingList = async () => {

@@ -59,17 +59,10 @@ export default function UserCoverInput({
           } h-12 w-12 text-primary`}
           aria-hidden="true"
         />
-        <p
-          className={`${
-            showCoverPic === true ? "hidden" : ""
-          }  text-sm text-default-400`}
-        >
-          or drag and drop PNG, JPG, GIF up to 2MB
-        </p>
         <ImageComponent
           isZoomed
           isBlurred
-          className="w-full h-auto border bg-center bg-cover bg-no-repeat"
+          className="max-w-screen-sm h-auto border bg-center bg-cover bg-no-repeat"
           src={formData.coverURL}
           alt="Profile Cover Image"
         />
